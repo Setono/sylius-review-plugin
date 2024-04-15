@@ -1,6 +1,6 @@
 {
     "name": "setono/sylius-review-plugin",
-    "description": "Setono example plugin for Sylius.",
+    "description": "Send review requests to your customers",
     "license": "MIT",
     "type": "sylius-plugin",
     "keywords": [
