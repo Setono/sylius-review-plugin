@@ -12,6 +12,7 @@
         "doctrine/orm": "^2.0",
         "doctrine/persistence": "^3.0",
         "ocramius/doctrine-batch-utils": "^2.6",
+        "psr/event-dispatcher": "^1.0",
         "setono/composite-compiler-pass": "^1.1",
         "sylius/core": "^1.0",
         "sylius/core-bundle": "^1.0",

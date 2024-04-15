@@ -5,11 +5,7 @@ declare(strict_types=1);
 namespace Setono\SyliusReviewPlugin\Workflow;
 
 use Setono\SyliusReviewPlugin\Model\ReviewRequestInterface;
-use Symfony\Component\Workflow\DefinitionBuilder;
-use Symfony\Component\Workflow\MarkingStore\MethodMarkingStore;
 use Symfony\Component\Workflow\Transition;
-use Symfony\Component\Workflow\Workflow;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class ReviewRequestWorkflow
 {
@@ -60,18 +56,6 @@ final class ReviewRequestWorkflow
                 'transitions' => $transitions,
             ],
         ];
-    }
-
-    public static function getWorkflow(EventDispatcherInterface $eventDispatcher): Workflow
-    {
-        $definitionBuilder = new DefinitionBuilder(self::getStates(), self::getTransitions());
-
-        return new Workflow(
-            $definitionBuilder->build(),
-            new MethodMarkingStore(true, self::PROPERTY_NAME),
-            $eventDispatcher,
-            self::NAME,
-        );
     }
 
     /**
