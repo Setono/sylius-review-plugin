@@ -8,17 +8,32 @@
 
 Send review requests to your customers to receive reviews for your store.
 
+## Installation
 
 ```bash
-php init
-(cd tests/Application && yarn install)
-(cd tests/Application && yarn build)
-(cd tests/Application && bin/console assets:install)
+composer require setono/sylius-review-plugin
+```
 
-(cd tests/Application && bin/console doctrine:database:create)
-(cd tests/Application && bin/console doctrine:schema:create)
+### Add plugin class to your `bundles.php`:
 
-(cd tests/Application && bin/console sylius:fixtures:load -n)
+Make sure you add it before `SyliusGridBundle`, otherwise you'll get
+`You have requested a non-existent parameter "setono_sylius_review.model.review_request.class".` exception.
+
+```php
+<?php
+$bundles = [
+    // ...
+    Setono\SyliusReviewPlugin\SetonoSyliusReviewPlugin::class => ['all' => true],
+    Sylius\Bundle\GridBundle\SyliusGridBundle::class => ['all' => true],
+    // ...
+];
+```
+
+### Update your database:
+
+```bash
+php bin/console doctrine:migrations:diff
+php bin/console doctrine:migrations:migrate
 ```
    
 [ico-version]: https://poser.pugx.org/setono/sylius-review-plugin/v/stable
