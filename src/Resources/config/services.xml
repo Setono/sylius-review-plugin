@@ -13,6 +13,7 @@
         <service id="setono_sylius_review.command.prune_review_requests"
                  class="Setono\SyliusReviewPlugin\Command\PruneReviewRequestsCommand">
             <argument type="service" id="setono_sylius_review.repository.review_request"/>
+            <argument>-1 month</argument><!-- Todo make this configurable -->
 
             <tag name="console.command"/>
         </service>
@@ -31,6 +32,16 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <service id="setono_sylius_review.event_subscriber.review_request.increment_eligibility_checks"
+                 class="Setono\SyliusReviewPlugin\EventSubscriber\ReviewRequest\IncrementEligibilityChecksSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="setono_sylius_review.event_subscriber.review_request.update_next_eligibility_check"
+                 class="Setono\SyliusReviewPlugin\EventSubscriber\ReviewRequest\UpdateNextEligibilityCheckSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
         <!-- Factories -->
         <service id="setono_sylius_review.custom_factory.review_request"
                  class="Setono\SyliusReviewPlugin\Factory\ReviewRequestFactory" decoration-priority="64"
@@ -39,12 +50,24 @@
             <argument>%setono_sylius_review.eligibility.initial_delay%</argument>
         </service>
 
+        <!-- Mailer -->
+        <service id="setono_sylius_review.mailer.review_request_email_manager"
+                 class="Setono\SyliusReviewPlugin\Mailer\ReviewRequestEmailManager">
+            <argument type="service" id="sylius.email_sender"/>
+        </service>
+
         <!-- Processors -->
         <service id="setono_sylius_review.processor.review_request"
                  class="Setono\SyliusReviewPlugin\Processor\ReviewRequestProcessor">
             <argument type="service" id="setono_sylius_review.repository.review_request"/>
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="state_machine.setono_sylius_review__review_request"/>
+            <argument type="service" id="setono_sylius_review.review_request_eligibility_checker.composite"/>
+            <argument type="service" id="setono_sylius_review.mailer.review_request_email_manager"/>
+
+            <call method="setLogger">
+                <argument type="service" id="logger"/>
+            </call>
         </service>
     </services>
 </container>

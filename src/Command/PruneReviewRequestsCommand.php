@@ -15,8 +15,10 @@ final class PruneReviewRequestsCommand extends Command
 
     protected static $defaultDescription = 'Prunes review requests';
 
-    public function __construct(private readonly ReviewRequestRepositoryInterface $reviewRequestRepository, private readonly string $threshold = '-1 month')
-    {
+    public function __construct(
+        private readonly ReviewRequestRepositoryInterface $reviewRequestRepository,
+        private readonly string $threshold,
+    ) {
         parent::__construct();
     }
 

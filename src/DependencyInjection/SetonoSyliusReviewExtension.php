@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Setono\SyliusReviewPlugin\DependencyInjection;
 
 use Setono\SyliusReviewPlugin\EligibilityChecker\ReviewRequestEligibilityCheckerInterface;
+use Setono\SyliusReviewPlugin\Mailer\Emails;
 use Setono\SyliusReviewPlugin\Workflow\ReviewRequestWorkflow;
 use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceExtension;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
@@ -47,6 +48,14 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
     {
         $container->prependExtensionConfig('framework', [
             'workflows' => ReviewRequestWorkflow::getConfig(),
+        ]);
+
+        $container->prependExtensionConfig('sylius_mailer', [
+            'emails' => [
+                Emails::REVIEW_REQUEST => [
+                    'template' => '@SetonoSyliusReviewPlugin/email/review_request.html.twig',
+                ],
+            ],
         ]);
     }
 }

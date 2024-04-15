@@ -6,21 +6,29 @@ namespace Setono\SyliusReviewPlugin\Processor;
 
 use DoctrineBatchUtils\BatchProcessing\SimpleBatchIteratorAggregate;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Setono\SyliusReviewPlugin\EligibilityChecker\ReviewRequestEligibilityCheckerInterface;
 use Setono\SyliusReviewPlugin\Event\ReviewRequestProcessingStarted;
+use Setono\SyliusReviewPlugin\Mailer\ReviewRequestEmailManagerInterface;
 use Setono\SyliusReviewPlugin\Model\ReviewRequestInterface;
 use Setono\SyliusReviewPlugin\Repository\ReviewRequestRepositoryInterface;
 use Setono\SyliusReviewPlugin\Workflow\ReviewRequestWorkflow;
 use Symfony\Component\Workflow\WorkflowInterface;
 
-final class ReviewRequestProcessor implements ReviewRequestProcessorInterface
+final class ReviewRequestProcessor implements ReviewRequestProcessorInterface, LoggerAwareInterface
 {
+    private LoggerInterface $logger;
+
     public function __construct(
         private readonly ReviewRequestRepositoryInterface $reviewRequestRepository,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly WorkflowInterface $reviewRequestWorkflow,
         private readonly ReviewRequestEligibilityCheckerInterface $reviewRequestEligibilityChecker,
+        private readonly ReviewRequestEmailManagerInterface $reviewRequestEmailManager,
     ) {
+        $this->logger = new NullLogger();
     }
 
     public function process(): void
@@ -42,9 +50,24 @@ final class ReviewRequestProcessor implements ReviewRequestProcessorInterface
                 continue;
             }
 
-            // todo send email
+            try {
+                $this->reviewRequestEmailManager->sendReviewRequest($reviewRequest);
+            } catch (\Throwable $e) {
+                $this->logger->error(sprintf(
+                    'There was an error trying to send a review request (id: %d). The error was: %s',
+                    (int) $reviewRequest->getId(),
+                    $e->getMessage(),
+                ));
+
+                continue;
+            }
 
             $this->reviewRequestWorkflow->apply($reviewRequest, ReviewRequestWorkflow::TRANSITION_COMPLETE);
         }
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 }

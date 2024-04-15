@@ -1,0 +1,10 @@
+{% extends '@SyliusShop/Email/layout.html.twig' %}
+
+{% block subject %}
+    {{ 'setono_sylius_review.email.review_request.subject'|trans({}, null, localeCode)|raw }}
+{% endblock %}
+
+{% block content %}
+    {# todo add some content #}
+    <h1>Please review</h1>
+{% endblock %}
