@@ -12,6 +12,7 @@
         "doctrine/orm": "^2.0",
         "doctrine/persistence": "^3.0",
         "ocramius/doctrine-batch-utils": "^2.6",
+        "setono/composite-compiler-pass": "^1.1",
         "sylius/core": "^1.0",
         "sylius/core-bundle": "^1.0",
         "sylius/resource-bundle": "^1.6",
@@ -20,6 +21,7 @@
         "symfony/dependency-injection": "^5.4 || ^6.4 || ^7.0",
         "symfony/event-dispatcher": "^5.4 || ^6.4 || ^7.0",
         "symfony/http-kernel": "^5.4 || ^6.4 || ^7.0",
+        "symfony/workflow": "^5.4 || ^6.4 || ^7.0",
         "webmozart/assert": "^1.11"
     },
     "require-dev": {

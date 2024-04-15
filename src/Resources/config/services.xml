@@ -17,6 +17,11 @@
             <tag name="console.command"/>
         </service>
 
+        <!-- Eligibility checkers -->
+        <service id="setono_sylius_review.review_request_eligibility_checker.composite"
+                 class="Setono\SyliusReviewPlugin\EligibilityChecker\CompositeReviewRequestEligibilityChecker">
+        </service>
+
         <!-- Event subscribers -->
         <service id="setono_sylius_review.event_subscriber.create_review_request"
                  class="Setono\SyliusReviewPlugin\EventSubscriber\CreateReviewRequestSubscriber">
@@ -38,6 +43,8 @@
         <service id="setono_sylius_review.processor.review_request"
                  class="Setono\SyliusReviewPlugin\Processor\ReviewRequestProcessor">
             <argument type="service" id="setono_sylius_review.repository.review_request"/>
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="state_machine.setono_sylius_review__review_request"/>
         </service>
     </services>
 </container>
