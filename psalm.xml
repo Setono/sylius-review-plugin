@@ -28,4 +28,11 @@
         <function name="var_dump"/>
         <function name="print_r"/>
     </forbiddenFunctions>
+    <issueHandlers>
+        <MissingTemplateParam>
+            <errorLevel type="suppress">
+                <directory name="src/Factory"/>
+            </errorLevel>
+        </MissingTemplateParam>
+    </issueHandlers>
 </psalm>

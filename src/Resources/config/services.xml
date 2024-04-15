@@ -2,6 +2,34 @@
 <container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://symfony.com/schema/dic/services"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <!-- Put your services here -->
+        <!-- Commands -->
+        <service id="setono_sylius_review.command.process_review_requests"
+                 class="Setono\SyliusReviewPlugin\Command\ProcessReviewRequestsCommand">
+            <argument type="service" id="setono_sylius_review.processor.review_request"/>
+
+            <tag name="console.command"/>
+        </service>
+
+        <!-- Event subscribers -->
+        <service id="setono_sylius_review.event_subscriber.create_review_request"
+                 class="Setono\SyliusReviewPlugin\EventSubscriber\CreateReviewRequestSubscriber">
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="setono_sylius_review.factory.review_request"/>
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <!-- Factories -->
+        <service id="setono_sylius_review.custom_factory.review_request"
+                 class="Setono\SyliusReviewPlugin\Factory\ReviewRequestFactory" decoration-priority="64"
+                 decorates="setono_sylius_review.factory.review_request">
+            <argument type="service" id="setono_sylius_review.custom_factory.review_request.inner"/>
+            <argument>%setono_sylius_review.eligibility.initial_delay%</argument>
+        </service>
+
+        <!-- Processors -->
+        <service id="setono_sylius_review.processor.review_request"
+                 class="Setono\SyliusReviewPlugin\Processor\ReviewRequestProcessor">
+        </service>
     </services>
 </container>

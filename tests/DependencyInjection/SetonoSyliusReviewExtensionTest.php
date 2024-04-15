@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Setono\SyliusReviewPlugin\Tests\DependencyInjection;
 
-use Setono\SyliusReviewPlugin\DependencyInjection\SetonoSyliusReviewExtension;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
+use Setono\SyliusReviewPlugin\DependencyInjection\SetonoSyliusReviewExtension;
 
 /**
  * See examples of tests and configuration options here: https://github.com/SymfonyTest/SymfonyDependencyInjectionTest

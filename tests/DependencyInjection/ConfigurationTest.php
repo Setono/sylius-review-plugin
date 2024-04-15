@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Setono\SyliusReviewPlugin\Tests\DependencyInjection;
 
-use Setono\SyliusReviewPlugin\DependencyInjection\Configuration;
 use Matthias\SymfonyConfigTest\PhpUnit\ConfigurationTestCaseTrait;
 use PHPUnit\Framework\TestCase;
+use Setono\SyliusReviewPlugin\DependencyInjection\Configuration;
 
 /**
  * See examples of tests and configuration options here: https://github.com/SymfonyTest/SymfonyConfigTest
