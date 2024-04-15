@@ -10,6 +10,13 @@
             <tag name="console.command"/>
         </service>
 
+        <service id="setono_sylius_review.command.prune_review_requests"
+                 class="Setono\SyliusReviewPlugin\Command\PruneReviewRequestsCommand">
+            <argument type="service" id="setono_sylius_review.repository.review_request"/>
+
+            <tag name="console.command"/>
+        </service>
+
         <!-- Event subscribers -->
         <service id="setono_sylius_review.event_subscriber.create_review_request"
                  class="Setono\SyliusReviewPlugin\EventSubscriber\CreateReviewRequestSubscriber">
@@ -30,6 +37,7 @@
         <!-- Processors -->
         <service id="setono_sylius_review.processor.review_request"
                  class="Setono\SyliusReviewPlugin\Processor\ReviewRequestProcessor">
+            <argument type="service" id="setono_sylius_review.repository.review_request"/>
         </service>
     </services>
 </container>

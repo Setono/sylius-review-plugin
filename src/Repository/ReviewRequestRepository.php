@@ -19,4 +19,15 @@ class ReviewRequestRepository extends EntityRepository implements ReviewRequestR
             ->setParameter('state', ReviewRequestInterface::STATE_PENDING)
         ;
     }
+
+    public function removeBefore(\DateTimeInterface $threshold): void
+    {
+        $this->createQueryBuilder('o')
+            ->delete()
+            ->andWhere('o.createdAt < :threshold')
+            ->setParameter('threshold', $threshold)
+            ->getQuery()
+            ->execute()
+        ;
+    }
 }

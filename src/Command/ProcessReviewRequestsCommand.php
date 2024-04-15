@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class ProcessReviewRequestsCommand extends Command
 {
-    protected static $defaultName = 'setono:sylius-review:process-review-requests';
+    protected static $defaultName = 'setono:sylius-review:process';
 
     protected static $defaultDescription = 'Process review requests';
 

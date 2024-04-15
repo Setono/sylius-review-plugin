@@ -10,4 +10,9 @@ use Sylius\Component\Resource\Repository\RepositoryInterface;
 interface ReviewRequestRepositoryInterface extends RepositoryInterface
 {
     public function createForProcessingQueryBuilder(): QueryBuilder;
+
+    /**
+     * Removes all review requests created before the threshold
+     */
+    public function removeBefore(\DateTimeInterface $threshold): void;
 }
