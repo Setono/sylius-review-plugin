@@ -9,7 +9,8 @@ use Setono\SyliusReviewPlugin\Model\ReviewRequestInterface;
 interface ReviewRequestEligibilityCheckerInterface
 {
     /**
-     * Returns true if the given review request is eligible for being sent to the customer
+     * The method should return an instance of EligibilityCheck with the result of the eligibility check.
+     * A reason is provided if the review request is not eligible.
      */
-    public function isEligible(ReviewRequestInterface $reviewRequest): bool;
+    public function check(ReviewRequestInterface $reviewRequest): EligibilityCheck;
 }

@@ -17,6 +17,8 @@ class ReviewRequest implements ReviewRequestInterface
 
     protected int $eligibilityChecks = 0;
 
+    protected ?string $ineligibilityReason = null;
+
     protected ?OrderInterface $order = null;
 
     protected \DateTimeInterface $createdAt;
@@ -68,6 +70,16 @@ class ReviewRequest implements ReviewRequestInterface
         $this->eligibilityChecks += $increment;
     }
 
+    public function getIneligibilityReason(): ?string
+    {
+        return $this->ineligibilityReason;
+    }
+
+    public function setIneligibilityReason(?string $ineligibilityReason): void
+    {
+        $this->ineligibilityReason = $ineligibilityReason;
+    }
+
     public function getOrder(): ?OrderInterface
     {
         return $this->order;
@@ -76,5 +88,10 @@ class ReviewRequest implements ReviewRequestInterface
     public function setOrder(?OrderInterface $order): void
     {
         $this->order = $order;
+    }
+
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
     }
 }

@@ -23,6 +23,11 @@
                  class="Setono\SyliusReviewPlugin\EligibilityChecker\CompositeReviewRequestEligibilityChecker">
         </service>
 
+        <service id="setono_sylius_review.review_request_eligibility_checker.order_fulfilled"
+                 class="Setono\SyliusReviewPlugin\EligibilityChecker\OrderFulfilledReviewRequestEligibilityChecker">
+            <tag name="setono_sylius_review.review_request_eligibility_checker" priority="100"/>
+        </service>
+
         <!-- Event subscribers -->
         <service id="setono_sylius_review.event_subscriber.create_review_request"
                  class="Setono\SyliusReviewPlugin\EventSubscriber\CreateReviewRequestSubscriber">

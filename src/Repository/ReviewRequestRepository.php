@@ -13,7 +13,7 @@ class ReviewRequestRepository extends EntityRepository implements ReviewRequestR
     public function createForProcessingQueryBuilder(): QueryBuilder
     {
         return $this->createQueryBuilder('o')
-            ->andWhere('o.nextEligibilityCheck <= :now')
+            ->andWhere('o.nextEligibilityCheckAt <= :now')
             ->andWhere('o.state = :state')
             ->setParameter('now', new \DateTimeImmutable())
             ->setParameter('state', ReviewRequestInterface::STATE_PENDING)

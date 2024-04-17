@@ -13,6 +13,7 @@
         <field name="state" column="state" type="string"/>
         <field name="nextEligibilityCheckAt" column="next_eligibility_check_at" type="datetime"/>
         <field name="eligibilityChecks" type="integer"/>
+        <field name="ineligibilityReason" type="text" nullable="true"/>
         <field name="createdAt" column="created_at" type="datetime"/>
 
         <one-to-one field="order" target-entity="Sylius\Component\Order\Model\OrderInterface">

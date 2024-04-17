@@ -12,14 +12,15 @@ use Setono\SyliusReviewPlugin\Model\ReviewRequestInterface;
  */
 final class CompositeReviewRequestEligibilityChecker extends CompositeService implements ReviewRequestEligibilityCheckerInterface
 {
-    public function isEligible(ReviewRequestInterface $reviewRequest): bool
+    public function check(ReviewRequestInterface $reviewRequest): EligibilityCheck
     {
         foreach ($this->services as $service) {
-            if (!$service->isEligible($reviewRequest)) {
-                return false;
+            $check = $service->check($reviewRequest);
+            if (!$check->eligible) {
+                return $check;
             }
         }
 
-        return true;
+        return EligibilityCheck::eligible();
     }
 }

@@ -34,7 +34,13 @@ interface ReviewRequestInterface extends ResourceInterface
      */
     public function incrementEligibilityChecks(int $increment = 1): void;
 
+    public function getIneligibilityReason(): ?string;
+
+    public function setIneligibilityReason(?string $ineligibilityReason): void;
+
     public function getOrder(): ?OrderInterface;
 
     public function setOrder(?OrderInterface $order): void;
+
+    public function getCreatedAt(): \DateTimeInterface;
 }
