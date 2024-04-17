@@ -101,7 +101,13 @@ final class MyEligibilityChecker implements ReviewRequestEligibilityCheckerInter
 
 When you implement the interface, your service will automatically be added to the list of eligibility checkers.
 However, if you don't use autoconfiguration, you need to tag your service with `setono_sylius_review.review_request_eligibility_checker`.
-   
+
+## Mail tester plugin
+
+If you use the [mail tester plugin](https://github.com/synolia/SyliusMailTesterPlugin/) you can test the review request email
+directly from the admin interface. Just go to `https://your-store.com/admin/mail/tester`
+and select the `setono_sylius_review__review_request` in the `Subjects` dropdown.
+
 [ico-version]: https://poser.pugx.org/setono/sylius-review-plugin/v/stable
 [ico-license]: https://poser.pugx.org/setono/sylius-review-plugin/license
 [ico-github-actions]: https://github.com/Setono/sylius-review-plugin/actions/workflows/build.yaml/badge.svg
