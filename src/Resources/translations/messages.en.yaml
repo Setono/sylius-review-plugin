@@ -1,4 +1,4 @@
 setono_sylius_review:
     email:
         review_request:
-            subject: Please review
+            subject: Please review %channel%

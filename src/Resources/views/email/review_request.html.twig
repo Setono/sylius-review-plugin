@@ -1,10 +1,14 @@
+{# @var reviewRequest \Setono\SyliusReviewPlugin\Model\ReviewRequestInterface #}
+{# @var order \Sylius\Component\Core\Model\OrderInterface #}
+{# @var channel \Sylius\Component\Core\Model\ChannelInterface #}
 {% extends '@SyliusShop/Email/layout.html.twig' %}
 
 {% block subject %}
-    {{ 'setono_sylius_review.email.review_request.subject'|trans({}, null, localeCode)|raw }}
+    {{ 'setono_sylius_review.email.review_request.subject'|trans({ '%channel%' : channel.name }, null, localeCode)|raw }}
 {% endblock %}
 
 {% block content %}
-    {# todo add some content #}
-    <h1>Please review</h1>
+    <h4>Please review {{ channel.name }}</h4>
+    <p>Go to <a href="https://www.trustpilot.com/review/{{ channel.hostname }}">Trustpilot</a></p>
+    <p>Best regards</p>
 {% endblock %}
