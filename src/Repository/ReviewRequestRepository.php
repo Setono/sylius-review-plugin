@@ -30,4 +30,15 @@ class ReviewRequestRepository extends EntityRepository implements ReviewRequestR
             ->execute()
         ;
     }
+
+    public function removeCancelled(): void
+    {
+        $this->createQueryBuilder('o')
+            ->delete()
+            ->andWhere('o.state = :state')
+            ->setParameter('state', ReviewRequestInterface::STATE_CANCELLED)
+            ->getQuery()
+            ->execute()
+        ;
+    }
 }

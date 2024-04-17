@@ -15,4 +15,9 @@ interface ReviewRequestRepositoryInterface extends RepositoryInterface
      * Removes all review requests created before the threshold
      */
     public function removeBefore(\DateTimeInterface $threshold): void;
+
+    /**
+     * Removes all review requests that are cancelled
+     */
+    public function removeCancelled(): void;
 }

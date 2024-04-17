@@ -13,7 +13,7 @@ final class PruneCommand extends Command
 {
     protected static $defaultName = 'setono:sylius-review:prune';
 
-    protected static $defaultDescription = 'Prunes review requests';
+    protected static $defaultDescription = 'Prunes review requests that are old or cancelled. You can define how old review requests should be before pruning by setting the parameter setono_sylius_review.pruning.threshold';
 
     public function __construct(
         private readonly ReviewRequestRepositoryInterface $reviewRequestRepository,
@@ -24,6 +24,7 @@ final class PruneCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->reviewRequestRepository->removeCancelled();
         $this->reviewRequestRepository->removeBefore(new \DateTimeImmutable($this->threshold));
 
         return 0;
