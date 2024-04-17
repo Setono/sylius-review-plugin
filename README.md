@@ -98,7 +98,7 @@ However, if you don't use autoconfiguration, you need to tag your service with `
 [ico-license]: https://poser.pugx.org/setono/sylius-review-plugin/license
 [ico-github-actions]: https://github.com/Setono/sylius-review-plugin/actions/workflows/build.yaml/badge.svg
 [ico-code-coverage]: https://codecov.io/gh/Setono/sylius-review-plugin/graph/badge.svg
-[ico-infection]: https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2FSetono%2FSyliusPluginSkeleton%2Fmaster
+[ico-infection]: https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2FSetono%2Fsylius-review-plugin%2Fmaster
 
 [link-packagist]: https://packagist.org/packages/setono/sylius-review-plugin
 [link-github-actions]: https://github.com/Setono/sylius-review-plugin/actions
