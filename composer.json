@@ -17,7 +17,7 @@
         "setono/composite-compiler-pass": "^1.1",
         "sylius/core": "^1.0",
         "sylius/core-bundle": "^1.0",
-        "sylius/mailer-bundle": "^2.0",
+        "sylius/mailer-bundle": "^1.8 || ^2.0",
         "sylius/order": "^1.0",
         "sylius/resource-bundle": "^1.6",
         "symfony/config": "^5.4 || ^6.4 || ^7.0",
