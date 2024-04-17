@@ -7,17 +7,18 @@ namespace Setono\SyliusReviewPlugin\EventSubscriber\ReviewRequest;
 use Setono\SyliusReviewPlugin\Event\ReviewRequestProcessingStarted;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final class IncrementEligibilityChecksSubscriber implements EventSubscriberInterface
+final class ResetSubscriber implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
         return [
-            ReviewRequestProcessingStarted::class => ['incrementEligibilityChecks', 300],
+            ReviewRequestProcessingStarted::class => ['reset', 400],
         ];
     }
 
-    public function incrementEligibilityChecks(ReviewRequestProcessingStarted $event): void
+    public function reset(ReviewRequestProcessingStarted $event): void
     {
-        $event->reviewRequest->incrementEligibilityChecks();
+        $event->reviewRequest->setIneligibilityReason(null);
+        $event->reviewRequest->setProcessingError(null);
     }
 }

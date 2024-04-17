@@ -19,6 +19,8 @@ class ReviewRequest implements ReviewRequestInterface
 
     protected ?string $ineligibilityReason = null;
 
+    protected ?string $processingError = null;
+
     protected ?OrderInterface $order = null;
 
     protected \DateTimeInterface $createdAt;
@@ -83,6 +85,16 @@ class ReviewRequest implements ReviewRequestInterface
     public function getOrder(): ?OrderInterface
     {
         return $this->order;
+    }
+
+    public function getProcessingError(): ?string
+    {
+        return $this->processingError;
+    }
+
+    public function setProcessingError(?string $processingError): void
+    {
+        $this->processingError = $processingError;
     }
 
     public function setOrder(?OrderInterface $order): void

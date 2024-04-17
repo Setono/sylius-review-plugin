@@ -37,8 +37,21 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <service id="setono_sylius_review.event_subscriber.review_request.check_eligibility_checks"
+                 class="Setono\SyliusReviewPlugin\EventSubscriber\ReviewRequest\CheckEligibilityChecksSubscriber">
+            <argument type="service" id="state_machine.setono_sylius_review__review_request"/>
+            <argument>%setono_sylius_review.eligibility.maximum_checks%</argument>
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
         <service id="setono_sylius_review.event_subscriber.review_request.increment_eligibility_checks"
                  class="Setono\SyliusReviewPlugin\EventSubscriber\ReviewRequest\IncrementEligibilityChecksSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="setono_sylius_review.event_subscriber.review_request.reset"
+                 class="Setono\SyliusReviewPlugin\EventSubscriber\ReviewRequest\ResetSubscriber">
             <tag name="kernel.event_subscriber"/>
         </service>
 

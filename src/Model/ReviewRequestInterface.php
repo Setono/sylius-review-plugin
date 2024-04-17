@@ -38,6 +38,10 @@ interface ReviewRequestInterface extends ResourceInterface
 
     public function setIneligibilityReason(?string $ineligibilityReason): void;
 
+    public function getProcessingError(): ?string;
+
+    public function setProcessingError(?string $processingError): void;
+
     public function getOrder(): ?OrderInterface;
 
     public function setOrder(?OrderInterface $order): void;

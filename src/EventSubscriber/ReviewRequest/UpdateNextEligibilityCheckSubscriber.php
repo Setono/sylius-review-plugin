@@ -16,7 +16,7 @@ final class UpdateNextEligibilityCheckSubscriber implements EventSubscriberInter
     public static function getSubscribedEvents(): array
     {
         return [
-            ReviewRequestProcessingStarted::class => 'updateNextEligibilityCheck',
+            ReviewRequestProcessingStarted::class => ['updateNextEligibilityCheck', 100],
         ];
     }
 

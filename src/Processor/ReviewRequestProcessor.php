@@ -47,39 +47,39 @@ final class ReviewRequestProcessor implements ReviewRequestProcessorInterface, L
 
         $i = 0;
         foreach ($reviewRequests as $reviewRequest) {
-            if (!$this->reviewRequestWorkflow->can($reviewRequest, ReviewRequestWorkflow::TRANSITION_COMPLETE)) {
-                continue;
-            }
-
-            $this->eventDispatcher->dispatch(new ReviewRequestProcessingStarted($reviewRequest));
-
-            $check = $this->reviewRequestEligibilityChecker->check($reviewRequest);
-            if (!$check->eligible) {
-                $this->logger->debug(sprintf(
-                    'Review request (id: %d) is not eligible. Reason: %s',
-                    (int) $reviewRequest->getId(),
-                    (string) $check->reason,
-                ));
-
-                $reviewRequest->setIneligibilityReason($check->reason);
-
-                continue;
-            }
-
             try {
+                $this->eventDispatcher->dispatch(new ReviewRequestProcessingStarted($reviewRequest));
+
+                if (!$this->reviewRequestWorkflow->can($reviewRequest, ReviewRequestWorkflow::TRANSITION_COMPLETE)) {
+                    continue;
+                }
+
+                $check = $this->reviewRequestEligibilityChecker->check($reviewRequest);
+                if (!$check->eligible) {
+                    $this->logger->debug(sprintf(
+                        'Review request (id: %d) is not eligible. Reason: %s',
+                        (int) $reviewRequest->getId(),
+                        (string) $check->reason,
+                    ));
+
+                    $reviewRequest->setIneligibilityReason($check->reason);
+
+                    continue;
+                }
+
                 $this->reviewRequestEmailManager->sendReviewRequest($reviewRequest);
+
+                $this->reviewRequestWorkflow->apply($reviewRequest, ReviewRequestWorkflow::TRANSITION_COMPLETE);
+                ++$i;
             } catch (\Throwable $e) {
                 $this->logger->error(sprintf(
-                    'There was an error trying to send a review request (id: %d). The error was: %s',
+                    'There was an error processing a review request (id: %d). The error was: %s',
                     (int) $reviewRequest->getId(),
                     $e->getMessage(),
                 ));
 
-                continue;
+                $reviewRequest->setProcessingError($e->getMessage());
             }
-
-            $this->reviewRequestWorkflow->apply($reviewRequest, ReviewRequestWorkflow::TRANSITION_COMPLETE);
-            ++$i;
         }
 
         $this->logger->debug(sprintf('%d review request%s were completed', $i, 1 === $i ? '' : 's'));
