@@ -13,7 +13,7 @@
         <service id="setono_sylius_review.command.prune"
                  class="Setono\SyliusReviewPlugin\Command\PruneCommand">
             <argument type="service" id="setono_sylius_review.repository.review_request"/>
-            <argument>-1 month</argument><!-- Todo make this configurable -->
+            <argument>%setono_sylius_review.pruning.threshold%</argument>
 
             <tag name="console.command"/>
         </service>

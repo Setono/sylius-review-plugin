@@ -33,6 +33,15 @@ final class Configuration implements ConfigurationInterface
                         ->scalarNode('maximum_checks')
                             ->defaultValue(5)
                             ->info('The maximum number of eligibility checks before the review request is automatically cancelled')
+                        ->end()
+                    ->end()
+                ->end()
+                ->arrayNode('pruning')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('threshold')
+                            ->defaultValue('-1 month')
+                            ->info('Review requests older than this threshold will be pruned/removed. The string must be parseable by strtotime(). See https://www.php.net/strtotime')
         ;
 
         $this->addResourcesSection($rootNode);
