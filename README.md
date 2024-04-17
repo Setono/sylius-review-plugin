@@ -8,7 +8,7 @@
 
 Send review requests to your customers to receive reviews for your store.
 
-The plugin will create a review request upon customers completing an order. After an initial delay (configurable),
+The plugin will create a review request upon customers completing an order. After an initial delay ([configurable](#configuration)),
 a review request will be sent as an email to the customer asking them to review your store.
 
 When processing a review request (i.e. trying to send it), the plugin will run an eligibility check to see if the review
