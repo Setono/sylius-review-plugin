@@ -22,9 +22,6 @@ composer require setono/sylius-review-plugin
 
 ### Add plugin class to your `bundles.php`:
 
-Make sure you add it before `SyliusGridBundle`, otherwise you'll get
-`You have requested a non-existent parameter "setono_sylius_review.model.review_request.class".` exception.
-
 ```php
 <?php
 $bundles = [
@@ -35,7 +32,10 @@ $bundles = [
 ];
 ```
 
-### Update your database:
+Make sure you add it before `SyliusGridBundle`, otherwise you'll get
+`You have requested a non-existent parameter "setono_sylius_review.model.review_request.class".` exception.
+
+### Update your database
 
 ```bash
 php bin/console doctrine:migrations:diff
@@ -50,7 +50,8 @@ php bin/console setono:sylius-review:process
 php bin/console setono:sylius-review:prune
 ```
 
-You decide yourself how often you want to run these commands. At least daily would be recommended.
+You decide yourself how often you want to run these commands.
+The process command makes sense to run daily, while the prune command can be run weekly or monthly.
 
 ## Configuration
 
@@ -82,11 +83,18 @@ You can add your own eligibility checker by implementing the `Setono\SyliusRevie
 
 ```php
 <?php
+use Setono\SyliusReviewPlugin\EligibilityChecker\EligibilityCheck;
+use Setono\SyliusReviewPlugin\EligibilityChecker\ReviewRequestEligibilityCheckerInterface;
+
 final class MyEligibilityChecker implements ReviewRequestEligibilityCheckerInterface
 {
-    public function isEligible(ReviewRequestInterface $reviewRequest): bool
+    public function check(ReviewRequestInterface $reviewRequest): EligibilityCheck
     {
-        // your logic here
+        if(...) {
+            return EligibilityCheck::ineligible('The review request is not eligible because of some reason...');
+        }
+        
+        return EligibilityCheck::eligible();
     }
 }
 ```
