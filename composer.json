@@ -25,7 +25,6 @@
         "symfony/dependency-injection": "^5.4 || ^6.4 || ^7.0",
         "symfony/event-dispatcher": "^5.4 || ^6.4 || ^7.0",
         "symfony/http-kernel": "^5.4 || ^6.4 || ^7.0",
-        "symfony/monolog-bundle": "^3.0",
         "symfony/workflow": "^5.4 || ^6.4 || ^7.0",
         "webmozart/assert": "^1.11"
     },
