@@ -28,7 +28,6 @@ final class ReviewRequestEmailManager implements ReviewRequestEmailManagerInterf
             [$email],
             [
                 'reviewRequest' => $reviewRequest,
-                'order' => $order,
                 'channel' => $order->getChannel(),
                 'localeCode' => $order->getLocaleCode(),
             ],
