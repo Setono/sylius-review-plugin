@@ -8,6 +8,12 @@
 
 Send review requests to your customers to receive reviews for your store.
 
+The plugin will create a review request upon customers completing an order. After an initial delay (configurable),
+a review request will be sent as an email to the customer asking them to review your store.
+
+When processing a review request (i.e. trying to send it), the plugin will run an eligibility check to see if the review
+request is eligible to be sent. You can [hook into this process](#add-eligibility-checker) to decide whether a review request should be sent or not.
+
 ## Installation
 
 ```bash
@@ -35,6 +41,58 @@ $bundles = [
 php bin/console doctrine:migrations:diff
 php bin/console doctrine:migrations:migrate
 ```
+
+### Run commands
+There are two commands in this plugin. One for processing review requests and one for pruning the review request table.
+
+```bash
+php bin/console setono:sylius-review:process
+php bin/console setono:sylius-review:prune
+```
+
+You decide yourself how often you want to run these commands. At least daily would be recommended.
+
+## Configuration
+
+```yaml
+setono_sylius_review:
+    eligibility:
+        # The initial delay before the first eligibility check. The string must be parseable by strtotime(). See https://www.php.net/strtotime
+        initial_delay: '+1 week'
+
+        # The maximum number of eligibility checks before the review request is automatically cancelled
+        maximum_checks: 5
+    
+    pruning:
+        # Review requests older than this threshold will be pruned/removed. The string must be parseable by strtotime(). See https://www.php.net/strtotime
+        threshold: '-1 month'
+    
+    resources:
+        review_request:
+            options: ~
+            classes:
+                model: Setono\SyliusReviewPlugin\Model\ReviewRequest
+                repository: Setono\SyliusReviewPlugin\Repository\ReviewRequestRepository
+                factory: Sylius\Component\Resource\Factory\Factory
+```
+
+## Add eligibility checker
+
+You can add your own eligibility checker by implementing the `Setono\SyliusReviewPlugin\EligibilityChecker\ReviewRequestEligibilityCheckerInterface`.
+
+```php
+<?php
+final class MyEligibilityChecker implements ReviewRequestEligibilityCheckerInterface
+{
+    public function isEligible(ReviewRequestInterface $reviewRequest): bool
+    {
+        // your logic here
+    }
+}
+```
+
+When you implement the interface, your service will automatically be added to the list of eligibility checkers.
+However, if you don't use autoconfiguration, you need to tag your service with `setono_sylius_review.review_request_eligibility_checker`.
    
 [ico-version]: https://poser.pugx.org/setono/sylius-review-plugin/v/stable
 [ico-license]: https://poser.pugx.org/setono/sylius-review-plugin/license
