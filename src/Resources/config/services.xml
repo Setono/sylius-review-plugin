@@ -3,15 +3,15 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <!-- Commands -->
-        <service id="setono_sylius_review.command.process_review_requests"
-                 class="Setono\SyliusReviewPlugin\Command\ProcessReviewRequestsCommand">
+        <service id="setono_sylius_review.command.process"
+                 class="Setono\SyliusReviewPlugin\Command\ProcessCommand">
             <argument type="service" id="setono_sylius_review.processor.review_request"/>
 
             <tag name="console.command"/>
         </service>
 
-        <service id="setono_sylius_review.command.prune_review_requests"
-                 class="Setono\SyliusReviewPlugin\Command\PruneReviewRequestsCommand">
+        <service id="setono_sylius_review.command.prune"
+                 class="Setono\SyliusReviewPlugin\Command\PruneCommand">
             <argument type="service" id="setono_sylius_review.repository.review_request"/>
             <argument>-1 month</argument><!-- Todo make this configurable -->
 

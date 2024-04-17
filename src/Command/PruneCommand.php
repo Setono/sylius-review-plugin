@@ -9,7 +9,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class PruneReviewRequestsCommand extends Command
+final class PruneCommand extends Command
 {
     protected static $defaultName = 'setono:sylius-review:prune';
 
