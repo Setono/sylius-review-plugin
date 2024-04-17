@@ -21,7 +21,11 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
         /**
          * @psalm-suppress PossiblyNullArgument
          *
-         * @var array{eligibility: array{initial_delay: string, maximum_checks: int}, pruning: array{threshold: string}, resources: array} $config
+         * @var array{
+         *     eligibility: array{initial_delay: string, maximum_checks: int},
+         *     pruning: array{threshold: string},
+         *     resources: array
+         * } $config
          */
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
