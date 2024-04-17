@@ -19,13 +19,6 @@ final class SetonoSyliusReviewExtensionTest extends AbstractExtensionTestCase
         ];
     }
 
-    protected function getMinimalConfiguration(): array
-    {
-        return [
-            'option' => 'option_value',
-        ];
-    }
-
     /**
      * @test
      */
@@ -33,6 +26,8 @@ final class SetonoSyliusReviewExtensionTest extends AbstractExtensionTestCase
     {
         $this->load();
 
-        $this->assertContainerBuilderHasParameter('setono_sylius_review.option', 'option_value');
+        $this->assertContainerBuilderHasParameter('setono_sylius_review.eligibility.initial_delay', '+1 week');
+        $this->assertContainerBuilderHasParameter('setono_sylius_review.eligibility.maximum_checks', 5);
+        $this->assertContainerBuilderHasParameter('setono_sylius_review.pruning.threshold', '-1 month');
     }
 }
