@@ -5,14 +5,17 @@ declare(strict_types=1);
 namespace Setono\SyliusReviewPlugin\DependencyInjection;
 
 use Setono\SyliusReviewPlugin\EligibilityChecker\ReviewRequestEligibilityCheckerInterface;
+use Setono\SyliusReviewPlugin\Form\Type\ReviewRequestEmailType;
 use Setono\SyliusReviewPlugin\Mailer\Emails;
 use Setono\SyliusReviewPlugin\Workflow\ReviewRequestWorkflow;
 use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceExtension;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Webmozart\Assert\Assert;
 
 final class SetonoSyliusReviewExtension extends AbstractResourceExtension implements PrependExtensionInterface
 {
@@ -39,6 +42,8 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
             ->addTag('setono_sylius_review.review_request_eligibility_checker')
         ;
 
+        self::registerEmailFormType($container);
+
         $loader->load('services.xml');
 
         $this->registerResources(
@@ -62,5 +67,28 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
                 ],
             ],
         ]);
+    }
+
+    private static function registerEmailFormType(ContainerBuilder $container): void
+    {
+        if (!$container->hasParameter('kernel.bundles')) {
+            return;
+        }
+
+        $bundles = $container->getParameter('kernel.bundles');
+        Assert::isArray($bundles);
+
+        if (!isset($bundles['SynoliaSyliusMailTesterPlugin'])) {
+            return;
+        }
+
+        $container
+            ->setDefinition(
+                'setono_sylius_review.form.type.review_request_email',
+                new Definition(ReviewRequestEmailType::class, ['%setono_sylius_review.model.review_request.class%']),
+            )
+            ->addTag('form.type')
+            ->addTag('app.resolvable_form_type.resolver')
+        ;
     }
 }
