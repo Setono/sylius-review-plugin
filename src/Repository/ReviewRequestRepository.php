@@ -7,6 +7,7 @@ namespace Setono\SyliusReviewPlugin\Repository;
 use Doctrine\ORM\QueryBuilder;
 use Setono\SyliusReviewPlugin\Model\ReviewRequestInterface;
 use Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository;
+use Sylius\Component\Core\Model\OrderInterface;
 
 class ReviewRequestRepository extends EntityRepository implements ReviewRequestRepositoryInterface
 {
@@ -39,6 +40,17 @@ class ReviewRequestRepository extends EntityRepository implements ReviewRequestR
             ->setParameter('state', ReviewRequestInterface::STATE_CANCELLED)
             ->getQuery()
             ->execute()
+        ;
+    }
+
+    public function hasExistingForOrder(OrderInterface $order): bool
+    {
+        return (int) $this->createQueryBuilder('o')
+            ->select('COUNT(o.id)')
+            ->andWhere('o.order = :order')
+            ->setParameter('order', $order)
+            ->getQuery()
+            ->getSingleScalarResult() > 0
         ;
     }
 }

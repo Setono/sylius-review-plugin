@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Setono\SyliusReviewPlugin\Repository;
 
 use Doctrine\ORM\QueryBuilder;
+use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 
 interface ReviewRequestRepositoryInterface extends RepositoryInterface
@@ -20,4 +21,6 @@ interface ReviewRequestRepositoryInterface extends RepositoryInterface
      * Removes all review requests that are cancelled
      */
     public function removeCancelled(): void;
+
+    public function hasExistingForOrder(OrderInterface $order): bool;
 }
