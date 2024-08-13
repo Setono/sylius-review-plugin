@@ -90,8 +90,8 @@ final class MyEligibilityChecker implements ReviewRequestEligibilityCheckerInter
 {
     public function check(ReviewRequestInterface $reviewRequest): EligibilityCheck
     {
-        if(...) {
-            return EligibilityCheck::ineligible('The review request is not eligible because of some reason...');
+        if($this->getCustomer()->hasGreenEyes()) {
+            return EligibilityCheck::ineligible('The review request is not eligible because we don't trust people with green eyes...');
         }
         
         return EligibilityCheck::eligible();
