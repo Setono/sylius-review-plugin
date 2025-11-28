@@ -22,7 +22,6 @@ final class ReviewRequestEmailManager implements ReviewRequestEmailManagerInterf
         $email = $order->getCustomer()?->getEmail();
         Assert::notNull($email, 'The email on the order cannot be null');
 
-        /** @psalm-suppress DeprecatedMethod */
         $this->emailSender->send(
             Emails::REVIEW_REQUEST,
             [$email],

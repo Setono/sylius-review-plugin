@@ -22,8 +22,6 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
     public function load(array $configs, ContainerBuilder $container): void
     {
         /**
-         * @psalm-suppress PossiblyNullArgument
-         *
          * @var array{
          *     eligibility: array{initial_delay: string, maximum_checks: int},
          *     pruning: array{threshold: string},
