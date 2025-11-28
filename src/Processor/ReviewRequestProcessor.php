@@ -126,7 +126,7 @@ final class ReviewRequestProcessor implements ReviewRequestProcessorInterface, L
                 return (string) $parameter;
             }
 
-            return get_class($parameter);
+            return $parameter::class;
         }
 
         return (string) $parameter;

@@ -21,9 +21,7 @@ final class ReviewRequestEmailType extends AbstractType implements ResolvableFor
     {
         $builder->add('reviewRequest', LimitedEntityType::class, [
             'class' => $this->reviewRequestClass,
-            'choice_label' => static function (ReviewRequestInterface $reviewRequest): string {
-                return sprintf('Review request #%d - Order %s', (int) $reviewRequest->getId(), (string) $reviewRequest->getOrder()?->getNumber());
-            },
+            'choice_label' => static fn (ReviewRequestInterface $reviewRequest): string => sprintf('Review request #%d - Order %s', (int) $reviewRequest->getId(), (string) $reviewRequest->getOrder()?->getNumber()),
         ]);
     }
 
