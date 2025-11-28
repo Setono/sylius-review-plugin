@@ -25,7 +25,7 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
          * @var array{
          *     eligibility: array{initial_delay: string, maximum_checks: int},
          *     pruning: array{threshold: string},
-         *     resources: array
+         *     resources: array<string, mixed>
          * } $config
          */
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
