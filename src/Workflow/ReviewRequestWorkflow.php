@@ -22,7 +22,7 @@ final class ReviewRequestWorkflow
     }
 
     /**
-     * @return array<array-key, string>
+     * @return list<string>
      */
     public static function getStates(): array
     {
@@ -33,6 +33,9 @@ final class ReviewRequestWorkflow
         ];
     }
 
+    /**
+     * @return array<string, array<mixed>>
+     */
     public static function getConfig(): array
     {
         $transitions = [];
@@ -59,7 +62,7 @@ final class ReviewRequestWorkflow
     }
 
     /**
-     * @return array<array-key, Transition>
+     * @return list<Transition>
      */
     public static function getTransitions(): array
     {

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Setono\SyliusReviewPlugin\Processor;
 
-use Doctrine\ORM\Query\Parameter;
-use Doctrine\ORM\QueryBuilder;
 use DoctrineBatchUtils\BatchProcessing\SimpleBatchIteratorAggregate;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerAwareInterface;
@@ -42,8 +40,6 @@ final class ReviewRequestProcessor implements ReviewRequestProcessorInterface, L
             $qb->getQuery(),
             100,
         );
-
-        $this->logQuery($qb);
 
         $i = 0;
         foreach ($reviewRequests as $reviewRequest) {
@@ -88,47 +84,5 @@ final class ReviewRequestProcessor implements ReviewRequestProcessorInterface, L
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
-    }
-
-    private function logQuery(QueryBuilder $qb): void
-    {
-        $this->logger->debug("DQL\n" . $qb->getDQL() . "\n");
-
-        $parameters = $qb
-            ->getParameters()
-            ->map(static fn (Parameter $parameter) => sprintf(
-                '%s: %s',
-                $parameter->getName(),
-                self::formatParameter($parameter->getValue()),
-            ))
-            ->toArray()
-        ;
-
-        $this->logger->debug("Parameters\n" . implode("\n", $parameters) . "\n");
-    }
-
-    private static function formatParameter(mixed $parameter): string
-    {
-        if (is_array($parameter)) {
-            try {
-                return json_encode($parameter, \JSON_THROW_ON_ERROR);
-            } catch (\JsonException) {
-                return 'Array';
-            }
-        }
-
-        if (is_object($parameter)) {
-            if ($parameter instanceof \DateTimeInterface) {
-                return $parameter->format(\DateTime::ATOM);
-            }
-
-            if ($parameter instanceof \Stringable) {
-                return (string) $parameter;
-            }
-
-            return $parameter::class;
-        }
-
-        return (string) $parameter;
     }
 }

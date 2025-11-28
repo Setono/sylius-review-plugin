@@ -24,6 +24,9 @@ final class SetonoSyliusReviewPlugin extends AbstractResourceBundle
         ));
     }
 
+    /**
+     * @return list<string>
+     */
     public function getSupportedDrivers(): array
     {
         return [
