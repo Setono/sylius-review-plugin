@@ -1,8 +1,0 @@
-{
-    "symbol-whitelist": [
-        "Symfony\\Component\\Form\\AbstractType",
-        "Symfony\\Component\\Form\\FormBuilderInterface",
-        "Synolia\\SyliusMailTesterPlugin\\Form\\Type\\LimitedEntityType",
-        "Synolia\\SyliusMailTesterPlugin\\Resolver\\ResolvableFormTypeInterface"
-    ]
-}
