@@ -2,7 +2,9 @@ name: "build"
 on:
     push:
         branches:
+            - "1.*.x" # Matches our branch versioning that mirrors Sylius', e.g. '1.12.x'
             - "master"
+            - "main"
         paths-ignore:
             - "**/*.md"
     pull_request:
@@ -31,7 +33,7 @@ jobs:
 
         steps:
             -   name: "Checkout"
-                uses: "actions/checkout@v4"
+                uses: "actions/checkout@v5"
 
             -   name: "Setup PHP, with composer and extensions"
                 uses: "shivammathur/setup-php@v2"
@@ -56,7 +58,6 @@ jobs:
 
             -   name: "Rector"
                 run: "vendor/bin/rector process --dry-run"
-                continue-on-error: true
 
             -   name: "Lint yaml files"
                 run: "(cd tests/Application && bin/console lint:yaml ../../src/Resources)"
@@ -74,6 +75,7 @@ jobs:
                 php-version:
                     - "8.1"
                     - "8.2"
+                    - "8.3"
 
                 dependencies:
                     - "lowest"
@@ -85,7 +87,7 @@ jobs:
 
         steps:
             -   name: "Checkout"
-                uses: "actions/checkout@v4"
+                uses: "actions/checkout@v5"
 
             -   name: "Setup PHP, with composer and extensions"
                 uses: "shivammathur/setup-php@v2"
@@ -93,11 +95,14 @@ jobs:
                     coverage: "none"
                     extensions: "${{ env.PHP_EXTENSIONS }}"
                     php-version: "${{ matrix.php-version }}"
-                    tools: "composer-require-checker, composer-unused, flex"
+                    tools: "flex"
 
             -   name: "Remove require-dev section in composer.json"
                 run: "composer config --unset require-dev"
-
+                
+            -   name: "Add shipmonk/composer-dependency-analyser to composer.json"
+                run: "composer require --dev --no-install --no-update --no-plugins --no-scripts shipmonk/composer-dependency-analyser"
+            
             -   name: "Install composer dependencies"
                 uses: "ramsey/composer-install@v3"
                 env:
@@ -105,11 +110,8 @@ jobs:
                 with:
                     dependency-versions: "${{ matrix.dependencies }}"
 
-            -   name: "Run maglnet/composer-require-checker"
-                run: "composer-require-checker check"
-
-            -   name: "Run composer-unused/composer-unused"
-                run: "composer-unused"
+            -   name: "Run dependency analysis"
+                run: "vendor/bin/composer-dependency-analyser"
     
     static-code-analysis:
         name: "Static Code Analysis (PHP${{ matrix.php-version }} | Deps: ${{ matrix.dependencies }} | SF${{ matrix.symfony }})"
@@ -121,6 +123,7 @@ jobs:
                 php-version:
                     - "8.1"
                     - "8.2"
+                    - "8.3"
 
                 dependencies:
                     - "lowest"
@@ -132,7 +135,7 @@ jobs:
 
         steps:
             -   name: "Checkout"
-                uses: "actions/checkout@v4"
+                uses: "actions/checkout@v5"
 
             -   name: "Setup PHP, with composer and extensions"
                 uses: "shivammathur/setup-php@v2"
@@ -143,8 +146,8 @@ jobs:
                     tools: "flex"
 
             -   name: "Remove sylius/sylius from composer.json"
-                run: "composer remove --dev --no-update --no-plugins --no-scripts sylius/sylius"
-
+                run: "composer remove --dev --no-install --no-update --no-plugins --no-scripts sylius/sylius"
+            
             -   name: "Install composer dependencies"
                 uses: "ramsey/composer-install@v3"
                 env:
@@ -153,7 +156,7 @@ jobs:
                     dependency-versions: "${{ matrix.dependencies }}"
 
             -   name: "Static analysis"
-                run: "vendor/bin/psalm --php-version=${{ matrix.php-version }}"
+                run: "composer analyse"
 
     unit-tests:
         name: "Unit tests (PHP${{ matrix.php-version }} | Deps: ${{ matrix.dependencies }} | SF${{ matrix.symfony }})"
@@ -165,6 +168,7 @@ jobs:
                 php-version:
                     - "8.1"
                     - "8.2"
+                    - "8.3"
                 
                 dependencies:
                     - "lowest"
@@ -176,7 +180,7 @@ jobs:
 
         steps:
             -   name: "Checkout"
-                uses: "actions/checkout@v4"
+                uses: "actions/checkout@v5"
 
             -   name: "Setup PHP, with composer and extensions"
                 uses: "shivammathur/setup-php@v2"
@@ -206,6 +210,7 @@ jobs:
                 php-version:
                     - "8.1"
                     - "8.2"
+                    - "8.3"
 
                 dependencies:
                     - "lowest"
@@ -220,7 +225,7 @@ jobs:
                 run: "sudo /etc/init.d/mysql start"
 
             -   name: "Checkout"
-                uses: "actions/checkout@v4"
+                uses: "actions/checkout@v5"
 
             -   name: "Setup PHP, with composer and extensions"
                 uses: "shivammathur/setup-php@v2"
@@ -257,14 +262,14 @@ jobs:
         strategy:
             matrix:
                 php-version:
-                    - "8.2"
+                    - "8.3"
 
                 dependencies:
                     - "highest"
 
         steps:
             -   name: "Checkout"
-                uses: "actions/checkout@v4"
+                uses: "actions/checkout@v5"
 
             -   name: "Setup PHP, with composer and extensions"
                 uses: "shivammathur/setup-php@v2"
@@ -291,14 +296,14 @@ jobs:
         strategy:
             matrix:
                 php-version:
-                    - "8.2"
+                    - "8.3"
 
                 dependencies:
                     - "highest"
 
         steps:
             -   name: "Checkout"
-                uses: "actions/checkout@v4"
+                uses: "actions/checkout@v5"
 
             -   name: "Setup PHP, with composer and extensions"
                 uses: "shivammathur/setup-php@v2"
@@ -306,9 +311,6 @@ jobs:
                     coverage: "pcov"
                     extensions: "${{ env.PHP_EXTENSIONS }}"
                     php-version: "${{ matrix.php-version }}"
-
-            -   name: "Set up problem matchers for phpunit/phpunit"
-                run: "echo \"::add-matcher::${{ runner.tool_cache }}/phpunit.json\""
 
             -   name: "Install composer dependencies"
                 uses: "ramsey/composer-install@v3"
@@ -318,7 +320,7 @@ jobs:
             -   name: "Collect code coverage with pcov and phpunit/phpunit"
                 run: "vendor/bin/phpunit --coverage-clover=.build/logs/clover.xml"
 
-            -   name: "Upload coverage reports to Codecov"
+            -   name: "Send code coverage report to Codecov.io"
                 uses: "codecov/codecov-action@v4"
                 with:
                     token: "${{ secrets.CODECOV_TOKEN }}"
