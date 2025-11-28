@@ -39,7 +39,6 @@ final class CreateReviewRequestSubscriber implements EventSubscriberInterface
 
         $reviewRequest = $this->reviewRequestFactory->createFromOrder($order);
 
-        /** @var ReviewRequestRepositoryInterface $reviewRequestRepository */
         $reviewRequestRepository = $this->getRepository($reviewRequest, ReviewRequestRepositoryInterface::class);
         if ($reviewRequestRepository->hasExistingForOrder($order)) {
             return;

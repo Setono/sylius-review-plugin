@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Setono\SyliusReviewPlugin\Factory\ReviewRequestFactory;
 use Setono\SyliusReviewPlugin\Model\ReviewRequest;
 use Sylius\Component\Core\Model\Order;
-use Sylius\Component\Resource\Factory\Factory;
+use Sylius\Resource\Factory\Factory;
 
 final class ReviewRequestFactoryTest extends TestCase
 {
@@ -36,8 +36,7 @@ final class ReviewRequestFactoryTest extends TestCase
 
     private static function getFactory(): ReviewRequestFactory
     {
-        $decorated = new Factory(ReviewRequest::class);
-
-        return new ReviewRequestFactory($decorated, 'now');
+        /** @phpstan-ignore argument.type */
+        return new ReviewRequestFactory(new Factory(ReviewRequest::class), 'now');
     }
 }

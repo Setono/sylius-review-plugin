@@ -23,3 +23,12 @@ parameters:
 
     reportUnmatchedIgnoredErrors: false
     treatPhpDocTypesAsCertain: false
+
+    ignoreErrors:
+            -
+                identifier: doctrine.associationType
+            -
+                identifier: doctrine.columnType
+            -
+                identifier: missingType.generics
+                path: src/Form
