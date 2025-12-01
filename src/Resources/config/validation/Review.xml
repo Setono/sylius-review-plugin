@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraint-mapping xmlns="http://symfony.com/schema/dic/constraint-mapping"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping
+                                        http://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
+    <class name="Setono\SyliusReviewPlugin\Model\Review">
+        <property name="order">
+            <constraint name="NotNull">
+                <option name="groups">setono_sylius_review</option>
+            </constraint>
+        </property>
+
+        <constraint name="Setono\SyliusReviewPlugin\Validator\Constraints\HasAtLeastOneReview">
+            <option name="groups">setono_sylius_review</option>
+        </constraint>
+    </class>
+</constraint-mapping>

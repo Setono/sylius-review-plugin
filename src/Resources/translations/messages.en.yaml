@@ -2,3 +2,23 @@ setono_sylius_review:
     email:
         review_request:
             subject: Please review %channel%
+    ui:
+        review_your_order: Review Your Order
+        order_summary: Order Summary
+        store_review: Store Review
+        store_review_description: Tell us about your overall shopping experience
+        product_reviews: Product Reviews
+        product_reviews_description: Share your thoughts on the products you purchased
+        submit_reviews: Submit Reviews
+        review_no_longer_editable: This review can no longer be edited
+        order_not_fulfilled: This order cannot be reviewed yet. Please wait until your order has been fulfilled.
+        review_period_expired: The review period for this order has expired.
+        please_correct_errors: Please correct the following errors
+    form:
+        store_review:
+            rating: Rating
+            comment: Comment (optional)
+        product_review:
+            rating: Rating
+            title: Title
+            comment: Comment (optional)

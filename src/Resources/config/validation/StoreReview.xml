@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraint-mapping xmlns="http://symfony.com/schema/dic/constraint-mapping"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping
+                                        http://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
+    <class name="Setono\SyliusReviewPlugin\Model\StoreReview">
+        <property name="rating">
+            <constraint name="NotNull">
+                <option name="groups">setono_sylius_review</option>
+            </constraint>
+            <constraint name="Range">
+                <option name="groups">setono_sylius_review</option>
+                <option name="min">1</option>
+                <option name="max">5</option>
+            </constraint>
+        </property>
+
+        <property name="comment">
+            <constraint name="NotBlank">
+                <option name="groups">setono_sylius_review</option>
+            </constraint>
+        </property>
+    </class>
+</constraint-mapping>

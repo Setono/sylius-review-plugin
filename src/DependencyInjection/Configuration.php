@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Setono\SyliusReviewPlugin\DependencyInjection;
 
+use Setono\SyliusReviewPlugin\Model\Review;
 use Setono\SyliusReviewPlugin\Model\ReviewRequest;
+use Setono\SyliusReviewPlugin\Model\StoreReview;
+use Setono\SyliusReviewPlugin\Repository\ReviewRepository;
 use Setono\SyliusReviewPlugin\Repository\ReviewRequestRepository;
+use Setono\SyliusReviewPlugin\Repository\StoreReviewRepository;
 use Sylius\Component\Resource\Factory\Factory;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -64,6 +68,34 @@ final class Configuration implements ConfigurationInterface
                                     ->children()
                                     ->scalarNode('model')->defaultValue(ReviewRequest::class)->cannotBeEmpty()->end()
                                     ->scalarNode('repository')->defaultValue(ReviewRequestRepository::class)->cannotBeEmpty()->end()
+                                    ->scalarNode('factory')->defaultValue(Factory::class)->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('store_review')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('options')->end()
+                                ->arrayNode('classes')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                    ->scalarNode('model')->defaultValue(StoreReview::class)->cannotBeEmpty()->end()
+                                    ->scalarNode('repository')->defaultValue(StoreReviewRepository::class)->cannotBeEmpty()->end()
+                                    ->scalarNode('factory')->defaultValue(Factory::class)->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('review')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('options')->end()
+                                ->arrayNode('classes')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                    ->scalarNode('model')->defaultValue(Review::class)->cannotBeEmpty()->end()
+                                    ->scalarNode('repository')->defaultValue(ReviewRepository::class)->cannotBeEmpty()->end()
                                     ->scalarNode('factory')->defaultValue(Factory::class)->end()
         ;
     }

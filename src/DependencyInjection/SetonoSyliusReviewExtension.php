@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Setono\SyliusReviewPlugin\DependencyInjection;
 
+use Setono\SyliusReviewPlugin\Checker\ReviewableOrder\ReviewableOrderCheckerInterface;
 use Setono\SyliusReviewPlugin\EligibilityChecker\ReviewRequestEligibilityCheckerInterface;
 use Setono\SyliusReviewPlugin\Form\Type\ReviewRequestEmailType;
 use Setono\SyliusReviewPlugin\Mailer\Emails;
 use Setono\SyliusReviewPlugin\Workflow\ReviewRequestWorkflow;
+use Setono\SyliusReviewPlugin\Workflow\StoreReviewWorkflow;
 use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceExtension;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Symfony\Component\Config\FileLocator;
@@ -40,6 +42,11 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
             ->addTag('setono_sylius_review.review_request_eligibility_checker')
         ;
 
+        $container
+            ->registerForAutoconfiguration(ReviewableOrderCheckerInterface::class)
+            ->addTag('setono_sylius_review.reviewable_order_checker')
+        ;
+
         self::registerEmailFormType($container);
 
         $loader->load('services.xml');
@@ -55,7 +62,10 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
     public function prepend(ContainerBuilder $container): void
     {
         $container->prependExtensionConfig('framework', [
-            'workflows' => ReviewRequestWorkflow::getConfig(),
+            'workflows' => array_merge(
+                ReviewRequestWorkflow::getConfig(),
+                StoreReviewWorkflow::getConfig(),
+            ),
         ]);
 
         $container->prependExtensionConfig('sylius_mailer', [
