@@ -1,0 +1,3 @@
+setono_sylius_review:
+    review:
+        at_least_one_review: "You must provide at least a store review or a product review."

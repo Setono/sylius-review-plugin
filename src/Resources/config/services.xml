@@ -61,11 +61,21 @@
         </service>
 
         <!-- Factories -->
-        <service id="setono_sylius_review.custom_factory.review_request"
-                 class="Setono\SyliusReviewPlugin\Factory\ReviewRequestFactory" decoration-priority="64"
+        <service id="Setono\SyliusReviewPlugin\Factory\ReviewRequestFactoryInterface"
+                 alias="Setono\SyliusReviewPlugin\Factory\ReviewRequestFactory"/>
+
+        <service id="Setono\SyliusReviewPlugin\Factory\ReviewRequestFactory" decoration-priority="64"
                  decorates="setono_sylius_review.factory.review_request">
-            <argument type="service" id="setono_sylius_review.custom_factory.review_request.inner"/>
+            <argument type="service" id="Setono\SyliusReviewPlugin\Factory\ReviewRequestFactory.inner"/>
             <argument>%setono_sylius_review.eligibility.initial_delay%</argument>
+        </service>
+
+        <service id="Setono\SyliusReviewPlugin\Factory\ReviewFactoryInterface"
+                 alias="Setono\SyliusReviewPlugin\Factory\ReviewFactory"/>
+
+        <service id="Setono\SyliusReviewPlugin\Factory\ReviewFactory" decoration-priority="64"
+                 decorates="setono_sylius_review.factory.review">
+            <argument type="service" id="Setono\SyliusReviewPlugin\Factory\ReviewFactory.inner"/>
         </service>
 
         <!-- Mailer -->
@@ -86,6 +96,84 @@
             <call method="setLogger">
                 <argument type="service" id="logger" on-invalid="ignore"/>
             </call>
+        </service>
+
+        <!-- Checkers -->
+        <service id="Setono\SyliusReviewPlugin\Checker\ReviewAutoApprovalChecker"/>
+
+        <service id="Setono\SyliusReviewPlugin\Checker\ReviewAutoApprovalCheckerInterface"
+                 alias="Setono\SyliusReviewPlugin\Checker\ReviewAutoApprovalChecker"/>
+
+        <!-- Reviewable Order Checkers -->
+        <service id="Setono\SyliusReviewPlugin\Checker\ReviewableOrder\ReviewableOrderCheckerInterface"
+                 alias="Setono\SyliusReviewPlugin\Checker\ReviewableOrder\CompositeReviewableOrderChecker"/>
+
+        <service id="Setono\SyliusReviewPlugin\Checker\ReviewableOrder\CompositeReviewableOrderChecker"/>
+
+        <service id="Setono\SyliusReviewPlugin\Checker\ReviewableOrder\OrderFulfilledReviewableOrderChecker">
+            <tag name="setono_sylius_review.reviewable_order_checker" priority="100"/>
+        </service>
+
+        <service id="Setono\SyliusReviewPlugin\Checker\ReviewableOrder\StoreReviewEditableReviewableOrderChecker">
+            <argument type="service" id="setono_sylius_review.repository.store_review"/>
+            <argument>+24 hours</argument>
+            <tag name="setono_sylius_review.reviewable_order_checker" priority="50"/>
+        </service>
+
+        <!-- Controllers -->
+        <service id="Setono\SyliusReviewPlugin\Controller\ReviewController" public="true">
+            <argument type="service" id="sylius.repository.order"/>
+            <argument type="service" id="doctrine"/>
+            <argument type="service" id="Setono\SyliusReviewPlugin\Checker\ReviewableOrder\ReviewableOrderCheckerInterface"/>
+            <argument type="service" id="setono_sylius_review.repository.review"/>
+            <argument type="service" id="Setono\SyliusReviewPlugin\Factory\ReviewFactoryInterface"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+
+            <tag name="controller.service_arguments"/>
+        </service>
+
+        <!-- Form types -->
+        <service id="Setono\SyliusReviewPlugin\Form\Type\StoreReviewType">
+            <argument>%setono_sylius_review.model.store_review.class%</argument>
+            <argument type="collection">
+                <argument>setono_sylius_review</argument>
+            </argument>
+            <tag name="form.type"/>
+        </service>
+
+        <service id="Setono\SyliusReviewPlugin\Form\Type\ProductReviewType">
+            <argument>%sylius.model.product_review.class%</argument>
+            <argument type="collection">
+                <argument>sylius</argument>
+            </argument>
+            <tag name="form.type"/>
+        </service>
+
+        <service id="Setono\SyliusReviewPlugin\Form\Type\ReviewType">
+            <argument type="service" id="setono_sylius_review.factory.store_review"/>
+            <argument type="service" id="sylius.factory.product_review"/>
+            <argument type="service" id="setono_sylius_review.repository.store_review"/>
+            <argument type="service" id="sylius.repository.product_review"/>
+
+            <tag name="form.type"/>
+        </service>
+
+        <!-- Doctrine Event Subscribers -->
+        <service id="Setono\SyliusReviewPlugin\EventSubscriber\Doctrine\ReviewPersistSubscriber">
+            <argument type="service" id="state_machine.setono_sylius_review__store_review"/>
+            <argument type="service" id="state_machine.sylius_product_review"/>
+            <tag name="doctrine.event_listener" event="prePersist"/>
+        </service>
+
+        <!-- Workflow Event Subscribers -->
+        <service id="Setono\SyliusReviewPlugin\EventSubscriber\Workflow\ReviewAutoApprovalSubscriber">
+            <argument type="service" id="Setono\SyliusReviewPlugin\Checker\ReviewAutoApprovalCheckerInterface"/>
+            <argument type="service" id="state_machine.setono_sylius_review__store_review"/>
+            <argument type="service" id="state_machine.sylius_product_review"/>
+
+            <tag name="kernel.event_subscriber"/>
         </service>
     </services>
 </container>

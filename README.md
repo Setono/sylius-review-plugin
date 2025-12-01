@@ -35,6 +35,86 @@ $bundles = [
 Make sure you add it before `SyliusGridBundle`, otherwise you'll get
 `You have requested a non-existent parameter "setono_sylius_review.model.review_request.class".` exception.
 
+### Extend the ProductReview entity
+
+This plugin extends Sylius's ProductReview entity with additional fields. You need to create your own ProductReview entity that implements the plugin's interface and uses its trait.
+
+Create `src/Entity/ProductReview.php`:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Setono\SyliusReviewPlugin\Model\ProductReviewInterface;
+use Setono\SyliusReviewPlugin\Model\ProductReviewTrait;
+use Setono\SyliusReviewPlugin\Model\ReviewInterface;
+use Sylius\Component\Core\Model\ProductReview as BaseProductReview;
+use Sylius\Component\Order\Model\OrderInterface;
+
+#[ORM\Entity]
+#[ORM\Table(name: 'sylius_product_review')]
+class ProductReview extends BaseProductReview implements ProductReviewInterface
+{
+    use ProductReviewTrait;
+
+    #[ORM\ManyToOne(targetEntity: OrderInterface::class)]
+    #[ORM\JoinColumn(name: 'order_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    protected ?OrderInterface $order = null;
+
+    #[ORM\ManyToOne(targetEntity: ReviewInterface::class, inversedBy: 'productReviews')]
+    #[ORM\JoinColumn(name: 'review_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    protected ?ReviewInterface $review = null;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->status = self::STATUS_PENDING;
+    }
+}
+```
+
+### Extend the ProductReview repository
+
+You also need to create a custom repository that implements the plugin's interface:
+
+Create `src/Repository/ProductReviewRepository.php`:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Repository;
+
+use Setono\SyliusReviewPlugin\Repository\ProductReviewRepositoryInterface;
+use Setono\SyliusReviewPlugin\Repository\ProductReviewRepositoryTrait;
+use Sylius\Bundle\CoreBundle\Doctrine\ORM\ProductReviewRepository as BaseProductReviewRepository;
+
+class ProductReviewRepository extends BaseProductReviewRepository implements ProductReviewRepositoryInterface
+{
+    use ProductReviewRepositoryTrait;
+}
+```
+
+### Configure Sylius resources
+
+Configure Sylius to use your custom entity and repository in `config/packages/sylius_review.yaml`:
+
+```yaml
+sylius_review:
+    resources:
+        product:
+            review:
+                classes:
+                    model: App\Entity\ProductReview
+                    repository: App\Repository\ProductReviewRepository
+```
+
 ### Update your database
 
 ```bash

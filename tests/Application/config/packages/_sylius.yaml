@@ -13,3 +13,11 @@ sylius_shop:
 
 sylius_api:
     enabled: true
+
+sylius_review:
+    resources:
+        product:
+            review:
+                classes:
+                    model: Setono\SyliusReviewPlugin\Tests\Application\Entity\ProductReview
+                    repository: Setono\SyliusReviewPlugin\Tests\Application\Repository\ProductReviewRepository

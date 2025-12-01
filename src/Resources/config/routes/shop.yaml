@@ -1,0 +1,5 @@
+setono_sylius_review__review:
+    path: /review
+    methods: [GET, POST]
+    defaults:
+        _controller: Setono\SyliusReviewPlugin\Controller\ReviewController

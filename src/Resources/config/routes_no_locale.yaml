@@ -1,0 +1,2 @@
+setono_sylius_review_shop:
+    resource: "@SetonoSyliusReviewPlugin/Resources/config/routes/shop.yaml"
