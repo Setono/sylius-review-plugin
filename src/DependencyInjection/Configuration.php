@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Setono\SyliusReviewPlugin\DependencyInjection;
 
 use Setono\SyliusReviewPlugin\Model\ReviewRequest;
+use Setono\SyliusReviewPlugin\Model\StoreReview;
 use Setono\SyliusReviewPlugin\Repository\ReviewRequestRepository;
+use Setono\SyliusReviewPlugin\Repository\StoreReviewRepository;
+use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Resource\Factory\Factory;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -32,6 +35,20 @@ final class Configuration implements ConfigurationInterface
                         ->scalarNode('maximum_checks')
                             ->defaultValue(5)
                             ->info('The maximum number of eligibility checks before the review request is automatically cancelled')
+                        ->end()
+                    ->end()
+                ->end()
+                ->arrayNode('reviewable_order')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('reviewable_states')
+                            ->scalarPrototype()->end()
+                            ->defaultValue([OrderInterface::STATE_FULFILLED])
+                            ->info('The order states that are considered reviewable')
+                        ->end()
+                        ->scalarNode('editable_period')
+                            ->defaultValue('+24 hours')
+                            ->info('The period during which a review can be edited after submission. Set to null to disable editing. The string must be parseable by strtotime(). See https://www.php.net/strtotime')
                         ->end()
                     ->end()
                 ->end()
@@ -64,6 +81,20 @@ final class Configuration implements ConfigurationInterface
                                     ->children()
                                     ->scalarNode('model')->defaultValue(ReviewRequest::class)->cannotBeEmpty()->end()
                                     ->scalarNode('repository')->defaultValue(ReviewRequestRepository::class)->cannotBeEmpty()->end()
+                                    ->scalarNode('factory')->defaultValue(Factory::class)->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('store_review')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('options')->end()
+                                ->arrayNode('classes')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                    ->scalarNode('model')->defaultValue(StoreReview::class)->cannotBeEmpty()->end()
+                                    ->scalarNode('repository')->defaultValue(StoreReviewRepository::class)->cannotBeEmpty()->end()
                                     ->scalarNode('factory')->defaultValue(Factory::class)->end()
         ;
     }

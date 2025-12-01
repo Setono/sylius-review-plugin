@@ -1,0 +1,11 @@
+setono_sylius_review:
+    store_review:
+        rating:
+            not_null: "Please select a rating."
+            range: "Rating must be between {{ min }} and {{ max }}."
+        title:
+            not_blank: "Please enter a title for your review."
+            max_length: "The title cannot be longer than {{ limit }} characters."
+        comment:
+            not_blank: "Please enter a comment for your review."
+            max_length: "The comment cannot be longer than {{ limit }} characters."

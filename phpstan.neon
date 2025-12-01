@@ -31,3 +31,9 @@ parameters:
             -
                 identifier: missingType.generics
                 path: src/Form
+            -
+                identifier: trait.unused
+                path: src/Model
+            -
+                identifier: trait.unused
+                path: src/Repository

@@ -35,6 +35,53 @@ $bundles = [
 Make sure you add it before `SyliusGridBundle`, otherwise you'll get
 `You have requested a non-existent parameter "setono_sylius_review.model.review_request.class".` exception.
 
+### Extend the Channel entity (for store reviews)
+
+If you want to use store reviews, you need to extend the Channel entity to implement `ReviewableInterface`. The plugin provides a trait to make this easy.
+
+Create `src/Entity/Channel.php`:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Entity\Channel;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+use Setono\SyliusReviewPlugin\Model\ChannelInterface;
+use Setono\SyliusReviewPlugin\Model\ChannelTrait;
+use Setono\SyliusReviewPlugin\Model\StoreReviewInterface;
+use Sylius\Component\Core\Model\Channel as BaseChannel;
+use Sylius\Component\Review\Model\ReviewInterface;
+
+#[ORM\Entity]
+#[ORM\Table(name: 'sylius_channel')]
+class Channel extends BaseChannel implements ChannelInterface
+{
+    use ChannelTrait;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->reviews = new ArrayCollection();
+    }
+}
+```
+
+Then configure Sylius to use your custom Channel entity in `config/packages/sylius_channel.yaml`:
+
+```yaml
+sylius_channel:
+    resources:
+        channel:
+            classes:
+                model: App\Entity\Channel\Channel
+```
+
 ### Update your database
 
 ```bash
