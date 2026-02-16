@@ -13,3 +13,9 @@ sylius_shop:
 
 sylius_api:
     enabled: true
+
+sylius_channel:
+    resources:
+        channel:
+            classes:
+                model: Setono\SyliusReviewPlugin\Tests\Application\Entity\Channel

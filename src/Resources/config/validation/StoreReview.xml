@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraint-mapping xmlns="http://symfony.com/schema/dic/constraint-mapping"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping
+                                        http://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
+    <class name="Setono\SyliusReviewPlugin\Model\StoreReview">
+        <property name="rating">
+            <constraint name="NotNull">
+                <option name="groups">setono_sylius_review</option>
+                <option name="message">setono_sylius_review.store_review.rating.not_null</option>
+            </constraint>
+            <constraint name="Range">
+                <option name="groups">setono_sylius_review</option>
+                <option name="min">1</option>
+                <option name="max">5</option>
+                <option name="notInRangeMessage">setono_sylius_review.store_review.rating.range</option>
+            </constraint>
+        </property>
+
+        <property name="title">
+            <constraint name="NotBlank">
+                <option name="groups">setono_sylius_review</option>
+                <option name="message">setono_sylius_review.store_review.title.not_blank</option>
+            </constraint>
+            <constraint name="Length">
+                <option name="groups">setono_sylius_review</option>
+                <option name="max">255</option>
+                <option name="maxMessage">setono_sylius_review.store_review.title.max_length</option>
+            </constraint>
+        </property>
+
+        <property name="comment">
+            <constraint name="NotBlank">
+                <option name="groups">setono_sylius_review</option>
+                <option name="message">setono_sylius_review.store_review.comment.not_blank</option>
+            </constraint>
+            <constraint name="Length">
+                <option name="groups">setono_sylius_review</option>
+                <option name="max">10000</option>
+                <option name="maxMessage">setono_sylius_review.store_review.comment.max_length</option>
+            </constraint>
+        </property>
+
+        <property name="order">
+            <constraint name="NotNull">
+                <option name="groups">setono_sylius_review</option>
+            </constraint>
+        </property>
+
+        <property name="author">
+            <constraint name="NotNull">
+                <option name="groups">setono_sylius_review</option>
+            </constraint>
+        </property>
+
+        <property name="reviewSubject">
+            <constraint name="NotNull">
+                <option name="groups">setono_sylius_review</option>
+            </constraint>
+        </property>
+    </class>
+</constraint-mapping>

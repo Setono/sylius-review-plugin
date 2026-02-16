@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<doctrine-mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                                      https://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <mapped-superclass name="Setono\SyliusReviewPlugin\Model\StoreReview"
+                       table="setono_sylius_review__store_review">
+        <id name="id" type="integer">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <field name="rating" type="integer" nullable="true"/>
+        <field name="title" type="string" nullable="true"/>
+        <field name="comment" type="text" nullable="true"/>
+        <field name="status" type="string"/>
+        <field name="createdAt" type="datetime">
+            <gedmo:timestampable on="create"/>
+        </field>
+        <field name="updatedAt" type="datetime" nullable="true">
+            <gedmo:timestampable on="update"/>
+        </field>
+
+        <many-to-one field="order" target-entity="Sylius\Component\Order\Model\OrderInterface">
+            <join-column name="order_id" referenced-column-name="id" on-delete="SET NULL" nullable="true"/>
+        </many-to-one>
+
+        <many-to-one field="author" target-entity="Sylius\Component\Customer\Model\CustomerInterface">
+            <join-column name="author_id" referenced-column-name="id" on-delete="SET NULL" nullable="true"/>
+        </many-to-one>
+
+        <many-to-one field="reviewSubject" target-entity="Sylius\Component\Core\Model\ChannelInterface" inversed-by="reviews">
+            <join-column name="channel_id" referenced-column-name="id" on-delete="CASCADE" nullable="false"/>
+        </many-to-one>
+    </mapped-superclass>
+</doctrine-mapping>

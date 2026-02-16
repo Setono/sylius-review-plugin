@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace Setono\SyliusReviewPlugin\DependencyInjection;
 
+use Setono\SyliusReviewPlugin\Checker\AutoApproval\ProductAutoApprovalCheckerInterface;
+use Setono\SyliusReviewPlugin\Checker\AutoApproval\StoreAutoApprovalCheckerInterface;
+use Setono\SyliusReviewPlugin\Checker\ReviewableOrder\ReviewableOrderCheckerInterface;
 use Setono\SyliusReviewPlugin\EligibilityChecker\ReviewRequestEligibilityCheckerInterface;
 use Setono\SyliusReviewPlugin\Form\Type\ReviewRequestEmailType;
 use Setono\SyliusReviewPlugin\Mailer\Emails;
 use Setono\SyliusReviewPlugin\Workflow\ReviewRequestWorkflow;
+use Setono\SyliusReviewPlugin\Workflow\StoreReviewWorkflow;
 use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceExtension;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Symfony\Component\Config\FileLocator;
@@ -24,6 +28,7 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
         /**
          * @var array{
          *     eligibility: array{initial_delay: string, maximum_checks: int},
+         *     reviewable_order: array{reviewable_states: list<string>, editable_period: string|null},
          *     pruning: array{threshold: string},
          *     resources: array<string, mixed>
          * } $config
@@ -33,11 +38,28 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
 
         $container->setParameter('setono_sylius_review.eligibility.initial_delay', $config['eligibility']['initial_delay']);
         $container->setParameter('setono_sylius_review.eligibility.maximum_checks', $config['eligibility']['maximum_checks']);
+        $container->setParameter('setono_sylius_review.reviewable_order.reviewable_states', $config['reviewable_order']['reviewable_states']);
+        $container->setParameter('setono_sylius_review.reviewable_order.editable_period', $config['reviewable_order']['editable_period']);
         $container->setParameter('setono_sylius_review.pruning.threshold', $config['pruning']['threshold']);
 
         $container
             ->registerForAutoconfiguration(ReviewRequestEligibilityCheckerInterface::class)
             ->addTag('setono_sylius_review.review_request_eligibility_checker')
+        ;
+
+        $container
+            ->registerForAutoconfiguration(ReviewableOrderCheckerInterface::class)
+            ->addTag('setono_sylius_review.reviewable_order_checker')
+        ;
+
+        $container
+            ->registerForAutoconfiguration(StoreAutoApprovalCheckerInterface::class)
+            ->addTag('setono_sylius_review.store_review_auto_approval_checker')
+        ;
+
+        $container
+            ->registerForAutoconfiguration(ProductAutoApprovalCheckerInterface::class)
+            ->addTag('setono_sylius_review.product_review_auto_approval_checker')
         ;
 
         self::registerEmailFormType($container);
@@ -55,7 +77,10 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
     public function prepend(ContainerBuilder $container): void
     {
         $container->prependExtensionConfig('framework', [
-            'workflows' => ReviewRequestWorkflow::getConfig(),
+            'workflows' => array_merge(
+                ReviewRequestWorkflow::getConfig(),
+                StoreReviewWorkflow::getConfig(),
+            ),
         ]);
 
         $container->prependExtensionConfig('sylius_mailer', [

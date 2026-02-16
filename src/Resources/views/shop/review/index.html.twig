@@ -1,0 +1,111 @@
+{% extends '@SyliusShop/layout.html.twig' %}
+
+{% block top %}{% endblock %}
+{% block header %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block content %}
+<div class="ui container" style="margin-top: 3rem; margin-bottom: 3rem;">
+    <h1 class="ui header">
+        {{ 'setono_sylius_review.ui.review_your_order'|trans }}
+        <div class="sub header" style="color: #999;">{{ 'sylius.ui.order'|trans }} #{{ order.number }}</div>
+    </h1>
+
+    <p style="color: #666; margin-bottom: 2rem;">{{ 'setono_sylius_review.ui.introduction'|trans }}</p>
+
+    {% if not reviewableCheck.reviewable %}
+        <div class="ui error message">
+            <p>{{ reviewableCheck.reason|trans }}</p>
+        </div>
+    {% else %}
+        {% form_theme form '@SyliusShop/Form/theme.html.twig' %}
+        {{ form_start(form) }}
+
+        {# Display form-level validation errors #}
+        {% if form.vars.errors|length > 0 or form.storeReview.vars.errors|length > 0 %}
+            <div class="ui error message">
+                <div class="header">{{ 'setono_sylius_review.ui.please_correct_errors'|trans }}</div>
+                <ul class="list">
+                    {% for error in form.vars.errors %}
+                        <li>{{ error.message|trans }}</li>
+                    {% endfor %}
+                    {% for error in form.storeReview.vars.errors %}
+                        <li>{{ error.message|trans }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        {# Store Review Section #}
+        <div style="margin-bottom: 3rem;">
+            <h3>{{ 'setono_sylius_review.ui.store_review'|trans }}</h3>
+            <p style="color: #666; margin-bottom: 1.5rem;">{{ 'setono_sylius_review.ui.store_review_description'|trans }}</p>
+
+            <div class="field">
+                {{ form_label(form.storeReview.rating) }}
+                <div class="ui rating-choices">
+                    {{ form_widget(form.storeReview.rating) }}
+                </div>
+                {{ form_errors(form.storeReview.rating) }}
+            </div>
+            {{ form_row(form.storeReview.title) }}
+            {{ form_row(form.storeReview.comment) }}
+        </div>
+
+        {# Product Reviews Section #}
+        <div style="margin-bottom: 3rem;">
+            <h3>{{ 'setono_sylius_review.ui.product_reviews'|trans }}</h3>
+            <p style="color: #666; margin-bottom: 1.5rem;">{{ 'setono_sylius_review.ui.product_reviews_description'|trans }}</p>
+
+            {% for index, item in order.items %}
+                {% set product = item.product %}
+                {% if product %}
+                    <div class="ui grid stackable" style="margin-bottom: 2rem;">
+                        <div class="four wide column">
+                            {% set productImage = product.images|first %}
+                            {% if productImage %}
+                                <img src="{{ productImage.path|imagine_filter('sylius_shop_product_thumbnail') }}"
+                                     alt="{{ product.name }}" class="ui small image">
+                            {% endif %}
+                        </div>
+                        <div class="twelve wide column">
+                            <h4 style="margin-top: 0;">{{ product.name }}</h4>
+                            {% if item.variantName %}
+                                <p style="color: #666;">{{ item.variantName }}</p>
+                            {% endif %}
+
+                            {% if form.productReviews[index] is defined %}
+                                <div class="field">
+                                    {{ form_label(form.productReviews[index].rating) }}
+                                    <div class="ui rating-choices">
+                                        {{ form_widget(form.productReviews[index].rating) }}
+                                    </div>
+                                    {{ form_errors(form.productReviews[index].rating) }}
+                                </div>
+                                {{ form_row(form.productReviews[index].title) }}
+                                {{ form_row(form.productReviews[index].comment) }}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="ui primary button large">
+            {{ 'setono_sylius_review.ui.submit_reviews'|trans }}
+        </button>
+
+        {{ form_end(form) }}
+    {% endif %}
+</div>
+
+<style>
+    .rating-choices .form-check {
+        display: inline-block;
+        margin-right: 10px;
+    }
+    .rating-choices input[type="radio"] {
+        margin-right: 5px;
+    }
+</style>
+{% endblock %}
