@@ -8,11 +8,11 @@
 
 Send review requests to your customers to receive reviews for your store.
 
-The plugin will create a review request upon customers completing an order. After an initial delay ([configurable](#configuration)),
-a review request will be sent as an email to the customer asking them to review your store.
+The `process` command finds fulfilled orders without review requests and creates them automatically.
+After an initial delay ([configurable](#configuration)), it sends a review request email to each customer.
 
-When processing a review request (i.e. trying to send it), the plugin will run an eligibility check to see if the review
-request is eligible to be sent. You can [hook into this process](#add-eligibility-checker) to decide whether a review request should be sent or not.
+Before sending, the plugin runs an eligibility check. You can [hook into this process](#add-eligibility-checker)
+to decide whether a review request should be sent or not.
 
 ## Installation
 
@@ -90,12 +90,16 @@ php bin/console doctrine:migrations:migrate
 ```
 
 ### Run commands
-There are two commands in this plugin. One for processing review requests and one for pruning the review request table.
+There are two commands in this plugin. One for creating and processing review requests and one for pruning the review request table.
 
 ```bash
 php bin/console setono:sylius-review:process
 php bin/console setono:sylius-review:prune
 ```
+
+The `process` command does two things:
+1. Creates review requests for fulfilled orders that don't have one yet (looking back as far as the `pruning.threshold`)
+2. Processes pending review requests (eligibility check + sending emails)
 
 You decide yourself how often you want to run these commands.
 The process command makes sense to run daily, while the prune command can be run weekly or monthly.
