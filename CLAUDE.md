@@ -139,8 +139,9 @@ Examples:
 ### Core Flow
 
 1. **Creation**: `ProcessCommand` first runs `ReviewRequestCreator` which:
-   - Uses `OrderForReviewRequestDataProvider` to find fulfilled orders without review requests (within the `pruning.threshold` lookback window)
-   - The data provider dispatches `QueryBuilderForReviewRequestCreationCreated` to allow query customization
+   - Queries for fulfilled orders without review requests (within the `pruning.threshold` lookback window)
+   - Dispatches `QueryBuilderForReviewRequestCreationCreated` to allow query customization
+   - Uses `SimpleBatchIteratorAggregate` for batch iteration (flush/clear every 100 items)
    - Creates a `ReviewRequest` entity for each eligible order via `ReviewRequestFactory`
 2. **Processing**: `ProcessCommand` then runs `ReviewRequestProcessor` which:
    - Fetches pending review requests ready for eligibility check
@@ -227,8 +228,7 @@ Determine whether an order is eligible for review submission (used by `ReviewCon
 ### Review Request Creation
 
 Review requests are created asynchronously via the `process` command (not during checkout):
-- `OrderForReviewRequestDataProviderInterface` / `OrderForReviewRequestDataProvider`: Queries fulfilled orders without review requests using batch iteration and dispatches `QueryBuilderForReviewRequestCreationCreated` for query customization
-- `ReviewRequestCreatorInterface` / `ReviewRequestCreator`: Orchestrates creation — iterates over orders from the data provider, creates review requests via factory, and persists them
+- `ReviewRequestCreatorInterface` / `ReviewRequestCreator`: Builds a Doctrine query for eligible orders (fulfilled, within threshold, no existing review request), dispatches `QueryBuilderForReviewRequestCreationCreated` for query customization, iterates with `SimpleBatchIteratorAggregate`, and creates review requests via factory
 - The `pruning.threshold` parameter is reused as the lookback cutoff for order eligibility
 
 ### Key Services
