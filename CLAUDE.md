@@ -38,8 +38,22 @@ Follow clean code principles and SOLID design patterns when working with this co
   - Use `$this->factory->create()` to create form instances
   - Use `PreloadedExtension` in `getExtensions()` to register form types with mocked dependencies
   - Test form submission, validation, and data transformation
+- **Functional testing** - Use Symfony's `WebTestCase` for HTTP-level controller tests
+  - `dama/doctrine-test-bundle` provides automatic transaction rollback between tests (no manual cleanup needed)
+  - Tests rely on Sylius default fixtures being loaded in the test database
+  - Query fixture data in `setUp()` and mutate state as needed (e.g., set order state to `fulfilled`) — DAMA rolls it back after each test
+  - Use `self::createClient()` for HTTP requests and Symfony's assert methods (`assertResponseIsSuccessful()`, `assertSelectorExists()`, etc.)
+  - See `tests/Controller/ReviewControllerTest.php` for the reference pattern
 - Ensure tests are isolated and don't depend on external state
 - Test both happy path and edge cases
+
+### Test Database Setup
+Functional tests require a MySQL test database with fixtures loaded:
+```bash
+tests/Application/bin/console doctrine:database:create --env=test --if-not-exists
+tests/Application/bin/console doctrine:schema:create --env=test
+tests/Application/bin/console sylius:fixtures:load default --env=test --no-interaction
+```
 
 ## Development Commands
 
@@ -88,7 +102,8 @@ The plugin includes a test Symfony application in `tests/Application/` for devel
 - Navigate to `tests/Application/` directory
 - Run `yarn install && yarn build` to build assets
 - Use standard Symfony commands for the test app
-- **Development Server**: https://127.0.0.1:8000 (runs from `tests/Application/`)
+- **Start Development Server**: `symfony serve --daemon --dir=tests/Application` (run from repository root)
+- **Development Server**: https://127.0.0.1:8000
 - **Check Server Status**: `symfony server:status --dir=tests/Application`
 - **Admin Interface**: https://127.0.0.1:8000/admin
 - **Admin Credentials**: `sylius:sylius`
