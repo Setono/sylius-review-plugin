@@ -16,7 +16,7 @@ Store reviews require the Channel entity to implement `ReviewableInterface`. The
 
 ### CLI Commands
 
-- `setono:sylius-review:process` — Process pending review requests (send emails). Run daily.
+- `setono:sylius-review:process` — Create review requests for fulfilled orders, then process pending ones (send emails). Run daily.
 - `setono:sylius-review:prune` — Remove old review requests. Run weekly/monthly.
 
 ## Code Standards
@@ -138,8 +138,11 @@ Examples:
 
 ### Core Flow
 
-1. **Order Completion**: `CreateReviewRequestSubscriber` listens to `sylius.order.pre_complete` and creates a `ReviewRequest` entity
-2. **Processing**: `ProcessCommand` runs `ReviewRequestProcessor` which:
+1. **Creation**: `ProcessCommand` first runs `ReviewRequestCreator` which:
+   - Uses `OrderForReviewRequestDataProvider` to find fulfilled orders without review requests (within the `pruning.threshold` lookback window)
+   - The data provider dispatches `QueryBuilderForReviewRequestCreationCreated` to allow query customization
+   - Creates a `ReviewRequest` entity for each eligible order via `ReviewRequestFactory`
+2. **Processing**: `ProcessCommand` then runs `ReviewRequestProcessor` which:
    - Fetches pending review requests ready for eligibility check
    - Runs eligibility checkers via composite pattern
    - Sends email via `ReviewRequestEmailManager` if eligible
@@ -221,8 +224,16 @@ Determine whether an order is eligible for review submission (used by `ReviewCon
 - `StoreReviewEditableReviewableOrderChecker` — Checks the store review editable period
 - Tag: `setono_sylius_review.reviewable_order_checker`
 
+### Review Request Creation
+
+Review requests are created asynchronously via the `process` command (not during checkout):
+- `OrderForReviewRequestDataProviderInterface` / `OrderForReviewRequestDataProvider`: Queries fulfilled orders without review requests using batch iteration and dispatches `QueryBuilderForReviewRequestCreationCreated` for query customization
+- `ReviewRequestCreatorInterface` / `ReviewRequestCreator`: Orchestrates creation — iterates over orders from the data provider, creates review requests via factory, and persists them
+- The `pruning.threshold` parameter is reused as the lookback cutoff for order eligibility
+
 ### Key Services
 
+- `ReviewRequestCreator`: Creates review requests for fulfilled orders without one
 - `ReviewRequestProcessor`: Main processing logic with batch iteration via DoctrineBatchUtils
 - `ReviewRequestEmailManager`: Handles sending review request emails via Sylius Mailer
 - `ReviewRequestFactory`: Creates ReviewRequest entities from orders
