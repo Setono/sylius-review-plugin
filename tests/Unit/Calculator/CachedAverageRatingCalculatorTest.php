@@ -74,7 +74,10 @@ final class CachedAverageRatingCalculatorTest extends TestCase
             }),
             Argument::type('callable'),
         )->will(function (array $args) use ($item) {
-            return $args[1]($item->reveal());
+            /** @var callable $callback */
+            $callback = $args[1];
+
+            return $callback($item->reveal());
         })->shouldBeCalledOnce();
 
         $calculator = new CachedAverageRatingCalculator($decorated->reveal(), $cache->reveal());
@@ -97,7 +100,10 @@ final class CachedAverageRatingCalculatorTest extends TestCase
         $cache = $this->prophesize(CacheInterface::class);
         $cache->get(Argument::type('string'), Argument::type('callable'))
             ->will(function (array $args) use ($item) {
-                return $args[1]($item->reveal());
+                /** @var callable $callback */
+                $callback = $args[1];
+
+                return $callback($item->reveal());
             })->shouldBeCalledOnce();
 
         $calculator = new CachedAverageRatingCalculator($decorated->reveal(), $cache->reveal(), 1800);

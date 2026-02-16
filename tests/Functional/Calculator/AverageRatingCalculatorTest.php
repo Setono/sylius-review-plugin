@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Setono\SyliusReviewPlugin\Calculator\AverageRatingCalculator;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\ProductReview;
-use Sylius\Component\Customer\Model\CustomerInterface;
+use Sylius\Component\Review\Model\ReviewerInterface;
 use Sylius\Component\Review\Model\ReviewInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -20,7 +20,7 @@ final class AverageRatingCalculatorTest extends KernelTestCase
 
     private ProductInterface $product;
 
-    private CustomerInterface $customer;
+    private ReviewerInterface $customer;
 
     protected function setUp(): void
     {
@@ -37,8 +37,8 @@ final class AverageRatingCalculatorTest extends KernelTestCase
         self::assertNotNull($product, 'No fixture product found. Make sure Sylius fixtures are loaded.');
         $this->product = $product;
 
-        /** @var CustomerInterface|null $customer */
-        $customer = $this->entityManager->getRepository(CustomerInterface::class)->findOneBy([]);
+        /** @var ReviewerInterface|null $customer */
+        $customer = $this->entityManager->getRepository(ReviewerInterface::class)->findOneBy([]);
         self::assertNotNull($customer, 'No fixture customer found. Make sure Sylius fixtures are loaded.');
         $this->customer = $customer;
 
