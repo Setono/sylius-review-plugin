@@ -31,8 +31,6 @@ final class ReviewRequestCreator implements ReviewRequestCreatorInterface, Logge
     {
         $i = 0;
 
-        $manager = null;
-
         foreach ($this->dataProvider->getOrders() as $order) {
             $reviewRequest = $this->reviewRequestFactory->createFromOrder($order);
 

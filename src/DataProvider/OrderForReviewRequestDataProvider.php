@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Setono\SyliusReviewPlugin\DataProvider;
 
 use Doctrine\Persistence\ManagerRegistry;
-use DoctrineBatchUtils\BatchProcessing\SelectBatchIteratorAggregate;
+use DoctrineBatchUtils\BatchProcessing\SimpleBatchIteratorAggregate;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Setono\Doctrine\ORMTrait;
 use Setono\SyliusReviewPlugin\Event\QueryBuilderForReviewRequestCreationCreated;
@@ -47,8 +47,8 @@ final class OrderForReviewRequestDataProvider implements OrderForReviewRequestDa
 
         $this->eventDispatcher->dispatch(new QueryBuilderForReviewRequestCreationCreated($qb));
 
-        /** @var SelectBatchIteratorAggregate<array-key, OrderInterface> $batch */
-        $batch = SelectBatchIteratorAggregate::fromQuery($qb->getQuery(), 100);
+        /** @var SimpleBatchIteratorAggregate<array-key, OrderInterface> $batch */
+        $batch = SimpleBatchIteratorAggregate::fromQuery($qb->getQuery(), 100);
 
         yield from $batch;
     }
