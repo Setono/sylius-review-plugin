@@ -6,9 +6,9 @@ namespace Setono\SyliusReviewPlugin;
 
 use Setono\CompositeCompilerPass\CompositeCompilerPass;
 use Setono\SyliusReviewPlugin\Checker\ReviewableOrder\CompositeReviewableOrderChecker;
-use Setono\SyliusReviewPlugin\EligibilityChecker\CompositeReviewRequestEligibilityChecker;
 use Setono\SyliusReviewPlugin\DependencyInjection\Compiler\ConfigureAverageRatingCalculatorCachePass;
 use Setono\SyliusReviewPlugin\DependencyInjection\Compiler\RegisterAutoApprovalCheckersPass;
+use Setono\SyliusReviewPlugin\EligibilityChecker\CompositeReviewRequestEligibilityChecker;
 use Sylius\Bundle\CoreBundle\Application\SyliusPluginTrait;
 use Sylius\Bundle\ResourceBundle\AbstractResourceBundle;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
