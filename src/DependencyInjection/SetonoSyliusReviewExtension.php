@@ -107,7 +107,7 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
 
         $container
             ->setDefinition(
-                'setono_sylius_review.form.type.review_request_email',
+                ReviewRequestEmailType::class,
                 new Definition(ReviewRequestEmailType::class, ['%setono_sylius_review.model.review_request.class%']),
             )
             ->addTag('form.type')

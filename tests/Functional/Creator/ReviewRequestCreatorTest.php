@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Setono\SyliusReviewPlugin\Tests\Functional\Creator;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Setono\SyliusReviewPlugin\Creator\ReviewRequestCreator;
 use Setono\SyliusReviewPlugin\Creator\ReviewRequestCreatorInterface;
 use Setono\SyliusReviewPlugin\Model\ReviewRequestInterface;
 use Setono\SyliusReviewPlugin\Repository\ReviewRequestRepositoryInterface;
@@ -28,7 +29,7 @@ final class ReviewRequestCreatorTest extends KernelTestCase
         $this->entityManager = $entityManager;
 
         /** @var ReviewRequestCreatorInterface $creator */
-        $creator = self::getContainer()->get('setono_sylius_review.creator.review_request');
+        $creator = self::getContainer()->get(ReviewRequestCreator::class);
         $this->creator = $creator;
 
         /** @var ReviewRequestRepositoryInterface $reviewRequestRepository */

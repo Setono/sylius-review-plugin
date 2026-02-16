@@ -16,16 +16,14 @@
         </service>
 
         <!-- Commands -->
-        <service id="setono_sylius_review.command.process"
-                 class="Setono\SyliusReviewPlugin\Command\ProcessCommand">
-            <argument type="service" id="setono_sylius_review.creator.review_request"/>
-            <argument type="service" id="setono_sylius_review.processor.review_request"/>
+        <service id="Setono\SyliusReviewPlugin\Command\ProcessCommand">
+            <argument type="service" id="Setono\SyliusReviewPlugin\Creator\ReviewRequestCreatorInterface"/>
+            <argument type="service" id="Setono\SyliusReviewPlugin\Processor\ReviewRequestProcessorInterface"/>
 
             <tag name="console.command"/>
         </service>
 
-        <service id="setono_sylius_review.command.prune"
-                 class="Setono\SyliusReviewPlugin\Command\PruneCommand">
+        <service id="Setono\SyliusReviewPlugin\Command\PruneCommand">
             <argument type="service" id="setono_sylius_review.repository.review_request"/>
             <argument>%setono_sylius_review.pruning.threshold%</argument>
 
@@ -33,18 +31,17 @@
         </service>
 
         <!-- Eligibility checkers -->
-        <service id="setono_sylius_review.review_request_eligibility_checker.composite"
-                 class="Setono\SyliusReviewPlugin\EligibilityChecker\CompositeReviewRequestEligibilityChecker">
-        </service>
+        <service id="Setono\SyliusReviewPlugin\EligibilityChecker\CompositeReviewRequestEligibilityChecker"/>
 
-        <service id="setono_sylius_review.review_request_eligibility_checker.order_fulfilled"
-                 class="Setono\SyliusReviewPlugin\EligibilityChecker\OrderFulfilledReviewRequestEligibilityChecker">
+        <service id="Setono\SyliusReviewPlugin\EligibilityChecker\ReviewRequestEligibilityCheckerInterface"
+                 alias="Setono\SyliusReviewPlugin\EligibilityChecker\CompositeReviewRequestEligibilityChecker"/>
+
+        <service id="Setono\SyliusReviewPlugin\EligibilityChecker\OrderFulfilledReviewRequestEligibilityChecker">
             <tag name="setono_sylius_review.review_request_eligibility_checker" priority="100"/>
         </service>
 
         <!-- Creator -->
-        <service id="setono_sylius_review.creator.review_request"
-                 class="Setono\SyliusReviewPlugin\Creator\ReviewRequestCreator">
+        <service id="Setono\SyliusReviewPlugin\Creator\ReviewRequestCreator">
             <argument type="service" id="doctrine"/>
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="setono_sylius_review.factory.review_request"/>
@@ -57,27 +54,26 @@
             </call>
         </service>
 
+        <service id="Setono\SyliusReviewPlugin\Creator\ReviewRequestCreatorInterface"
+                 alias="Setono\SyliusReviewPlugin\Creator\ReviewRequestCreator"/>
+
         <!-- Event subscribers -->
-        <service id="setono_sylius_review.event_subscriber.review_request.check_eligibility_checks"
-                 class="Setono\SyliusReviewPlugin\EventSubscriber\ReviewRequest\CheckEligibilityChecksSubscriber">
+        <service id="Setono\SyliusReviewPlugin\EventSubscriber\ReviewRequest\CheckEligibilityChecksSubscriber">
             <argument type="service" id="state_machine.setono_sylius_review__review_request"/>
             <argument>%setono_sylius_review.eligibility.maximum_checks%</argument>
 
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="setono_sylius_review.event_subscriber.review_request.increment_eligibility_checks"
-                 class="Setono\SyliusReviewPlugin\EventSubscriber\ReviewRequest\IncrementEligibilityChecksSubscriber">
+        <service id="Setono\SyliusReviewPlugin\EventSubscriber\ReviewRequest\IncrementEligibilityChecksSubscriber">
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="setono_sylius_review.event_subscriber.review_request.reset"
-                 class="Setono\SyliusReviewPlugin\EventSubscriber\ReviewRequest\ResetSubscriber">
+        <service id="Setono\SyliusReviewPlugin\EventSubscriber\ReviewRequest\ResetSubscriber">
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="setono_sylius_review.event_subscriber.review_request.update_next_eligibility_check"
-                 class="Setono\SyliusReviewPlugin\EventSubscriber\ReviewRequest\UpdateNextEligibilityCheckSubscriber">
+        <service id="Setono\SyliusReviewPlugin\EventSubscriber\ReviewRequest\UpdateNextEligibilityCheckSubscriber">
             <tag name="kernel.event_subscriber"/>
         </service>
 
@@ -92,24 +88,28 @@
         </service>
 
         <!-- Mailer -->
-        <service id="setono_sylius_review.mailer.review_request_email_manager"
-                 class="Setono\SyliusReviewPlugin\Mailer\ReviewRequestEmailManager">
+        <service id="Setono\SyliusReviewPlugin\Mailer\ReviewRequestEmailManager">
             <argument type="service" id="sylius.email_sender"/>
         </service>
 
+        <service id="Setono\SyliusReviewPlugin\Mailer\ReviewRequestEmailManagerInterface"
+                 alias="Setono\SyliusReviewPlugin\Mailer\ReviewRequestEmailManager"/>
+
         <!-- Processors -->
-        <service id="setono_sylius_review.processor.review_request"
-                 class="Setono\SyliusReviewPlugin\Processor\ReviewRequestProcessor">
+        <service id="Setono\SyliusReviewPlugin\Processor\ReviewRequestProcessor">
             <argument type="service" id="setono_sylius_review.repository.review_request"/>
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="state_machine.setono_sylius_review__review_request"/>
-            <argument type="service" id="setono_sylius_review.review_request_eligibility_checker.composite"/>
-            <argument type="service" id="setono_sylius_review.mailer.review_request_email_manager"/>
+            <argument type="service" id="Setono\SyliusReviewPlugin\EligibilityChecker\ReviewRequestEligibilityCheckerInterface"/>
+            <argument type="service" id="Setono\SyliusReviewPlugin\Mailer\ReviewRequestEmailManagerInterface"/>
 
             <call method="setLogger">
                 <argument type="service" id="logger" on-invalid="ignore"/>
             </call>
         </service>
+
+        <service id="Setono\SyliusReviewPlugin\Processor\ReviewRequestProcessorInterface"
+                 alias="Setono\SyliusReviewPlugin\Processor\ReviewRequestProcessor"/>
 
         <!-- Auto-approval Checkers -->
         <service id="setono_sylius_review.checker.auto_approval.store_review"
