@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Setono\SyliusReviewPlugin\Tests\DependencyInjection;
+namespace Setono\SyliusReviewPlugin\Tests\Unit\DependencyInjection;
 
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Setono\SyliusReviewPlugin\DependencyInjection\SetonoSyliusReviewExtension;

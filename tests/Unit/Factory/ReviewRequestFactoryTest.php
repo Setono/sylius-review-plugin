@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Setono\SyliusReviewPlugin\Tests\Factory;
+namespace Setono\SyliusReviewPlugin\Tests\Unit\Factory;
 
 use PHPUnit\Framework\TestCase;
 use Setono\SyliusReviewPlugin\Factory\ReviewRequestFactory;

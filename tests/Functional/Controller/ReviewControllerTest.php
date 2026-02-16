@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Setono\SyliusReviewPlugin\Tests\Controller;
+namespace Setono\SyliusReviewPlugin\Tests\Functional\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Setono\SyliusReviewPlugin\Repository\StoreReviewRepositoryInterface;
