@@ -30,6 +30,7 @@ Follow clean code principles and SOLID design patterns when working with this co
 - Write code that is easy to test and extend
 
 ### Testing Requirements
+- Tests are organized into `tests/Unit/` (no kernel/DB) and `tests/Functional/` (requires kernel + DB). Place new tests in the appropriate directory.
 - Write unit tests for all new functionality (if it makes sense)
 - Follow the BDD-style naming convention for test methods (e.g., `it_should_do_something_when_condition_is_met`)
 - **MUST use Prophecy for mocking** - Use the `ProphecyTrait` and `$this->prophesize()` for all mocks, NOT PHPUnit's `$this->createMock()`
@@ -43,7 +44,7 @@ Follow clean code principles and SOLID design patterns when working with this co
   - Tests rely on Sylius default fixtures being loaded in the test database
   - Query fixture data in `setUp()` and mutate state as needed (e.g., set order state to `fulfilled`) — DAMA rolls it back after each test
   - Use `self::createClient()` for HTTP requests and Symfony's assert methods (`assertResponseIsSuccessful()`, `assertSelectorExists()`, etc.)
-  - See `tests/Controller/ReviewControllerTest.php` for the reference pattern
+  - See `tests/Functional/Controller/ReviewControllerTest.php` for the reference pattern
 - Ensure tests are isolated and don't depend on external state
 - Test both happy path and edge cases
 
@@ -72,7 +73,9 @@ git config core.hooksPath .githooks
 
 ```bash
 # Run tests
-vendor/bin/phpunit                           # Full test suite
+vendor/bin/phpunit                           # Full test suite (Unit + Functional)
+vendor/bin/phpunit --testsuite=Unit          # Unit tests only (fast, no DB)
+vendor/bin/phpunit --testsuite=Functional    # Functional tests only (needs DB)
 vendor/bin/phpunit tests/path/to/Test.php    # Single test file
 vendor/bin/phpunit --filter testMethodName   # Single test method
 
