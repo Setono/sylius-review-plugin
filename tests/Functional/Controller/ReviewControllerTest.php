@@ -52,9 +52,11 @@ final class ReviewControllerTest extends WebTestCase
     /** @test */
     public function it_shows_error_when_order_is_not_reviewable(): void
     {
-        self::assertNotSame(OrderInterface::STATE_FULFILLED, $this->order->getState());
+        /** @var OrderInterface|null $order */
+        $order = $this->entityManager->getRepository(OrderInterface::class)->findOneBy(['state' => OrderInterface::STATE_NEW]);
+        self::assertNotNull($order, 'No fixture order in "new" state found.');
 
-        $this->client->request('GET', '/en_US/review?token=' . $this->order->getTokenValue());
+        $this->client->request('GET', '/en_US/review?token=' . $order->getTokenValue());
 
         self::assertResponseIsSuccessful();
         self::assertSelectorExists('.ui.error.message');
