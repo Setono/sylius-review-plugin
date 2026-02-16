@@ -231,6 +231,14 @@ Review requests are created asynchronously via the `process` command (not during
 - `ReviewRequestCreatorInterface` / `ReviewRequestCreator`: Builds a Doctrine query for eligible orders (fulfilled, within threshold, no existing review request), dispatches `QueryBuilderForReviewRequestCreationCreated` for query customization, iterates with `SimpleBatchIteratorAggregate`, and creates review requests via factory
 - The `pruning.threshold` parameter is reused as the lookback cutoff for order eligibility
 
+### Service ID Convention
+
+Services use FQCN as their service ID (e.g., `Setono\SyliusReviewPlugin\Creator\ReviewRequestCreator`) with interface aliases for autowiring (e.g., `ReviewRequestCreatorInterface` → `ReviewRequestCreator`).
+
+**Exceptions** (keep string-based IDs):
+- `setono_sylius_review.checker.auto_approval.store_review` / `product_review` — Two instances of the same class (`CompositeAutoApprovalChecker`)
+- Sylius-managed resources (`setono_sylius_review.repository.*`, `setono_sylius_review.factory.review_request`) — Registered by Sylius resource bundle
+
 ### Key Services
 
 - `ReviewRequestCreator`: Creates review requests for fulfilled orders without one
