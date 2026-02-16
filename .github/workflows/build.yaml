@@ -227,6 +227,9 @@ jobs:
                     - "highest"
 
         steps:
+            -   name: "Start MySQL"
+                run: "sudo /etc/init.d/mysql start"
+
             -   name: "Checkout"
                 uses: "actions/checkout@v5"
 
@@ -270,6 +273,9 @@ jobs:
                     - "highest"
 
         steps:
+            -   name: "Start MySQL"
+                run: "sudo /etc/init.d/mysql start"
+
             -   name: "Checkout"
                 uses: "actions/checkout@v5"
 
