@@ -19,6 +19,10 @@ Store reviews require the Channel entity to implement `ReviewableInterface`. The
 - `setono:sylius-review:process` — Create review requests for fulfilled orders, then process pending ones (send emails). Run daily.
 - `setono:sylius-review:prune` — Remove old review requests. Run weekly/monthly.
 
+## General Directives
+
+- **Always use relative paths** for git and shell commands (never absolute paths like `/Users/...`). The working directory is the repository root.
+
 ## Code Standards
 
 Follow clean code principles and SOLID design patterns when working with this codebase:
