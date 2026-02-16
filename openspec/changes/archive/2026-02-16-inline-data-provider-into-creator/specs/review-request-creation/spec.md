@@ -1,3 +1,11 @@
+## REMOVED Requirements
+
+### Requirement: Data provider supplies orders eligible for review request creation
+**Reason**: The data provider abstraction (`OrderForReviewRequestDataProviderInterface` / `OrderForReviewRequestDataProvider`) is removed. Its responsibilities (query building, event dispatch, batch iteration) are inlined into the creator service.
+**Migration**: Use the `QueryBuilderForReviewRequestCreationCreated` event to customize the order query. This event is unchanged and continues to be dispatched by the creator.
+
+## MODIFIED Requirements
+
 ### Requirement: Creator service creates review requests from eligible orders
 The creator service SHALL query for eligible orders, dispatch an event for query customization, iterate results in batches, and create review requests for each order.
 
@@ -32,17 +40,3 @@ The creator service SHALL query for eligible orders, dispatch an event for query
 #### Scenario: Logging
 - **WHEN** the creator service has a logger set and creates review requests
 - **THEN** it SHALL log the number of review requests created
-
-### Requirement: Process command runs creation before processing
-The `setono:sylius-review:process` command SHALL run review request creation before processing existing review requests.
-
-#### Scenario: Normal execution
-- **WHEN** the process command is executed
-- **THEN** it SHALL first invoke the creator service, then invoke the processor service
-
-### Requirement: Synchronous subscriber is removed
-The `CreateReviewRequestSubscriber` SHALL be removed entirely.
-
-#### Scenario: Order completion does not create review requests
-- **WHEN** an order is completed via the Sylius checkout flow
-- **THEN** no review request SHALL be created synchronously during the transaction
