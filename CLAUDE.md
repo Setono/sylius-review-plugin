@@ -55,6 +55,13 @@ tests/Application/bin/console doctrine:schema:create --env=test
 tests/Application/bin/console sylius:fixtures:load default --env=test --no-interaction
 ```
 
+## Git Hooks
+The repository includes git hooks in `.githooks/`. To enable them, run:
+```bash
+git config core.hooksPath .githooks
+```
+- **pre-commit**: Runs `composer fix-style` to auto-fix code style before each commit
+
 ## Development Commands
 
 ### Code Quality & Testing
