@@ -19,3 +19,10 @@ sylius_channel:
         channel:
             classes:
                 model: Setono\SyliusReviewPlugin\Tests\Application\Entity\Channel
+
+sylius_review:
+    resources:
+        product:
+            review:
+                classes:
+                    model: Setono\SyliusReviewPlugin\Tests\Application\Entity\ProductReview

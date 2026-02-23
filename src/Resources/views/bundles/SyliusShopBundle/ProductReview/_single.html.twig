@@ -1,0 +1,25 @@
+<div class="comment" {{ sylius_test_html_attribute('title', review.title) }}>
+    <div class="content">
+        <a class="author">{{ review.author.firstName }}</a>
+        <div class="metadata">
+            <div class="title"><strong>{{ review.title }}</strong></div>
+            <div class="date">{{ review.createdAt|format_date }}</div>
+            <div class="rating">
+                <div class="ui star rating" data-rating="{{ review.rating }}" data-max-rating="5" style="pointer-events: none;"></div>
+            </div>
+        </div>
+        <div class="text">{{ review.comment }}</div>
+
+        {% if review.storeReply is defined and review.storeReply is not null %}
+            <div class="ui reply" style="margin-top: 1em; padding: 0.75em 1em; background: #f8f8f8; border-left: 3px solid #ccc; border-radius: 3px;">
+                <div style="margin-bottom: 0.25em;">
+                    <strong>{{ 'setono_sylius_review.ui.store_reply'|trans }}</strong>
+                    {% if review.storeRepliedAt is defined and review.storeRepliedAt is not null %}
+                        <span style="color: #999; font-size: 0.9em;">— {{ review.storeRepliedAt|format_date }}</span>
+                    {% endif %}
+                </div>
+                <div>{{ review.storeReply }}</div>
+            </div>
+        {% endif %}
+    </div>
+</div>

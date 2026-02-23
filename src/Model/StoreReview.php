@@ -13,6 +13,7 @@ use Webmozart\Assert\Assert;
 
 class StoreReview implements StoreReviewInterface
 {
+    use StoreReplyTrait;
     use TimestampableTrait;
 
     protected ?int $id = null;

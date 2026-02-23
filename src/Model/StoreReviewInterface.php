@@ -9,7 +9,7 @@ use Sylius\Component\Channel\Model\ChannelInterface as BaseChannelInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Review\Model\ReviewInterface as BaseReviewInterface;
 
-interface StoreReviewInterface extends BaseReviewInterface, ChannelAwareInterface
+interface StoreReviewInterface extends BaseReviewInterface, ChannelAwareInterface, StoreReplyInterface
 {
     public function getOrder(): ?OrderInterface;
 

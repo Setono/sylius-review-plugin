@@ -82,6 +82,45 @@ sylius_channel:
                 model: App\Entity\Channel\Channel
 ```
 
+### Extend the ProductReview entity (for store replies on product reviews)
+
+If you want store owners to reply to product reviews, you need to extend the ProductReview entity. The plugin provides a trait to make this easy.
+
+Create `src/Entity/ProductReview.php`:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Setono\SyliusReviewPlugin\Model\ProductReviewInterface;
+use Setono\SyliusReviewPlugin\Model\ProductReviewTrait;
+use Sylius\Component\Core\Model\ProductReview as BaseProductReview;
+
+#[ORM\Entity]
+#[ORM\Table(name: 'sylius_product_review')]
+class ProductReview extends BaseProductReview implements ProductReviewInterface
+{
+    use ProductReviewTrait;
+}
+```
+
+Then configure Sylius to use your custom ProductReview entity in `config/packages/sylius_review.yaml`:
+
+```yaml
+sylius_review:
+    resources:
+        product:
+            review:
+                classes:
+                    model: App\Entity\ProductReview
+```
+
+Store reviews support store replies out of the box — no entity extension needed.
+
 ### Update your database
 
 ```bash

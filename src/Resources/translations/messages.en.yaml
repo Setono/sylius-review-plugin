@@ -16,6 +16,7 @@ setono_sylius_review:
         review_period_expired: The review period for this order has expired.
         review_already_submitted: A review has already been submitted for this order.
         please_correct_errors: Please correct the following errors
+        store_reply: Store reply
     form:
         store_review:
             rating: Rating
@@ -25,3 +26,5 @@ setono_sylius_review:
             rating: Rating
             title: Title
             comment: Comment (optional)
+        review:
+            store_reply: Store reply
