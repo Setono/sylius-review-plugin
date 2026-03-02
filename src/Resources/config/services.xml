@@ -186,6 +186,10 @@
             <tag name="form.type"/>
         </service>
 
+        <service id="Setono\SyliusReviewPlugin\Form\Type\MarkdownTextareaType">
+            <tag name="form.type"/>
+        </service>
+
         <!-- Form extensions -->
         <service id="Setono\SyliusReviewPlugin\Form\Extension\ReviewTypeStoreReplyExtension">
             <tag name="form.type_extension"/>

@@ -98,6 +98,25 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
             ],
         ]);
 
+        $container->prependExtensionConfig('twig', [
+            'form_themes' => [
+                '@SetonoSyliusReviewPlugin/form/theme.html.twig',
+            ],
+        ]);
+
+        $container->prependExtensionConfig('sylius_ui', [
+            'events' => [
+                'setono_sylius_review.admin.store_review.update.javascripts' => [
+                    'blocks' => [
+                        'markdown_toolbar_scripts' => [
+                            'template' => '@SetonoSyliusReviewPlugin/admin/_markdown_toolbar_scripts.html.twig',
+                            'priority' => 10,
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
         $container->prependExtensionConfig('sylius_grid', [
             'grids' => [
                 'setono_sylius_review_admin_store_review' => [

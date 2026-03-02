@@ -1,0 +1,31 @@
+<script type="module" src="https://cdn.jsdelivr.net/npm/@github/markdown-toolbar-element@2/dist/index.js"></script>
+<script type="module">
+    import { marked } from 'https://cdn.jsdelivr.net/npm/marked@15/lib/marked.esm.js';
+
+    document.querySelectorAll('.markdown-textarea-container').forEach(container => {
+        const textareaId = container.dataset.textareaId;
+        const textarea = document.getElementById(textareaId);
+        const writeTab = container.querySelector('[data-tab="write"]');
+        const previewTab = container.querySelector('[data-tab="preview"]');
+        const writeContent = container.querySelector('[data-tab-content="write"]');
+        const previewContent = container.querySelector('[data-tab-content="preview"]');
+        const toolbar = container.querySelector('markdown-toolbar');
+
+        writeTab.addEventListener('click', () => {
+            writeTab.classList.add('active');
+            previewTab.classList.remove('active');
+            writeContent.style.display = '';
+            previewContent.style.display = 'none';
+            toolbar.style.display = '';
+        });
+
+        previewTab.addEventListener('click', () => {
+            previewTab.classList.add('active');
+            writeTab.classList.remove('active');
+            previewContent.innerHTML = marked.parse(textarea.value || '');
+            previewContent.style.display = '';
+            writeContent.style.display = 'none';
+            toolbar.style.display = 'none';
+        });
+    });
+</script>
