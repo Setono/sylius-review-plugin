@@ -5,16 +5,22 @@ declare(strict_types=1);
 namespace Setono\SyliusReviewPlugin\DisplayName\Provider;
 
 use Sylius\Component\Review\Model\ReviewerInterface;
+use function Symfony\Component\String\u;
 
 final class FirstNameLastInitialCandidateProvider implements DisplayNameCandidateProviderInterface
 {
     public function candidates(ReviewerInterface $reviewer): iterable
     {
-        $firstName = $reviewer->getFirstName();
-        $lastName = $reviewer->getLastName();
-
-        if (null !== $firstName && '' !== $firstName && null !== $lastName && '' !== $lastName) {
-            yield sprintf('%s %s.', $firstName, mb_substr($lastName, 0, 1));
+        $firstName = (string) $reviewer->getFirstName();
+        if('' === $firstName) {
+            return [];
         }
+
+        $lastName = (string) $reviewer->getLastName();
+        if('' === $lastName) {
+            return [];
+        }
+
+        yield sprintf('%s %s.', u($firstName)->title(true)->toString(), u($lastName)->slice(0, 1)->upper()->toString());
     }
 }
