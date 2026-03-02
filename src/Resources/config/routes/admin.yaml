@@ -1,0 +1,43 @@
+setono_sylius_review_admin_store_review:
+    resource: |
+        alias: setono_sylius_review.store_review
+        section: admin
+        permission: true
+        templates: "@SyliusAdmin\\Crud"
+        except: ['show', 'create']
+        redirect: update
+        grid: setono_sylius_review_admin_store_review
+        vars:
+            all:
+                subheader: setono_sylius_review.ui.manage_store_reviews
+                templates:
+                    form: "@SetonoSyliusReviewPlugin/admin/store_review/_form.html.twig"
+            index:
+                icon: newspaper
+    type: sylius.resource
+
+setono_sylius_review_admin_store_review_accept:
+    path: /store-review/{id}/accept
+    methods: [PUT]
+    defaults:
+        _controller: setono_sylius_review.controller.store_review::applyStateMachineTransitionAction
+        _sylius:
+            permission: true
+            state_machine:
+                graph: setono_sylius_review__store_review
+                transition: accept
+            redirect: setono_sylius_review_admin_store_review_index
+            flash: sylius.review.accept
+
+setono_sylius_review_admin_store_review_reject:
+    path: /store-review/{id}/reject
+    methods: [PUT]
+    defaults:
+        _controller: setono_sylius_review.controller.store_review::applyStateMachineTransitionAction
+        _sylius:
+            permission: true
+            state_machine:
+                graph: setono_sylius_review__store_review
+                transition: reject
+            redirect: setono_sylius_review_admin_store_review_index
+            flash: sylius.review.reject

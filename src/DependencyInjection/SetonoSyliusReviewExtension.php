@@ -90,6 +90,133 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
                 ],
             ],
         ]);
+
+        $container->prependExtensionConfig('sylius_state_machine_abstraction', [
+            'graphs_to_adapters_mapping' => [
+                ReviewRequestWorkflow::NAME => 'symfony_workflow',
+                StoreReviewWorkflow::NAME => 'symfony_workflow',
+            ],
+        ]);
+
+        $container->prependExtensionConfig('sylius_grid', [
+            'grids' => [
+                'setono_sylius_review_admin_store_review' => [
+                    'driver' => [
+                        'name' => 'doctrine/orm',
+                        'options' => [
+                            'class' => '%setono_sylius_review.model.store_review.class%',
+                        ],
+                    ],
+                    'sorting' => [
+                        'date' => 'desc',
+                    ],
+                    'fields' => [
+                        'date' => [
+                            'type' => 'datetime',
+                            'label' => 'sylius.ui.date',
+                            'path' => 'createdAt',
+                            'sortable' => 'createdAt',
+                            'options' => [
+                                'format' => 'd-m-Y H:i:s',
+                            ],
+                        ],
+                        'title' => [
+                            'type' => 'string',
+                            'label' => 'sylius.ui.title',
+                            'sortable' => null,
+                        ],
+                        'rating' => [
+                            'type' => 'string',
+                            'label' => 'sylius.ui.rating',
+                            'sortable' => null,
+                        ],
+                        'status' => [
+                            'type' => 'twig',
+                            'label' => 'sylius.ui.status',
+                            'sortable' => null,
+                            'options' => [
+                                'template' => '@SyliusUi/Grid/Field/state.html.twig',
+                                'vars' => [
+                                    'labels' => '@SyliusAdmin/ProductReview/Label/Status',
+                                ],
+                            ],
+                        ],
+                        'reviewSubject' => [
+                            'type' => 'string',
+                            'label' => 'sylius.ui.channel',
+                        ],
+                        'author' => [
+                            'type' => 'string',
+                            'label' => 'sylius.ui.customer',
+                        ],
+                    ],
+                    'filters' => [
+                        'title' => [
+                            'type' => 'string',
+                            'label' => 'sylius.ui.title',
+                        ],
+                        'status' => [
+                            'type' => 'select',
+                            'label' => 'sylius.ui.status',
+                            'form_options' => [
+                                'choices' => [
+                                    'sylius.ui.new' => 'new',
+                                    'sylius.ui.accepted' => 'accepted',
+                                    'sylius.ui.rejected' => 'rejected',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'actions' => [
+                        'item' => [
+                            'update' => [
+                                'type' => 'update',
+                            ],
+                            'accept' => [
+                                'type' => 'apply_transition',
+                                'label' => 'sylius.ui.accept',
+                                'icon' => 'checkmark',
+                                'options' => [
+                                    'link' => [
+                                        'route' => 'setono_sylius_review_admin_store_review_accept',
+                                        'parameters' => [
+                                            'id' => 'resource.id',
+                                        ],
+                                    ],
+                                    'class' => 'green',
+                                    'transition' => 'accept',
+                                    'graph' => StoreReviewWorkflow::NAME,
+                                ],
+                            ],
+                            'reject' => [
+                                'type' => 'apply_transition',
+                                'label' => 'sylius.ui.reject',
+                                'icon' => 'remove',
+                                'options' => [
+                                    'link' => [
+                                        'route' => 'setono_sylius_review_admin_store_review_reject',
+                                        'parameters' => [
+                                            'id' => 'resource.id',
+                                        ],
+                                    ],
+                                    'class' => 'yellow',
+                                    'transition' => 'reject',
+                                    'graph' => StoreReviewWorkflow::NAME,
+                                ],
+                            ],
+                            'delete' => [
+                                'type' => 'delete',
+                            ],
+                        ],
+                        'bulk' => [
+                            'delete' => [
+                                'type' => 'delete',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
     }
 
     private static function registerEmailFormType(ContainerBuilder $container): void

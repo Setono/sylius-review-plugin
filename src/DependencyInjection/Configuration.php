@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Setono\SyliusReviewPlugin\DependencyInjection;
 
+use Setono\SyliusReviewPlugin\Form\Type\Admin\StoreReviewAdminType;
 use Setono\SyliusReviewPlugin\Model\ReviewRequest;
 use Setono\SyliusReviewPlugin\Model\StoreReview;
 use Setono\SyliusReviewPlugin\Repository\ReviewRequestRepository;
 use Setono\SyliusReviewPlugin\Repository\StoreReviewRepository;
+use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Resource\Factory\Factory;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
@@ -94,8 +96,10 @@ final class Configuration implements ConfigurationInterface
                                     ->addDefaultsIfNotSet()
                                     ->children()
                                     ->scalarNode('model')->defaultValue(StoreReview::class)->cannotBeEmpty()->end()
+                                    ->scalarNode('controller')->defaultValue(ResourceController::class)->cannotBeEmpty()->end()
                                     ->scalarNode('repository')->defaultValue(StoreReviewRepository::class)->cannotBeEmpty()->end()
                                     ->scalarNode('factory')->defaultValue(Factory::class)->end()
+                                    ->scalarNode('form')->defaultValue(StoreReviewAdminType::class)->cannotBeEmpty()->end()
         ;
     }
 }

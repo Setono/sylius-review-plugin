@@ -17,6 +17,9 @@ setono_sylius_review:
         review_already_submitted: A review has already been submitted for this order.
         please_correct_errors: Please correct the following errors
         store_reply: Store reply
+        store_reviews: Store reviews
+        manage_store_reviews: Manage store reviews
+        edit_store_review: Edit store review
     form:
         store_review:
             rating: Rating

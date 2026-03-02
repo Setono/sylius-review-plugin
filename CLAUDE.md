@@ -22,6 +22,8 @@ Store reviews require the Channel entity to implement `ReviewableInterface`. The
 ## General Directives
 
 - **Always use relative paths** for git and shell commands (never absolute paths like `/Users/...`). The working directory is the repository root.
+- **Use snake_case for template folders** (e.g., `views/admin/store_review/`, not `views/admin/StoreReview/`).
+- **MUST test UI changes** using the Playwright MCP browser tools. After implementing any admin/shop UI changes, verify them visually in the test application.
 
 ## Code Standards
 

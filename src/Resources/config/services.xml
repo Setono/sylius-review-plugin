@@ -58,6 +58,10 @@
                  alias="Setono\SyliusReviewPlugin\Creator\ReviewRequestCreator"/>
 
         <!-- Event subscribers -->
+        <service id="Setono\SyliusReviewPlugin\EventSubscriber\AdminMenuSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
         <service id="Setono\SyliusReviewPlugin\EventSubscriber\ReviewRequest\CheckEligibilityChecksSubscriber">
             <argument type="service" id="state_machine.setono_sylius_review__review_request"/>
             <argument>%setono_sylius_review.eligibility.maximum_checks%</argument>
@@ -171,6 +175,14 @@
             <argument type="service" id="setono_sylius_review.repository.store_review"/>
             <argument type="service" id="sylius.factory.product_review"/>
             <argument type="service" id="sylius.repository.product_review"/>
+            <tag name="form.type"/>
+        </service>
+
+        <service id="Setono\SyliusReviewPlugin\Form\Type\Admin\StoreReviewAdminType">
+            <argument>%setono_sylius_review.model.store_review.class%</argument>
+            <argument type="collection">
+                <argument>sylius</argument>
+            </argument>
             <tag name="form.type"/>
         </service>
 
