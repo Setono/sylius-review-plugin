@@ -35,10 +35,7 @@ trait ChannelTrait
 
     public function removeReview(ReviewInterface $review): void
     {
-        if ($this->reviews->contains($review)) {
-            $this->reviews->removeElement($review);
-            $review->setReviewSubject(null);
-        }
+        $this->reviews->removeElement($review);
     }
 
     public function getAverageRating(): ?float
