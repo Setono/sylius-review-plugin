@@ -11,6 +11,12 @@ trait ReviewTrait
     #[ORM\Column(type: 'string', nullable: true)]
     protected ?string $displayName = null;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    protected ?string $storeReply = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    protected ?\DateTimeInterface $storeRepliedAt = null;
+
     public function getDisplayName(): ?string
     {
         return $this->displayName;
@@ -19,5 +25,26 @@ trait ReviewTrait
     public function setDisplayName(?string $displayName): void
     {
         $this->displayName = $displayName;
+    }
+
+    public function getStoreReply(): ?string
+    {
+        return $this->storeReply;
+    }
+
+    public function setStoreReply(?string $storeReply): void
+    {
+        $this->storeReply = $storeReply;
+        $this->storeRepliedAt = null !== $storeReply ? new \DateTime() : null;
+    }
+
+    public function getStoreRepliedAt(): ?\DateTimeInterface
+    {
+        return $this->storeRepliedAt;
+    }
+
+    public function setStoreRepliedAt(?\DateTimeInterface $storeRepliedAt): void
+    {
+        $this->storeRepliedAt = $storeRepliedAt;
     }
 }
