@@ -12,12 +12,12 @@ final class FirstNameLastInitialCandidateProvider implements DisplayNameCandidat
     public function candidates(ReviewerInterface $reviewer): iterable
     {
         $firstName = (string) $reviewer->getFirstName();
-        if('' === $firstName) {
+        if ('' === $firstName) {
             return [];
         }
 
         $lastName = (string) $reviewer->getLastName();
-        if('' === $lastName) {
+        if ('' === $lastName) {
             return [];
         }
 
