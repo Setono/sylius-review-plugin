@@ -6,6 +6,6 @@ namespace Setono\SyliusReviewPlugin\Model;
 
 use Sylius\Component\Core\Model\ProductReviewInterface as BaseProductReviewInterface;
 
-interface ProductReviewInterface extends BaseProductReviewInterface, StoreReplyInterface
+interface ProductReviewInterface extends BaseProductReviewInterface, ReviewInterface, StoreReplyInterface
 {
 }

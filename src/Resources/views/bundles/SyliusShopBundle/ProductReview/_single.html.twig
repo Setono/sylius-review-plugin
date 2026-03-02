@@ -1,6 +1,6 @@
 <div class="comment" {{ sylius_test_html_attribute('title', review.title) }}>
     <div class="content">
-        <a class="author">{{ review.author.firstName }}</a>
+        <a class="author">{{ setono_sylius_review_display_name(review) }}</a>
         <div class="metadata">
             <div class="title"><strong>{{ review.title }}</strong></div>
             <div class="date">{{ review.createdAt|format_date }}</div>

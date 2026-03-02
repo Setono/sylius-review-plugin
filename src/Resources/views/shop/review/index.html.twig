@@ -36,6 +36,13 @@
             </div>
         {% endif %}
 
+        {# Display Name Selection #}
+        {% if form.displayName is defined %}
+            <div style="margin-bottom: 2rem;">
+                {{ form_row(form.displayName) }}
+            </div>
+        {% endif %}
+
         {# Store Review Section #}
         <div style="margin-bottom: 3rem;">
             <h3>{{ 'setono_sylius_review.ui.store_review'|trans }}</h3>

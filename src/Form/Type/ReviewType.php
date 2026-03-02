@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Setono\SyliusReviewPlugin\Form\Type;
 
 use Setono\SyliusReviewPlugin\Controller\ReviewCommand;
+use Setono\SyliusReviewPlugin\DisplayName\Provider\DisplayNameCandidateProviderInterface;
 use Setono\SyliusReviewPlugin\Repository\StoreReviewRepositoryInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\ProductReviewInterface;
 use Sylius\Component\Core\Repository\ProductReviewRepositoryInterface;
 use Sylius\Component\Review\Factory\ReviewFactoryInterface;
+use Sylius\Component\Review\Model\ReviewerInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -31,6 +34,7 @@ final class ReviewType extends AbstractType
         private readonly StoreReviewRepositoryInterface $storeReviewRepository,
         private readonly ReviewFactoryInterface $productReviewFactory,
         private readonly ProductReviewRepositoryInterface $productReviewRepository,
+        private readonly DisplayNameCandidateProviderInterface $displayNameCandidateProvider,
     ) {
     }
 
@@ -38,6 +42,11 @@ final class ReviewType extends AbstractType
     {
         /** @var OrderInterface $order */
         $order = $options['order'];
+
+        $customer = $order->getCustomer();
+        $candidates = $customer instanceof ReviewerInterface
+            ? $this->getCandidates($customer)
+            : [];
 
         $builder
             ->add('storeReview', StoreReviewType::class, [
@@ -52,16 +61,31 @@ final class ReviewType extends AbstractType
                 'allow_delete' => false,
                 'label' => false,
             ])
-            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($order): void {
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($order, $candidates): void {
                 /** @var mixed|ReviewCommand $reviewCommand */
                 $reviewCommand = $event->getData();
 
                 Assert::isInstanceOf($reviewCommand, ReviewCommand::class);
 
-                $reviewCommand->setStoreReview($this->storeReviewRepository->findOneByOrder($order));
+                $storeReview = $this->storeReviewRepository->findOneByOrder($order);
+                $reviewCommand->setStoreReview($storeReview);
+
+                // Pre-select existing display name from the store review
+                if (null !== $storeReview) {
+                    $reviewCommand->setDisplayName($storeReview->getDisplayName());
+                }
 
                 foreach ($this->buildProductReviews($order) as $productReview) {
                     $reviewCommand->addProductReview($productReview);
+                }
+
+                // Add display name field only when candidates are available
+                if ([] !== $candidates) {
+                    $event->getForm()->add('displayName', ChoiceType::class, [
+                        'choices' => $candidates,
+                        'label' => 'setono_sylius_review.form.display_name',
+                        'placeholder' => false,
+                    ]);
                 }
             })
         ;
@@ -82,6 +106,19 @@ final class ReviewType extends AbstractType
     public function getBlockPrefix(): string
     {
         return 'setono_sylius_review';
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function getCandidates(ReviewerInterface $reviewer): array
+    {
+        $candidates = [];
+        foreach ($this->displayNameCandidateProvider->candidates($reviewer) as $candidate) {
+            $candidates[$candidate] = $candidate;
+        }
+
+        return $candidates;
     }
 
     /**

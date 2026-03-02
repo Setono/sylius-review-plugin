@@ -124,6 +124,38 @@
 
         <service id="Setono\SyliusReviewPlugin\Checker\AutoApproval\MinimumRatingAutoApprovalChecker"/>
 
+        <!-- Display Name Resolver -->
+        <service id="Setono\SyliusReviewPlugin\DisplayName\Resolver\DisplayNameResolverInterface"
+                 alias="Setono\SyliusReviewPlugin\DisplayName\Resolver\DefaultDisplayNameResolver"/>
+
+        <service id="Setono\SyliusReviewPlugin\DisplayName\Resolver\DefaultDisplayNameResolver">
+            <argument type="service" id="translator"/>
+        </service>
+
+        <!-- Twig Extensions -->
+        <service id="Setono\SyliusReviewPlugin\Twig\ReviewDisplayNameExtension">
+            <tag name="twig.extension"/>
+        </service>
+
+        <service id="Setono\SyliusReviewPlugin\Twig\ReviewDisplayNameRuntime">
+            <argument type="service" id="Setono\SyliusReviewPlugin\DisplayName\Resolver\DisplayNameResolverInterface"/>
+            <tag name="twig.runtime"/>
+        </service>
+
+        <!-- Display Name Candidate Providers -->
+        <service id="Setono\SyliusReviewPlugin\DisplayName\Provider\DisplayNameCandidateProviderInterface"
+                 alias="Setono\SyliusReviewPlugin\DisplayName\Provider\CompositeDisplayNameCandidateProvider"/>
+
+        <service id="Setono\SyliusReviewPlugin\DisplayName\Provider\CompositeDisplayNameCandidateProvider"/>
+
+        <service id="Setono\SyliusReviewPlugin\DisplayName\Provider\FirstNameCandidateProvider">
+            <tag name="setono_sylius_review.display_name_candidate_provider" priority="100"/>
+        </service>
+
+        <service id="Setono\SyliusReviewPlugin\DisplayName\Provider\FirstNameLastInitialCandidateProvider">
+            <tag name="setono_sylius_review.display_name_candidate_provider" priority="50"/>
+        </service>
+
         <!-- Reviewable Order Checkers -->
         <service id="Setono\SyliusReviewPlugin\Checker\ReviewableOrder\ReviewableOrderCheckerInterface"
                  alias="Setono\SyliusReviewPlugin\Checker\ReviewableOrder\CompositeReviewableOrderChecker"/>
@@ -175,6 +207,7 @@
             <argument type="service" id="setono_sylius_review.repository.store_review"/>
             <argument type="service" id="sylius.factory.product_review"/>
             <argument type="service" id="sylius.repository.product_review"/>
+            <argument type="service" id="Setono\SyliusReviewPlugin\DisplayName\Provider\DisplayNameCandidateProviderInterface"/>
             <tag name="form.type"/>
         </service>
 

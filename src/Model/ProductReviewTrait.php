@@ -6,5 +6,6 @@ namespace Setono\SyliusReviewPlugin\Model;
 
 trait ProductReviewTrait
 {
+    use ReviewTrait;
     use StoreReplyTrait;
 }

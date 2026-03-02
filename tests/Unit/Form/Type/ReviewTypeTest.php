@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Setono\SyliusReviewPlugin\Controller\ReviewCommand;
+use Setono\SyliusReviewPlugin\DisplayName\Provider\DisplayNameCandidateProviderInterface;
 use Setono\SyliusReviewPlugin\Form\Type\ProductReviewType;
 use Setono\SyliusReviewPlugin\Form\Type\ReviewType;
 use Setono\SyliusReviewPlugin\Form\Type\StoreReviewType;
@@ -36,11 +37,15 @@ final class ReviewTypeTest extends TypeTestCase
     /** @var ObjectProphecy<ProductReviewRepositoryInterface> @phpstan-ignore missingType.generics */
     private ObjectProphecy $productReviewRepository;
 
+    /** @var ObjectProphecy<DisplayNameCandidateProviderInterface> */
+    private ObjectProphecy $displayNameCandidateProvider;
+
     protected function setUp(): void
     {
         $this->storeReviewRepository = $this->prophesize(StoreReviewRepositoryInterface::class);
         $this->productReviewFactory = $this->prophesize(ReviewFactoryInterface::class);
         $this->productReviewRepository = $this->prophesize(ProductReviewRepositoryInterface::class);
+        $this->displayNameCandidateProvider = $this->prophesize(DisplayNameCandidateProviderInterface::class);
 
         parent::setUp();
     }
@@ -55,6 +60,7 @@ final class ReviewTypeTest extends TypeTestCase
                         $this->storeReviewRepository->reveal(),
                         $this->productReviewFactory->reveal(), // @phpstan-ignore argument.type
                         $this->productReviewRepository->reveal(), // @phpstan-ignore argument.type
+                        $this->displayNameCandidateProvider->reveal(),
                     ),
                     new StoreReviewType(
                         StoreReviewInterface::class,
@@ -99,6 +105,7 @@ final class ReviewTypeTest extends TypeTestCase
             'reviewSubject' => $product->reveal(),
             'author' => $customer->reveal(),
         ])->willReturn(null);
+        $this->displayNameCandidateProvider->candidates($customer->reveal())->willReturn([]);
 
         $reviewCommand = new ReviewCommand();
         $form = $this->factory->create(ReviewType::class, $reviewCommand, ['order' => $order->reveal()]);
@@ -133,6 +140,7 @@ final class ReviewTypeTest extends TypeTestCase
             'reviewSubject' => $product->reveal(),
             'author' => $customer->reveal(),
         ])->willReturn($existingReview->reveal());
+        $this->displayNameCandidateProvider->candidates($customer->reveal())->willReturn([]);
 
         $reviewCommand = new ReviewCommand();
         $form = $this->factory->create(ReviewType::class, $reviewCommand, ['order' => $order->reveal()]);
@@ -182,6 +190,7 @@ final class ReviewTypeTest extends TypeTestCase
             'reviewSubject' => $product2->reveal(),
             'author' => $customer->reveal(),
         ])->willReturn(null);
+        $this->displayNameCandidateProvider->candidates($customer->reveal())->willReturn([]);
 
         $reviewCommand = new ReviewCommand();
         $form = $this->factory->create(ReviewType::class, $reviewCommand, ['order' => $order->reveal()]);
@@ -190,5 +199,73 @@ final class ReviewTypeTest extends TypeTestCase
         self::assertCount(2, $reviewCommand->getProductReviews());
         self::assertSame($newReview1->reveal(), $reviewCommand->getProductReviews()->first());
         self::assertSame($newReview2->reveal(), $reviewCommand->getProductReviews()->last());
+    }
+
+    /**
+     * @test
+     */
+    public function it_adds_display_name_field_when_candidates_are_available(): void
+    {
+        $customer = $this->prophesize(CustomerInterface::class);
+        $product = $this->prophesize(ProductInterface::class);
+        $product->getId()->willReturn(1);
+
+        $item = $this->prophesize(OrderItemInterface::class);
+        $item->getProduct()->willReturn($product->reveal());
+
+        $order = $this->prophesize(OrderInterface::class);
+        $order->getCustomer()->willReturn($customer->reveal());
+        $order->getItems()->willReturn(new ArrayCollection([$item->reveal()]));
+
+        $newReview = $this->prophesize(ProductReviewInterface::class);
+
+        $this->storeReviewRepository->findOneByOrder($order->reveal())->willReturn(null);
+        $this->productReviewFactory->createForSubjectWithReviewer($product->reveal(), $customer->reveal())
+            ->willReturn($newReview->reveal());
+        $this->productReviewRepository->findOneBy([
+            'reviewSubject' => $product->reveal(),
+            'author' => $customer->reveal(),
+        ])->willReturn(null);
+        $this->displayNameCandidateProvider->candidates($customer->reveal())->willReturn(['John', 'John D.']);
+
+        $reviewCommand = new ReviewCommand();
+        $form = $this->factory->create(ReviewType::class, $reviewCommand, ['order' => $order->reveal()]);
+
+        self::assertTrue($form->isSynchronized());
+        self::assertTrue($form->has('displayName'));
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_add_display_name_field_when_no_candidates(): void
+    {
+        $customer = $this->prophesize(CustomerInterface::class);
+        $product = $this->prophesize(ProductInterface::class);
+        $product->getId()->willReturn(1);
+
+        $item = $this->prophesize(OrderItemInterface::class);
+        $item->getProduct()->willReturn($product->reveal());
+
+        $order = $this->prophesize(OrderInterface::class);
+        $order->getCustomer()->willReturn($customer->reveal());
+        $order->getItems()->willReturn(new ArrayCollection([$item->reveal()]));
+
+        $newReview = $this->prophesize(ProductReviewInterface::class);
+
+        $this->storeReviewRepository->findOneByOrder($order->reveal())->willReturn(null);
+        $this->productReviewFactory->createForSubjectWithReviewer($product->reveal(), $customer->reveal())
+            ->willReturn($newReview->reveal());
+        $this->productReviewRepository->findOneBy([
+            'reviewSubject' => $product->reveal(),
+            'author' => $customer->reveal(),
+        ])->willReturn(null);
+        $this->displayNameCandidateProvider->candidates($customer->reveal())->willReturn([]);
+
+        $reviewCommand = new ReviewCommand();
+        $form = $this->factory->create(ReviewType::class, $reviewCommand, ['order' => $order->reveal()]);
+
+        self::assertTrue($form->isSynchronized());
+        self::assertFalse($form->has('displayName'));
     }
 }

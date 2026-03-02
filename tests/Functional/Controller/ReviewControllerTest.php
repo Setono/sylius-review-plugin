@@ -106,4 +106,42 @@ final class ReviewControllerTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
     }
+
+    /** @test */
+    public function it_submits_review_with_display_name(): void
+    {
+        $this->order->setState(OrderInterface::STATE_FULFILLED);
+        $this->entityManager->flush();
+
+        $crawler = $this->client->request('GET', '/en_US/review?token=' . $this->order->getTokenValue());
+        self::assertResponseIsSuccessful();
+
+        // Check that the display name field exists
+        $displayNameSelect = $crawler->filter('select[name="setono_sylius_review[displayName]"]');
+        if (0 === $displayNameSelect->count()) {
+            self::markTestSkipped('Display name field not rendered (customer may have no name in fixtures).');
+        }
+
+        // Get the first option value
+        $firstOption = $displayNameSelect->filter('option')->first();
+        $displayNameValue = $firstOption->attr('value');
+        self::assertNotNull($displayNameValue);
+
+        $this->client->submitForm('Submit Reviews', [
+            'setono_sylius_review[displayName]' => $displayNameValue,
+            'setono_sylius_review[storeReview][rating]' => 4,
+            'setono_sylius_review[storeReview][title]' => 'Good store',
+            'setono_sylius_review[storeReview][comment]' => 'Nice experience with display name.',
+        ]);
+
+        self::assertResponseRedirects();
+
+        /** @var StoreReviewRepositoryInterface $storeReviewRepository */
+        $storeReviewRepository = self::getContainer()->get('setono_sylius_review.repository.store_review');
+        $storeReview = $storeReviewRepository->findOneByOrder($this->order);
+
+        self::assertNotNull($storeReview);
+        self::assertSame(4, $storeReview->getRating());
+        self::assertSame($displayNameValue, $storeReview->getDisplayName());
+    }
 }

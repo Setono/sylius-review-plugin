@@ -8,6 +8,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Setono\Doctrine\ORMTrait;
 use Setono\SyliusReviewPlugin\Checker\ReviewableOrder\ReviewableOrderCheckerInterface;
 use Setono\SyliusReviewPlugin\Form\Type\ReviewType;
+use Setono\SyliusReviewPlugin\Model\ReviewInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\ProductReviewInterface;
 use Sylius\Component\Order\Repository\OrderRepositoryInterface;
@@ -61,14 +62,20 @@ final class ReviewController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $displayName = $reviewCommand->getDisplayName();
             $manager = $this->getManager();
 
-            if ($reviewCommand->getStoreReview() !== null) {
-                $manager->persist($reviewCommand->getStoreReview());
+            $storeReview = $reviewCommand->getStoreReview();
+            if (null !== $storeReview) {
+                $storeReview->setDisplayName($displayName);
+                $manager->persist($storeReview);
             }
 
             foreach ($reviewCommand->getProductReviews() as $productReview) {
                 if ($productReview instanceof ProductReviewInterface && null !== $productReview->getRating()) {
+                    if ($productReview instanceof ReviewInterface) {
+                        $productReview->setDisplayName($displayName);
+                    }
                     $manager = $this->getManager($productReview);
                     $manager->persist($productReview);
                 }

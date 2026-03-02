@@ -21,6 +21,7 @@
         <field name="updatedAt" type="datetime" nullable="true">
             <gedmo:timestampable on="update"/>
         </field>
+        <field name="displayName" column="display_name" type="string" nullable="true"/>
         <field name="storeReply" column="store_reply" type="text" nullable="true"/>
         <field name="storeRepliedAt" column="store_replied_at" type="datetime" nullable="true"/>
 

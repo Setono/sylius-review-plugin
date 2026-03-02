@@ -7,6 +7,7 @@ namespace Setono\SyliusReviewPlugin\DependencyInjection;
 use Setono\SyliusReviewPlugin\Checker\AutoApproval\ProductAutoApprovalCheckerInterface;
 use Setono\SyliusReviewPlugin\Checker\AutoApproval\StoreAutoApprovalCheckerInterface;
 use Setono\SyliusReviewPlugin\Checker\ReviewableOrder\ReviewableOrderCheckerInterface;
+use Setono\SyliusReviewPlugin\DisplayName\Provider\DisplayNameCandidateProviderInterface;
 use Setono\SyliusReviewPlugin\EligibilityChecker\ReviewRequestEligibilityCheckerInterface;
 use Setono\SyliusReviewPlugin\Form\Type\ReviewRequestEmailType;
 use Setono\SyliusReviewPlugin\Mailer\Emails;
@@ -60,6 +61,11 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
         $container
             ->registerForAutoconfiguration(ProductAutoApprovalCheckerInterface::class)
             ->addTag('setono_sylius_review.product_review_auto_approval_checker')
+        ;
+
+        $container
+            ->registerForAutoconfiguration(DisplayNameCandidateProviderInterface::class)
+            ->addTag('setono_sylius_review.display_name_candidate_provider')
         ;
 
         self::registerEmailFormType($container);

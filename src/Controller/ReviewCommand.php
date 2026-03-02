@@ -11,6 +11,8 @@ use Sylius\Component\Core\Model\ProductReviewInterface;
 
 final class ReviewCommand
 {
+    private ?string $displayName = null;
+
     private ?StoreReviewInterface $storeReview = null;
 
     /** @var Collection<array-key, ProductReviewInterface> */
@@ -19,6 +21,16 @@ final class ReviewCommand
     public function __construct()
     {
         $this->productReviews = new ArrayCollection();
+    }
+
+    public function getDisplayName(): ?string
+    {
+        return $this->displayName;
+    }
+
+    public function setDisplayName(?string $displayName): void
+    {
+        $this->displayName = $displayName;
     }
 
     public function getStoreReview(): ?StoreReviewInterface

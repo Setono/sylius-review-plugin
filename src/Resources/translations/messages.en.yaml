@@ -19,10 +19,12 @@ setono_sylius_review:
         store_reply: Store reply
         write: Write
         preview: Preview
+        anonymous: Anonymous
         store_reviews: Store reviews
         manage_store_reviews: Manage store reviews
         edit_store_review: Edit store review
     form:
+        display_name: Display name
         store_review:
             rating: Rating
             title: Title (optional)

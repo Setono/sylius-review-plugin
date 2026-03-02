@@ -264,6 +264,11 @@ Compatible with [synolia/SyliusMailTesterPlugin](https://github.com/synolia/Syli
 - `setono_sylius_review.eligibility.maximum_checks`: Max eligibility checks before auto-cancel (default: 5)
 - `setono_sylius_review.pruning.threshold`: Age threshold for pruning old requests (default: '-1 month')
 
+### Twig Functions
+
+- **Prefix all Twig functions** with `setono_sylius_review_` to avoid collisions with other plugins (e.g., `setono_sylius_review_display_name`, not `review_display_name`)
+- **Use Twig runtimes** — register a `RuntimeExtensionInterface` for the actual logic and keep the `AbstractExtension` lightweight (only function/filter declarations). This follows Symfony best practices for lazy-loading Twig extensions.
+
 ### Translations
 
 The plugin provides multilingual support through translation files in `src/Resources/translations/`:
