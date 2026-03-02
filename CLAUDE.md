@@ -36,6 +36,7 @@ Follow clean code principles and SOLID design patterns when working with this co
 - Write code that is easy to test and extend
 
 ### Testing Requirements
+- **All new features MUST have tests** — unit tests, functional tests, end-to-end tests, or a combination of all, depending on what applies. No new feature should be merged without corresponding test coverage.
 - Tests are organized into `tests/Unit/` (no kernel/DB) and `tests/Functional/` (requires kernel + DB). Place new tests in the appropriate directory.
 - Write unit tests for all new functionality (if it makes sense)
 - Follow the BDD-style naming convention for test methods (e.g., `it_should_do_something_when_condition_is_met`)
