@@ -21,6 +21,7 @@ setono_sylius_review:
         preview: Preview
         anonymous: Anonymous
         store_reviews: Store reviews
+        disclaimer: By submitting this review, you agree that it will be publicly visible.
         manage_store_reviews: Manage store reviews
         edit_store_review: Edit store review
     form:

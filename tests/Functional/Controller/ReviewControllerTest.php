@@ -77,6 +77,18 @@ final class ReviewControllerTest extends WebTestCase
     }
 
     /** @test */
+    public function it_renders_disclaimer_text_on_review_form(): void
+    {
+        $this->order->setState(OrderInterface::STATE_FULFILLED);
+        $this->entityManager->flush();
+
+        $this->client->request('GET', '/en_US/review?token=' . $this->order->getTokenValue());
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('.review-disclaimer', 'By submitting this review, you agree that it will be publicly visible.');
+    }
+
+    /** @test */
     public function it_submits_review_successfully(): void
     {
         $this->order->setState(OrderInterface::STATE_FULFILLED);
