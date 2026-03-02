@@ -81,6 +81,7 @@ final class StoreReviewMarkdownToolbarTest extends WebTestCase
         $found = false;
 
         foreach ($scripts as $script) {
+            \assert($script instanceof \DOMElement);
             $src = $script->getAttribute('src');
             if (str_contains($src, 'markdown-toolbar-element')) {
                 $found = true;
