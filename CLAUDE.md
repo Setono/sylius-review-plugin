@@ -48,7 +48,7 @@ Follow clean code and SOLID principles. Favor composition over inheritance.
   - See `tests/Functional/Controller/ReviewControllerTest.php` for the reference pattern
 - Ensure tests are isolated and don't depend on external state
 - Test both happy path and edge cases
-- **Doctrine listener side effects** — When adding Doctrine event listeners that trigger on field changes, ensure all functional tests that modify those entities set up required related data (e.g., store reviews need an order when `StoreReplyNotificationSubscriber` fires)
+- **Doctrine listener side effects** — When adding Doctrine event listeners that trigger on field changes, ensure all functional tests that modify those entities set up required related data (e.g., store reviews need an order when `StoreReplyNotificationListener` fires)
 
 ### Test Database Setup
 Functional tests require a MySQL test database with fixtures loaded:
@@ -207,7 +207,7 @@ Services use FQCN as their service ID (e.g., `Setono\SyliusReviewPlugin\Creator\
 - `ReviewRequestEmailManager`: Handles sending review request emails via Sylius Mailer
 - `ReviewRequestFactory`: Creates ReviewRequest entities from orders
 - `ReviewController`: Handles the customer-facing review form submission
-- `StoreReplyNotificationSubscriber`: Doctrine `preUpdate`/`postUpdate` listener that sends email when `storeReply` changes and `notifyReviewer` is `true`, then resets the flag
+- `StoreReplyNotificationListener`: Doctrine `preUpdate`/`postUpdate` listener that sends email when `storeReply` changes and `notifyReviewer` is `true`, then resets the flag
 - `StoreReplyNotificationEmailManager`: Sends store reply notification emails for both store and product reviews
 
 ### Mail Tester Compatibility

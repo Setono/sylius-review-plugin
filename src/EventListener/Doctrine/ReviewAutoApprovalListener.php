@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Setono\SyliusReviewPlugin\EventSubscriber\Doctrine;
+namespace Setono\SyliusReviewPlugin\EventListener\Doctrine;
 
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Setono\SyliusReviewPlugin\Checker\AutoApproval\AutoApprovalCheckerInterface;
@@ -10,7 +10,7 @@ use Setono\SyliusReviewPlugin\Model\StoreReviewInterface;
 use Sylius\Component\Core\Model\ProductReviewInterface;
 use Sylius\Component\Review\Model\ReviewInterface;
 
-final class ReviewAutoApprovalSubscriber
+final class ReviewAutoApprovalListener
 {
     /**
      * @param AutoApprovalCheckerInterface<StoreReviewInterface> $storeAutoApprovalChecker

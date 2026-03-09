@@ -89,7 +89,7 @@ final class AverageRatingCalculatorTest extends KernelTestCase
         $review->setAuthor($this->customer);
         $review->setTitle('Test review');
 
-        // Persist first (ReviewAutoApprovalSubscriber may override status on prePersist)
+        // Persist first (ReviewAutoApprovalListener may override status on prePersist)
         $this->entityManager->persist($review);
         $this->entityManager->flush();
 

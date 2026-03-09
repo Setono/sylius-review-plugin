@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Setono\SyliusReviewPlugin\Tests\Unit\EventSubscriber\Doctrine;
+namespace Setono\SyliusReviewPlugin\Tests\Unit\EventListener\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Setono\SyliusReviewPlugin\Checker\AutoApproval\AutoApprovalCheckerInterface;
-use Setono\SyliusReviewPlugin\EventSubscriber\Doctrine\ReviewAutoApprovalSubscriber;
+use Setono\SyliusReviewPlugin\EventListener\Doctrine\ReviewAutoApprovalListener;
 use Setono\SyliusReviewPlugin\Model\StoreReviewInterface;
 use Sylius\Component\Core\Model\ProductReviewInterface;
 use Sylius\Component\Review\Model\ReviewInterface;
 
-final class ReviewAutoApprovalSubscriberTest extends TestCase
+final class ReviewAutoApprovalListenerTest extends TestCase
 {
     use ProphecyTrait;
 
@@ -32,8 +32,8 @@ final class ReviewAutoApprovalSubscriberTest extends TestCase
 
         $args = new PrePersistEventArgs($storeReview->reveal(), $this->prophesize(EntityManagerInterface::class)->reveal());
 
-        $subscriber = new ReviewAutoApprovalSubscriber($storeChecker->reveal(), $productChecker->reveal());
-        $subscriber->prePersist($args);
+        $listener = new ReviewAutoApprovalListener($storeChecker->reveal(), $productChecker->reveal());
+        $listener->prePersist($args);
     }
 
     /**
@@ -50,8 +50,8 @@ final class ReviewAutoApprovalSubscriberTest extends TestCase
 
         $args = new PrePersistEventArgs($storeReview->reveal(), $this->prophesize(EntityManagerInterface::class)->reveal());
 
-        $subscriber = new ReviewAutoApprovalSubscriber($storeChecker->reveal(), $productChecker->reveal());
-        $subscriber->prePersist($args);
+        $listener = new ReviewAutoApprovalListener($storeChecker->reveal(), $productChecker->reveal());
+        $listener->prePersist($args);
     }
 
     /**
@@ -68,8 +68,8 @@ final class ReviewAutoApprovalSubscriberTest extends TestCase
 
         $args = new PrePersistEventArgs($productReview->reveal(), $this->prophesize(EntityManagerInterface::class)->reveal());
 
-        $subscriber = new ReviewAutoApprovalSubscriber($storeChecker->reveal(), $productChecker->reveal());
-        $subscriber->prePersist($args);
+        $listener = new ReviewAutoApprovalListener($storeChecker->reveal(), $productChecker->reveal());
+        $listener->prePersist($args);
     }
 
     /**
@@ -86,8 +86,8 @@ final class ReviewAutoApprovalSubscriberTest extends TestCase
 
         $args = new PrePersistEventArgs($productReview->reveal(), $this->prophesize(EntityManagerInterface::class)->reveal());
 
-        $subscriber = new ReviewAutoApprovalSubscriber($storeChecker->reveal(), $productChecker->reveal());
-        $subscriber->prePersist($args);
+        $listener = new ReviewAutoApprovalListener($storeChecker->reveal(), $productChecker->reveal());
+        $listener->prePersist($args);
     }
 
     /**
@@ -101,8 +101,8 @@ final class ReviewAutoApprovalSubscriberTest extends TestCase
 
         $args = new PrePersistEventArgs($entity, $this->prophesize(EntityManagerInterface::class)->reveal());
 
-        $subscriber = new ReviewAutoApprovalSubscriber($storeChecker->reveal(), $productChecker->reveal());
-        $subscriber->prePersist($args);
+        $listener = new ReviewAutoApprovalListener($storeChecker->reveal(), $productChecker->reveal());
+        $listener->prePersist($args);
 
         $storeChecker->shouldAutoApprove($entity)->shouldNotHaveBeenCalled();
         $productChecker->shouldAutoApprove($entity)->shouldNotHaveBeenCalled();

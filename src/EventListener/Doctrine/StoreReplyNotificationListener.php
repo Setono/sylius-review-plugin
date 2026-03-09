@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Setono\SyliusReviewPlugin\EventSubscriber\Doctrine;
+namespace Setono\SyliusReviewPlugin\EventListener\Doctrine;
 
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
@@ -10,7 +10,7 @@ use Doctrine\Persistence\ObjectManager;
 use Setono\SyliusReviewPlugin\Mailer\StoreReplyNotificationEmailManagerInterface;
 use Setono\SyliusReviewPlugin\Model\ReviewInterface;
 
-final class StoreReplyNotificationSubscriber
+final class StoreReplyNotificationListener
 {
     /** @var \SplObjectStorage<ReviewInterface, true> */
     private readonly \SplObjectStorage $flagged;

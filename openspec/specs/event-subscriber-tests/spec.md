@@ -1,6 +1,6 @@
 ## Requirements
 
-### Requirement: ReviewAutoApprovalSubscriber sets accepted status for auto-approved store reviews
+### Requirement: ReviewAutoApprovalListener sets accepted status for auto-approved store reviews
 The test SHALL verify that when a `StoreReviewInterface` entity triggers `prePersist` and the store auto-approval checker returns true, the entity's status is set to `ReviewInterface::STATUS_ACCEPTED`.
 
 #### Scenario: Store review is auto-approved
@@ -11,7 +11,7 @@ The test SHALL verify that when a `StoreReviewInterface` entity triggers `prePer
 - **WHEN** `prePersist` is called with a `StoreReviewInterface` entity and the store checker returns `shouldAutoApprove() === false`
 - **THEN** the entity's status SHALL NOT be changed
 
-### Requirement: ReviewAutoApprovalSubscriber sets accepted status for auto-approved product reviews
+### Requirement: ReviewAutoApprovalListener sets accepted status for auto-approved product reviews
 The test SHALL verify that when a `ProductReviewInterface` entity triggers `prePersist` and the product auto-approval checker returns true, the entity's status is set to `ReviewInterface::STATUS_ACCEPTED`.
 
 #### Scenario: Product review is auto-approved
@@ -22,7 +22,7 @@ The test SHALL verify that when a `ProductReviewInterface` entity triggers `preP
 - **WHEN** `prePersist` is called with a `ProductReviewInterface` entity and the product checker returns `shouldAutoApprove() === false`
 - **THEN** the entity's status SHALL NOT be changed
 
-### Requirement: ReviewAutoApprovalSubscriber ignores unrelated entities
+### Requirement: ReviewAutoApprovalListener ignores unrelated entities
 The test SHALL verify that entities not implementing `StoreReviewInterface` or `ProductReviewInterface` are ignored.
 
 #### Scenario: Unrelated entity triggers prePersist

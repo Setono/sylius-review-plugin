@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Setono\SyliusReviewPlugin\Tests\Unit\EventSubscriber\Doctrine;
+namespace Setono\SyliusReviewPlugin\Tests\Unit\EventListener\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
-use Setono\SyliusReviewPlugin\EventSubscriber\Doctrine\StoreReplyNotificationSubscriber;
+use Setono\SyliusReviewPlugin\EventListener\Doctrine\StoreReplyNotificationListener;
 use Setono\SyliusReviewPlugin\Mailer\StoreReplyNotificationEmailManagerInterface;
 use Setono\SyliusReviewPlugin\Model\ReviewInterface;
 
-final class StoreReplyNotificationSubscriberTest extends TestCase
+final class StoreReplyNotificationListenerTest extends TestCase
 {
     use ProphecyTrait;
 
@@ -34,11 +34,11 @@ final class StoreReplyNotificationSubscriberTest extends TestCase
         $changeSet = ['storeReply' => [null, 'Thank you!']];
         $preUpdateArgs = new PreUpdateEventArgs($review->reveal(), $em->reveal(), $changeSet);
 
-        $subscriber = new StoreReplyNotificationSubscriber($emailManager->reveal());
-        $subscriber->preUpdate($preUpdateArgs);
+        $listener = new StoreReplyNotificationListener($emailManager->reveal());
+        $listener->preUpdate($preUpdateArgs);
 
         $postUpdateArgs = new LifecycleEventArgs($review->reveal(), $em->reveal());
-        $subscriber->postUpdate($postUpdateArgs);
+        $listener->postUpdate($postUpdateArgs);
     }
 
     /**
@@ -57,11 +57,11 @@ final class StoreReplyNotificationSubscriberTest extends TestCase
         $changeSet = ['storeReply' => [null, 'Thank you!']];
         $preUpdateArgs = new PreUpdateEventArgs($review->reveal(), $em->reveal(), $changeSet);
 
-        $subscriber = new StoreReplyNotificationSubscriber($emailManager->reveal());
-        $subscriber->preUpdate($preUpdateArgs);
+        $listener = new StoreReplyNotificationListener($emailManager->reveal());
+        $listener->preUpdate($preUpdateArgs);
 
         $postUpdateArgs = new LifecycleEventArgs($review->reveal(), $em->reveal());
-        $subscriber->postUpdate($postUpdateArgs);
+        $listener->postUpdate($postUpdateArgs);
     }
 
     /**
@@ -80,11 +80,11 @@ final class StoreReplyNotificationSubscriberTest extends TestCase
         $changeSet = ['title' => ['Old title', 'New title']];
         $preUpdateArgs = new PreUpdateEventArgs($review->reveal(), $em->reveal(), $changeSet);
 
-        $subscriber = new StoreReplyNotificationSubscriber($emailManager->reveal());
-        $subscriber->preUpdate($preUpdateArgs);
+        $listener = new StoreReplyNotificationListener($emailManager->reveal());
+        $listener->preUpdate($preUpdateArgs);
 
         $postUpdateArgs = new LifecycleEventArgs($review->reveal(), $em->reveal());
-        $subscriber->postUpdate($postUpdateArgs);
+        $listener->postUpdate($postUpdateArgs);
     }
 
     /**
@@ -101,11 +101,11 @@ final class StoreReplyNotificationSubscriberTest extends TestCase
         $changeSet = ['storeReply' => [null, 'Reply']];
         $preUpdateArgs = new PreUpdateEventArgs($entity, $em->reveal(), $changeSet);
 
-        $subscriber = new StoreReplyNotificationSubscriber($emailManager->reveal());
-        $subscriber->preUpdate($preUpdateArgs);
+        $listener = new StoreReplyNotificationListener($emailManager->reveal());
+        $listener->preUpdate($preUpdateArgs);
 
         $postUpdateArgs = new LifecycleEventArgs($entity, $em->reveal());
-        $subscriber->postUpdate($postUpdateArgs);
+        $listener->postUpdate($postUpdateArgs);
 
         $emailManager->sendNotification($entity)->shouldNotHaveBeenCalled();
     }

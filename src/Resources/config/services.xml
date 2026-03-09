@@ -236,14 +236,14 @@
             <tag name="form.type_extension"/>
         </service>
 
-        <!-- Doctrine Event Subscribers -->
-        <service id="Setono\SyliusReviewPlugin\EventSubscriber\Doctrine\StoreReplyNotificationSubscriber">
+        <!-- Doctrine Event Listeners -->
+        <service id="Setono\SyliusReviewPlugin\EventListener\Doctrine\StoreReplyNotificationListener">
             <argument type="service" id="Setono\SyliusReviewPlugin\Mailer\StoreReplyNotificationEmailManagerInterface"/>
             <tag name="doctrine.event_listener" event="preUpdate"/>
             <tag name="doctrine.event_listener" event="postUpdate"/>
         </service>
 
-        <service id="Setono\SyliusReviewPlugin\EventSubscriber\Doctrine\ReviewAutoApprovalSubscriber">
+        <service id="Setono\SyliusReviewPlugin\EventListener\Doctrine\ReviewAutoApprovalListener">
             <argument type="service" id="setono_sylius_review.checker.auto_approval.store_review"/>
             <argument type="service" id="setono_sylius_review.checker.auto_approval.product_review"/>
             <tag name="doctrine.event_listener" event="prePersist"/>
