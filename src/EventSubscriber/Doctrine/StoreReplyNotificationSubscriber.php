@@ -13,7 +13,7 @@ use Setono\SyliusReviewPlugin\Model\ReviewInterface;
 final class StoreReplyNotificationSubscriber
 {
     /** @var \SplObjectStorage<ReviewInterface, true> */
-    private \SplObjectStorage $flagged;
+    private readonly \SplObjectStorage $flagged;
 
     public function __construct(private readonly StoreReplyNotificationEmailManagerInterface $emailManager)
     {
