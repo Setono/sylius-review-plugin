@@ -1,0 +1,13 @@
+{% if form.vars.errors|length > 0 or form.storeReview.vars.errors|length > 0 %}
+    <div class="ui error message">
+        <div class="header">{{ 'setono_sylius_review.ui.please_correct_errors'|trans }}</div>
+        <ul class="list">
+            {% for error in form.vars.errors %}
+                <li>{{ error.message|trans }}</li>
+            {% endfor %}
+            {% for error in form.storeReview.vars.errors %}
+                <li>{{ error.message|trans }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

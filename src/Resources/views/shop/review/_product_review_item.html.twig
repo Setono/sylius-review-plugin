@@ -1,0 +1,27 @@
+<div class="ui grid stackable" style="margin-bottom: 2rem;">
+    <div class="four wide column">
+        {% set productImage = product.images|first %}
+        {% if productImage %}
+            <img src="{{ productImage.path|imagine_filter('sylius_shop_product_thumbnail') }}"
+                 alt="{{ product.name }}" class="ui small image">
+        {% endif %}
+    </div>
+    <div class="twelve wide column">
+        <h4 style="margin-top: 0;">{{ product.name }}</h4>
+        {% if item.variantName %}
+            <p style="color: #666;">{{ item.variantName }}</p>
+        {% endif %}
+
+        {% if form.productReviews[index] is defined %}
+            <div class="field">
+                {{ form_label(form.productReviews[index].rating) }}
+                <div class="ui rating-choices">
+                    {{ form_widget(form.productReviews[index].rating) }}
+                </div>
+                {{ form_errors(form.productReviews[index].rating) }}
+            </div>
+            {{ form_row(form.productReviews[index].title) }}
+            {{ form_row(form.productReviews[index].comment) }}
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,11 @@
+<div style="margin-bottom: 3rem;">
+    <h3>{{ 'setono_sylius_review.ui.product_reviews'|trans }}</h3>
+    <p style="color: #666; margin-bottom: 1.5rem;">{{ 'setono_sylius_review.ui.product_reviews_description'|trans }}</p>
+
+    {% for index, item in order.items %}
+        {% set product = item.product %}
+        {% if product %}
+            {% include '@SetonoSyliusReviewPlugin/shop/review/_product_review_item.html.twig' %}
+        {% endif %}
+    {% endfor %}
+</div>
