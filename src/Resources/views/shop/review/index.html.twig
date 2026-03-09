@@ -4,9 +4,25 @@
 {% block header %}{% endblock %}
 {% block footer %}{% endblock %}
 
-{% block stylesheets %}
+{% block javascripts %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('bundles/setonosyliusreviewplugin/css/review.css') }}">
+    <script>
+        $(document).ready(function () {
+            $('.star.rating').each(function () {
+                var $star = $(this);
+                var targetId = $star.data('rating-target');
+                var $target = $('#' + targetId);
+
+                $star.rating({
+                    fireOnInit: true,
+                    onRate: function (value) {
+                        $target.find('input[type="radio"]:checked').prop('checked', false);
+                        $target.find('input[type="radio"][value="' + value + '"]').prop('checked', true);
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block content %}

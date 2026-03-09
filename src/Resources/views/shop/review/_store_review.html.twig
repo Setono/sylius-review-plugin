@@ -4,7 +4,8 @@
 
     <div class="field">
         {{ form_label(form.storeReview.rating) }}
-        <div class="ui rating-choices">
+        <div class="ui huge star rating" data-rating="{{ form.storeReview.rating.vars.data ?? 0 }}" data-max-rating="5" data-rating-target="{{ form.storeReview.rating.vars.id }}"><i class="icon"></i><i class="icon"></i><i class="icon"></i><i class="icon"></i><i class="icon"></i></div>
+        <div id="{{ form.storeReview.rating.vars.id }}" style="display: none">
             {{ form_widget(form.storeReview.rating) }}
         </div>
         {{ form_errors(form.storeReview.rating) }}

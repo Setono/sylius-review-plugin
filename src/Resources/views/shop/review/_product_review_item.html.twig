@@ -15,7 +15,8 @@
         {% if form.productReviews[index] is defined %}
             <div class="field">
                 {{ form_label(form.productReviews[index].rating) }}
-                <div class="ui rating-choices">
+                <div class="ui huge star rating" data-rating="{{ form.productReviews[index].rating.vars.data ?? 0 }}" data-max-rating="5" data-rating-target="{{ form.productReviews[index].rating.vars.id }}"><i class="icon"></i><i class="icon"></i><i class="icon"></i><i class="icon"></i><i class="icon"></i></div>
+                <div id="{{ form.productReviews[index].rating.vars.id }}" style="display: none">
                     {{ form_widget(form.productReviews[index].rating) }}
                 </div>
                 {{ form_errors(form.productReviews[index].rating) }}
