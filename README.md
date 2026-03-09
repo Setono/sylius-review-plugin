@@ -121,6 +121,33 @@ sylius_review:
 
 Store reviews support store replies out of the box — no entity extension needed.
 
+### Override the product review admin form template (for store replies)
+
+The plugin adds a `storeReply` field to the product review form via a form extension, but Sylius's default admin template
+doesn't render it. To display the store reply field, override the template in your application.
+
+Create `templates/bundles/SyliusAdminBundle/ProductReview/_form.html.twig`:
+
+```twig
+{% include '@SetonoSyliusReviewPlugin/admin/_markdown_toolbar_scripts.html.twig' %}
+
+<div class="ui stackable grid">
+    <div class="twelve wide column">
+        <div class="ui segment">
+            {{ form_errors(form) }}
+            {{ form_row(form.title) }}
+            {{ form_row(form.comment) }}
+            {{ form_row(form.rating) }}
+            {{ form_row(form.storeReply) }}
+        </div>
+    </div>
+    <div class="four wide column">
+        {% include '@SyliusAdmin/ProductReview/_product.html.twig' %}
+        {% include '@SyliusAdmin/ProductReview/_author.html.twig' %}
+    </div>
+</div>
+```
+
 ### Update your database
 
 ```bash
