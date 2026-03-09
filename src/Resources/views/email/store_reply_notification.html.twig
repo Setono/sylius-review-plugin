@@ -1,0 +1,33 @@
+{# @var review \Setono\SyliusReviewPlugin\Model\ReviewInterface #}
+{# @var isStoreReview bool #}
+{# @var isProductReview bool #}
+{# @var reviewSubject \Sylius\Component\Review\Model\ReviewableInterface|null #}
+{# @var reviewSubjectName string|null #}
+
+{% extends '@SyliusShop/Email/layout.html.twig' %}
+
+{% block subject %}
+    {{ 'setono_sylius_review.email.store_reply_notification.subject'|trans }}
+{% endblock %}
+
+{% block content %}
+    <h4>{{ 'setono_sylius_review.email.store_reply_notification.heading'|trans }}</h4>
+
+    {% if isStoreReview %}
+        <p>{{ 'setono_sylius_review.email.store_reply_notification.store_review_intro'|trans({ '%name%': reviewSubjectName }) }}</p>
+    {% else %}
+        <p>{{ 'setono_sylius_review.email.store_reply_notification.product_review_intro'|trans({ '%name%': reviewSubjectName }) }}</p>
+    {% endif %}
+
+    <h5>{{ 'setono_sylius_review.email.store_reply_notification.your_review'|trans }}</h5>
+    {% if review.title is not null %}
+        <p><strong>{{ review.title }}</strong></p>
+    {% endif %}
+    <p>{{ 'setono_sylius_review.email.store_reply_notification.rating'|trans }}: {{ review.rating }}/5</p>
+    {% if review.comment is not null %}
+        <p>{{ review.comment }}</p>
+    {% endif %}
+
+    <h5>{{ 'setono_sylius_review.email.store_reply_notification.store_reply'|trans }}</h5>
+    <blockquote>{{ review.storeReply }}</blockquote>
+{% endblock %}

@@ -77,4 +77,28 @@ final class StoreReplyTraitTest extends TestCase
 
         self::assertNull($review->getStoreRepliedAt());
     }
+
+    /**
+     * @test
+     */
+    public function it_has_notify_reviewer_true_by_default(): void
+    {
+        $review = new StoreReview();
+
+        self::assertTrue($review->getNotifyReviewer());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_set_and_get_notify_reviewer(): void
+    {
+        $review = new StoreReview();
+
+        $review->setNotifyReviewer(true);
+        self::assertTrue($review->getNotifyReviewer());
+
+        $review->setNotifyReviewer(false);
+        self::assertFalse($review->getNotifyReviewer());
+    }
 }

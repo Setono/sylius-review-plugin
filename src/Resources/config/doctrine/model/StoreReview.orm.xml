@@ -24,6 +24,11 @@
         <field name="displayName" column="display_name" type="string" nullable="true"/>
         <field name="storeReply" column="store_reply" type="text" nullable="true"/>
         <field name="storeRepliedAt" column="store_replied_at" type="datetime" nullable="true"/>
+        <field name="notifyReviewer" column="notify_reviewer" type="boolean">
+            <options>
+                <option name="default">1</option>
+            </options>
+        </field>
 
         <many-to-one field="order" target-entity="Sylius\Component\Order\Model\OrderInterface">
             <join-column name="order_id" referenced-column-name="id" on-delete="SET NULL" nullable="true"/>

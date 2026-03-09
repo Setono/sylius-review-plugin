@@ -20,6 +20,12 @@ sylius_channel:
             classes:
                 model: Setono\SyliusReviewPlugin\Tests\Application\Entity\Channel
 
+sylius_order:
+    resources:
+        order:
+            classes:
+                repository: Setono\SyliusReviewPlugin\Tests\Application\Repository\OrderRepository
+
 sylius_review:
     resources:
         product:

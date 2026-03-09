@@ -19,4 +19,8 @@ interface ReviewInterface extends BaseReviewInterface
     public function getStoreRepliedAt(): ?\DateTimeInterface;
 
     public function setStoreRepliedAt(?\DateTimeInterface $storeRepliedAt): void;
+
+    public function getNotifyReviewer(): bool;
+
+    public function setNotifyReviewer(bool $notifyReviewer): void;
 }

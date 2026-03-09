@@ -94,6 +94,9 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
                 Emails::REVIEW_REQUEST => [
                     'template' => '@SetonoSyliusReviewPlugin/email/review_request.html.twig',
                 ],
+                Emails::STORE_REPLY_NOTIFICATION => [
+                    'template' => '@SetonoSyliusReviewPlugin/email/store_reply_notification.html.twig',
+                ],
             ],
         ]);
 

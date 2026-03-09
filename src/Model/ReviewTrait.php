@@ -17,6 +17,9 @@ trait ReviewTrait
     #[ORM\Column(type: 'datetime', nullable: true)]
     protected ?\DateTimeInterface $storeRepliedAt = null;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    protected bool $notifyReviewer = true;
+
     public function getDisplayName(): ?string
     {
         return $this->displayName;
@@ -46,5 +49,15 @@ trait ReviewTrait
     public function setStoreRepliedAt(?\DateTimeInterface $storeRepliedAt): void
     {
         $this->storeRepliedAt = $storeRepliedAt;
+    }
+
+    public function getNotifyReviewer(): bool
+    {
+        return $this->notifyReviewer;
+    }
+
+    public function setNotifyReviewer(bool $notifyReviewer): void
+    {
+        $this->notifyReviewer = $notifyReviewer;
     }
 }

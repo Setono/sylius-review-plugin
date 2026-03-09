@@ -6,6 +6,7 @@ namespace Setono\SyliusReviewPlugin\Form\Type\Admin;
 
 use Setono\SyliusReviewPlugin\Form\Type\MarkdownTextareaType;
 use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -38,6 +39,10 @@ final class StoreReviewAdminType extends AbstractResourceType
             ])
             ->add('storeReply', MarkdownTextareaType::class, [
                 'label' => 'setono_sylius_review.form.review.store_reply',
+                'required' => false,
+            ])
+            ->add('notifyReviewer', CheckboxType::class, [
+                'label' => 'setono_sylius_review.form.review.notify_reviewer',
                 'required' => false,
             ])
         ;

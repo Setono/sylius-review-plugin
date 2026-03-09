@@ -99,6 +99,14 @@
         <service id="Setono\SyliusReviewPlugin\Mailer\ReviewRequestEmailManagerInterface"
                  alias="Setono\SyliusReviewPlugin\Mailer\ReviewRequestEmailManager"/>
 
+        <service id="Setono\SyliusReviewPlugin\Mailer\StoreReplyNotificationEmailManager">
+            <argument type="service" id="sylius.email_sender"/>
+            <argument type="service" id="sylius.repository.order"/>
+        </service>
+
+        <service id="Setono\SyliusReviewPlugin\Mailer\StoreReplyNotificationEmailManagerInterface"
+                 alias="Setono\SyliusReviewPlugin\Mailer\StoreReplyNotificationEmailManager"/>
+
         <!-- Processors -->
         <service id="Setono\SyliusReviewPlugin\Processor\ReviewRequestProcessor">
             <argument type="service" id="setono_sylius_review.repository.review_request"/>
@@ -229,6 +237,12 @@
         </service>
 
         <!-- Doctrine Event Subscribers -->
+        <service id="Setono\SyliusReviewPlugin\EventSubscriber\Doctrine\StoreReplyNotificationSubscriber">
+            <argument type="service" id="Setono\SyliusReviewPlugin\Mailer\StoreReplyNotificationEmailManagerInterface"/>
+            <tag name="doctrine.event_listener" event="preUpdate"/>
+            <tag name="doctrine.event_listener" event="postUpdate"/>
+        </service>
+
         <service id="Setono\SyliusReviewPlugin\EventSubscriber\Doctrine\ReviewAutoApprovalSubscriber">
             <argument type="service" id="setono_sylius_review.checker.auto_approval.store_review"/>
             <argument type="service" id="setono_sylius_review.checker.auto_approval.product_review"/>

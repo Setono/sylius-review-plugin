@@ -8,6 +8,8 @@ final class Emails
 {
     public const REVIEW_REQUEST = 'setono_sylius_review__review_request';
 
+    public const STORE_REPLY_NOTIFICATION = 'setono_sylius_review__store_reply_notification';
+
     private function __construct()
     {
     }

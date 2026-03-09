@@ -27,13 +27,7 @@ Store reviews require the Channel entity to implement `ReviewableInterface`. The
 
 ## Code Standards
 
-Follow clean code principles and SOLID design patterns when working with this codebase:
-- Write clean, readable, and maintainable code
-- Apply SOLID principles (Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion)
-- Use meaningful variable and method names
-- Keep methods and classes focused on a single responsibility
-- Favor composition over inheritance
-- Write code that is easy to test and extend
+Follow clean code and SOLID principles. Favor composition over inheritance.
 
 ### Testing Requirements
 - **All new features MUST have tests** — unit tests, functional tests, end-to-end tests, or a combination of all, depending on what applies. No new feature should be merged without corresponding test coverage.
@@ -54,6 +48,7 @@ Follow clean code principles and SOLID design patterns when working with this co
   - See `tests/Functional/Controller/ReviewControllerTest.php` for the reference pattern
 - Ensure tests are isolated and don't depend on external state
 - Test both happy path and edge cases
+- **Doctrine listener side effects** — When adding Doctrine event listeners that trigger on field changes, ensure all functional tests that modify those entities set up required related data (e.g., store reviews need an order when `StoreReplyNotificationSubscriber` fires)
 
 ### Test Database Setup
 Functional tests require a MySQL test database with fixtures loaded:
@@ -101,18 +96,7 @@ bin/console lint:twig ../../src/Resources
 
 ### Static Analysis
 
-#### PHPStan Configuration
-PHPStan is configured in `phpstan.neon` with:
-- **Analysis Level**: max (strictest)
-- **Extensions**: Auto-loaded via `phpstan/extension-installer`
-  - `phpstan/phpstan-symfony` - Symfony framework integration
-  - `phpstan/phpstan-doctrine` - Doctrine ORM integration
-  - `phpstan/phpstan-phpunit` - PHPUnit test integration
-  - `jangregor/phpstan-prophecy` - Prophecy mocking integration
-- **Symfony Integration**: Uses console application loader (`tests/PHPStan/console_application.php`)
-- **Doctrine Integration**: Uses object manager loader (`tests/PHPStan/object_manager.php`)
-- **Exclusions**: Test application directory and Configuration.php
-- **Baseline**: Generate with `composer analyse -- --generate-baseline` to track improvements
+PHPStan runs at **level max**. Config in `phpstan.neon`. Generate baseline: `composer analyse -- --generate-baseline`
 
 ### Test Application
 The plugin includes a test Symfony application in `tests/Application/` for development and testing:
@@ -124,22 +108,6 @@ The plugin includes a test Symfony application in `tests/Application/` for devel
 - **Check Server Status**: `symfony server:status --dir=tests/Application`
 - **Admin Interface**: https://127.0.0.1:8000/admin
 - **Admin Credentials**: `sylius:sylius`
-
-## Bash Tools Recommendations
-
-Use the right tool for the right job when executing bash commands:
-
-- **Finding FILES?** → Use `fd` (fast file finder)
-- **Finding TEXT/strings?** → Use `rg` (ripgrep for text search)
-- **Finding CODE STRUCTURE?** → Use `ast-grep` (syntax-aware code search)
-- **SELECTING from multiple results?** → Pipe to `fzf` (interactive fuzzy finder)
-- **Interacting with JSON?** → Use `jq` (JSON processor)
-- **Interacting with YAML or XML?** → Use `yq` (YAML/XML processor)
-
-Examples:
-- `fd "*.php" | fzf` - Find PHP files and interactively select one
-- `rg "function.*validate" | fzf` - Search for validation functions and select
-- `ast-grep --lang php -p 'class $name extends $parent'` - Find class inheritance patterns
 
 ## Architecture
 
@@ -194,27 +162,9 @@ The customer-facing review form allows customers to submit store and product rev
 - **`StoreReviewType` uses POST_SUBMIT** (not PRE_SET_DATA) to set order, author, and reviewSubject on new entities. This is because `AbstractResourceType` uses `empty_data` to create entities during form submission — PRE_SET_DATA fires before the entity exists for new reviews
 - **`ReviewType` uses PRE_SET_DATA** to populate the `ReviewCommand` with existing/new review data before the form renders. This works because `ReviewCommand` is created by the controller, not by `empty_data`
 
-#### ReviewCommand DTO
-
-`src/Controller/ReviewCommand.php` - Simple DTO holding a `StoreReviewInterface` and a collection of `ProductReviewInterface`. Used as the form's `data_class` to decouple form handling from entity persistence.
-
-#### Route
-
-- **Path**: `/{_locale}/review` (GET/POST)
-- **Route name**: `setono_sylius_review__review`
-- **Query parameter**: `token` (order token)
-
 ### Average Rating Calculator
 
-The plugin replaces Sylius's default average rating calculator with a performant database-query-based implementation, decorated with an optional cache layer:
-
-- **Decoration chain** (outermost → innermost):
-  1. `CachedAverageRatingCalculator` (priority 32, **prod only**) — Symfony cache (`cache.app`), 900s TTL
-  2. `AverageRatingCalculator` (priority 64) — Uses SQL `AVG()` instead of loading all reviews into memory
-  3. Sylius default calculator — Fallback for non-ORM or unmapped entities
-
-- `ConfigureAverageRatingCalculatorCachePass` removes the cache decorator when `kernel.debug` is `true`
-- Both decorators fall through to the inner calculator when they can't handle the reviewable (e.g., no ORM mapping, no `ResourceInterface`, etc.)
+Replaces Sylius's default with a SQL `AVG()`-based calculator, decorated with a cache layer (prod only, 900s TTL). `ConfigureAverageRatingCalculatorCachePass` removes the cache when `kernel.debug` is `true`. Both decorators fall through to the inner calculator for non-ORM entities.
 
 ### Auto-Approval Checkers
 
@@ -238,6 +188,10 @@ Review requests are created asynchronously via the `process` command (not during
 - `ReviewRequestCreatorInterface` / `ReviewRequestCreator`: Builds a Doctrine query for eligible orders (fulfilled, within threshold, no existing review request), dispatches `QueryBuilderForReviewRequestCreationCreated` for query customization, iterates with `SimpleBatchIteratorAggregate`, and creates review requests via factory
 - The `pruning.threshold` parameter is reused as the lookback cutoff for order eligibility
 
+### Plugin Extensibility Pattern
+
+When the plugin needs functionality from host-app repositories, provide an **interface + trait** (e.g., `OrderRepositoryInterface` + `OrderRepositoryTrait`). Plugin users implement the interface on their repository class and use the trait. Document in README.md.
+
 ### Service ID Convention
 
 Services use FQCN as their service ID (e.g., `Setono\SyliusReviewPlugin\Creator\ReviewRequestCreator`) with interface aliases for autowiring (e.g., `ReviewRequestCreatorInterface` → `ReviewRequestCreator`).
@@ -253,10 +207,17 @@ Services use FQCN as their service ID (e.g., `Setono\SyliusReviewPlugin\Creator\
 - `ReviewRequestEmailManager`: Handles sending review request emails via Sylius Mailer
 - `ReviewRequestFactory`: Creates ReviewRequest entities from orders
 - `ReviewController`: Handles the customer-facing review form submission
+- `StoreReplyNotificationSubscriber`: Doctrine `preUpdate`/`postUpdate` listener that sends email when `storeReply` changes and `notifyReviewer` is `true`, then resets the flag
+- `StoreReplyNotificationEmailManager`: Sends store reply notification emails for both store and product reviews
 
 ### Mail Tester Compatibility
 
 Compatible with [synolia/SyliusMailTesterPlugin](https://github.com/synolia/SyliusMailTesterPlugin/). The review request email subject is `setono_sylius_review__review_request`.
+
+### Email Template Requirements
+
+- `@SyliusShop/Email/layout.html.twig` requires `channel` and `localeCode` template variables — always pass them when sending emails via `SenderInterface`
+- For product reviews, resolve the channel and locale from the customer's latest order via `OrderRepositoryInterface::findLatestByCustomer()`
 
 ### Configuration Parameters
 

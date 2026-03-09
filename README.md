@@ -121,10 +121,43 @@ sylius_review:
 
 Store reviews support store replies out of the box — no entity extension needed.
 
+### Extend the Order repository (for store reply notifications)
+
+When the store replies to a product review, the plugin sends a notification email to the customer. To resolve the channel for the email template, the plugin needs to find the customer's latest order. You must extend the order repository to implement the plugin's `OrderRepositoryInterface`.
+
+Create `src/Repository/OrderRepository.php`:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Repository;
+
+use Setono\SyliusReviewPlugin\Repository\OrderRepositoryInterface;
+use Setono\SyliusReviewPlugin\Repository\OrderRepositoryTrait;
+use Sylius\Bundle\CoreBundle\Doctrine\ORM\OrderRepository as BaseOrderRepository;
+
+class OrderRepository extends BaseOrderRepository implements OrderRepositoryInterface
+{
+    use OrderRepositoryTrait;
+}
+```
+
+Then configure Sylius to use your custom order repository in `config/packages/sylius_order.yaml`:
+
+```yaml
+sylius_order:
+    resources:
+        order:
+            classes:
+                repository: App\Repository\OrderRepository
+```
+
 ### Override the product review admin form template (for store replies)
 
-The plugin adds a `storeReply` field to the product review form via a form extension, but Sylius's default admin template
-doesn't render it. To display the store reply field, override the template in your application.
+The plugin adds `storeReply` and `notifyReviewer` fields to the product review form via a form extension, but Sylius's default admin template
+doesn't render them. To display these fields, override the template in your application.
 
 Create `templates/bundles/SyliusAdminBundle/ProductReview/_form.html.twig`:
 
@@ -139,6 +172,7 @@ Create `templates/bundles/SyliusAdminBundle/ProductReview/_form.html.twig`:
             {{ form_row(form.comment) }}
             {{ form_row(form.rating) }}
             {{ form_row(form.storeReply) }}
+            {{ form_row(form.notifyReviewer) }}
         </div>
     </div>
     <div class="four wide column">

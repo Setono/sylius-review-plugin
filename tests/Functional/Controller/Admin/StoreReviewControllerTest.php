@@ -9,6 +9,7 @@ use Setono\SyliusReviewPlugin\Model\ChannelInterface;
 use Setono\SyliusReviewPlugin\Model\StoreReview;
 use Setono\SyliusReviewPlugin\Model\StoreReviewInterface;
 use Sylius\Component\Core\Model\AdminUserInterface;
+use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Review\Model\ReviewerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -25,6 +26,8 @@ final class StoreReviewControllerTest extends WebTestCase
 
     private ReviewerInterface $customer;
 
+    private OrderInterface $order;
+
     protected function setUp(): void
     {
         $this->client = self::createClient();
@@ -38,10 +41,17 @@ final class StoreReviewControllerTest extends WebTestCase
         self::assertNotNull($channel, 'No fixture channel found. Make sure Sylius fixtures are loaded.');
         $this->channel = $channel;
 
-        /** @var ReviewerInterface|null $customer */
-        $customer = $this->entityManager->getRepository(ReviewerInterface::class)->findOneBy([]);
-        self::assertNotNull($customer, 'No fixture customer found. Make sure Sylius fixtures are loaded.');
+        /** @var OrderInterface|null $order */
+        $order = $this->entityManager->getRepository(OrderInterface::class)->findOneBy([]);
+        self::assertNotNull($order, 'No fixture order found. Make sure Sylius fixtures are loaded.');
+        $order->setState(OrderInterface::STATE_FULFILLED);
+        $this->order = $order;
+
+        $customer = $order->getCustomer();
+        self::assertInstanceOf(ReviewerInterface::class, $customer);
         $this->customer = $customer;
+
+        $this->entityManager->flush();
 
         $this->loginAdmin();
     }
@@ -233,6 +243,32 @@ final class StoreReviewControllerTest extends WebTestCase
     }
 
     /** @test */
+    public function it_saves_store_reply_with_notify_reviewer_and_resets_flag(): void
+    {
+        $storeReview = $this->createStoreReview();
+
+        $this->client->request('GET', sprintf('/admin/store-reviews/%d/edit', $storeReview->getId()));
+        self::assertResponseIsSuccessful();
+
+        $this->client->submitForm('sylius_save_changes_button', [
+            'setono_sylius_review_admin_store_review[rating]' => 5,
+            'setono_sylius_review_admin_store_review[title]' => 'Great store',
+            'setono_sylius_review_admin_store_review[storeReply]' => 'Thank you for your feedback!',
+            'setono_sylius_review_admin_store_review[notifyReviewer]' => '1',
+        ]);
+
+        self::assertResponseRedirects();
+
+        $this->entityManager->clear();
+
+        /** @var StoreReviewInterface|null $updated */
+        $updated = $this->entityManager->getRepository(StoreReviewInterface::class)->find($storeReview->getId());
+        self::assertNotNull($updated);
+        self::assertSame('Thank you for your feedback!', $updated->getStoreReply());
+        self::assertFalse($updated->getNotifyReviewer(), 'notifyReviewer should be reset to false after save');
+    }
+
+    /** @test */
     public function it_denies_access_for_unauthenticated_users(): void
     {
         self::ensureKernelShutdown();
@@ -262,6 +298,7 @@ final class StoreReviewControllerTest extends WebTestCase
         $storeReview->setComment('Wonderful experience');
         $storeReview->setReviewSubject($this->channel);
         $storeReview->setAuthor($this->customer);
+        $storeReview->setOrder($this->order);
 
         $this->entityManager->persist($storeReview);
         $this->entityManager->flush();

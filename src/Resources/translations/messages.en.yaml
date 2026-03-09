@@ -2,6 +2,14 @@ setono_sylius_review:
     email:
         review_request:
             subject: Please review %channel%
+        store_reply_notification:
+            subject: You received a reply to your review
+            heading: You received a reply to your review
+            your_review: Your review
+            rating: Rating
+            store_reply: Store reply
+            store_review_intro: The store has replied to your review of %name%.
+            product_review_intro: The store has replied to your review of %name%.
     ui:
         review_your_order: Review Your Order
         introduction: Thank you for shopping with us! We would love to hear about your experience. Your feedback helps us improve and helps other customers make informed decisions.
@@ -36,3 +44,4 @@ setono_sylius_review:
             comment: Comment (optional)
         review:
             store_reply: Store reply
+            notify_reviewer: Notify reviewer
