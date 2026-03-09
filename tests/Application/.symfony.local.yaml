@@ -1,0 +1,12 @@
+# See https://symfony.com/doc/current/setup/symfony_cli.html#configuration-file
+workers:
+    docker_compose: ~
+    
+    yarn_install:
+        cmd: [ "yarn", "install", "--force" ]
+        
+    yarn_build:
+        cmd: [ "yarn", "build" ]
+        
+    assets_install:
+        cmd: [ "symfony", "console", "assets:install", "--symlink" ]
