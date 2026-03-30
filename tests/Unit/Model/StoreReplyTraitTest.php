@@ -12,6 +12,32 @@ final class StoreReplyTraitTest extends TestCase
     /**
      * @test
      */
+    public function it_has_null_display_name_by_default(): void
+    {
+        $review = new StoreReview();
+
+        self::assertNull($review->getDisplayName());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_set_and_get_display_name(): void
+    {
+        $review = new StoreReview();
+
+        $review->setDisplayName('John D.');
+
+        self::assertSame('John D.', $review->getDisplayName());
+
+        $review->setDisplayName(null);
+
+        self::assertNull($review->getDisplayName());
+    }
+
+    /**
+     * @test
+     */
     public function it_has_null_store_reply_by_default(): void
     {
         $review = new StoreReview();
