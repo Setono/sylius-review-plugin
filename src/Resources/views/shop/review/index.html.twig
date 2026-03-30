@@ -33,7 +33,7 @@
         {% include '@SetonoSyliusReviewPlugin/shop/review/_not_reviewable.html.twig' %}
     {% else %}
         {% form_theme form '@SyliusShop/Form/theme.html.twig' %}
-        {{ form_start(form) }}
+        {{ form_start(form, {'attr': {'class': 'ui form'}}) }}
         {% include '@SetonoSyliusReviewPlugin/shop/review/_errors.html.twig' %}
         {% include '@SetonoSyliusReviewPlugin/shop/review/_display_name.html.twig' %}
         {% include '@SetonoSyliusReviewPlugin/shop/review/_store_review.html.twig' %}
