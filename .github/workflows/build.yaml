@@ -289,6 +289,17 @@ jobs:
                 with:
                     dependency-versions: "${{ matrix.dependencies }}"
 
+            -   name: "Setup Node"
+                uses: "actions/setup-node@v6"
+                with:
+                    node-version: 20
+
+            -   name: "Install npm packages"
+                run: "(cd tests/Application && yarn install)"
+
+            -   name: "Build javascript files"
+                run: "(cd tests/Application && yarn build)"
+
             -   name: "Create database"
                 run: "(cd tests/Application && bin/console doctrine:database:create)"
 
