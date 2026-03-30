@@ -39,7 +39,7 @@ final class StoreReviewWorkflow
     /**
      * @return array<string, array<mixed>>
      */
-    public static function getConfig(): array
+    public static function getSymfonyConfig(): array
     {
         $transitions = [];
         foreach (self::getTransitions() as $transition) {

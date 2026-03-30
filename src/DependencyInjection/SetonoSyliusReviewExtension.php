@@ -87,8 +87,8 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
     {
         $container->prependExtensionConfig('framework', [
             'workflows' => array_merge(
-                ReviewRequestWorkflow::getConfig(),
-                StoreReviewWorkflow::getConfig(),
+                ReviewRequestWorkflow::getSymfonyConfig(),
+                StoreReviewWorkflow::getSymfonyConfig(),
                 [
                     ProductReviewWorkflow::NAME => [
                         'transitions' => [
@@ -103,6 +103,7 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
         ]);
 
         $container->prependExtensionConfig('winzou_state_machine', array_merge(
+            ReviewRequestWorkflow::getWinzouConfig(),
             StoreReviewWorkflow::getWinzouConfig(),
             [
                 ProductReviewWorkflow::NAME => [
@@ -124,12 +125,6 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
                 Emails::STORE_REPLY_NOTIFICATION => [
                     'template' => '@SetonoSyliusReviewPlugin/email/store_reply_notification.html.twig',
                 ],
-            ],
-        ]);
-
-        $container->prependExtensionConfig('sylius_state_machine_abstraction', [
-            'graphs_to_adapters_mapping' => [
-                ReviewRequestWorkflow::NAME => 'symfony_workflow',
             ],
         ]);
 
