@@ -46,6 +46,10 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
         $container->setParameter('setono_sylius_review.reviewable_order.reviewable_states', $config['reviewable_order']['reviewable_states']);
         $container->setParameter('setono_sylius_review.reviewable_order.editable_period', $config['reviewable_order']['editable_period']);
         $container->setParameter('setono_sylius_review.pruning.threshold', $config['pruning']['threshold']);
+        $container->setParameter('setono_sylius_review.auto_approval.store_review.enabled', $config['auto_approval']['store_review']['enabled']);
+        $container->setParameter('setono_sylius_review.auto_approval.store_review.minimum_rating', $config['auto_approval']['store_review']['minimum_rating']);
+        $container->setParameter('setono_sylius_review.auto_approval.product_review.enabled', $config['auto_approval']['product_review']['enabled']);
+        $container->setParameter('setono_sylius_review.auto_approval.product_review.minimum_rating', $config['auto_approval']['product_review']['minimum_rating']);
 
         $container
             ->registerForAutoconfiguration(ReviewRequestEligibilityCheckerInterface::class)
@@ -77,12 +81,10 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
         $loader->load('services.xml');
 
         if ($config['auto_approval']['store_review']['enabled']) {
-            $container->setParameter('setono_sylius_review.auto_approval.store_review.minimum_rating', $config['auto_approval']['store_review']['minimum_rating']);
             $loader->load('services/auto_approval_store_review.xml');
         }
 
         if ($config['auto_approval']['product_review']['enabled']) {
-            $container->setParameter('setono_sylius_review.auto_approval.product_review.minimum_rating', $config['auto_approval']['product_review']['minimum_rating']);
             $loader->load('services/auto_approval_product_review.xml');
         }
 
