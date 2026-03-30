@@ -12,4 +12,7 @@ return (new Configuration())
         ResolvableFormTypeInterface::class,
     ])
     ->ignoreErrorsOnPackage('symfony/validator', [ErrorType::UNUSED_DEPENDENCY]) // we use the validator for validation constraints
+    ->ignoreErrorsOnPackage('league/commonmark', [ErrorType::UNUSED_DEPENDENCY]) // used for rendering markdown in emails
+    ->ignoreErrorsOnPackage('twig/extra-bundle', [ErrorType::UNUSED_DEPENDENCY]) // used for rendering markdown in emails
+    ->ignoreErrorsOnPackage('twig/markdown-extra', [ErrorType::UNUSED_DEPENDENCY]) // used for rendering markdown in emails
 ;
