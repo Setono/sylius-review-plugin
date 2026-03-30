@@ -10,6 +10,7 @@ use Setono\SyliusReviewPlugin\Checker\ReviewableOrder\ReviewableOrderCheckerInte
 use Setono\SyliusReviewPlugin\DisplayName\Provider\DisplayNameCandidateProviderInterface;
 use Setono\SyliusReviewPlugin\EligibilityChecker\ReviewRequestEligibilityCheckerInterface;
 use Setono\SyliusReviewPlugin\Form\Type\ReviewRequestEmailType;
+use Setono\SyliusReviewPlugin\Form\Type\StoreReplyNotificationEmailType;
 use Setono\SyliusReviewPlugin\Mailer\Emails;
 use Setono\SyliusReviewPlugin\Workflow\ReviewRequestWorkflow;
 use Setono\SyliusReviewPlugin\Workflow\StoreReviewWorkflow;
@@ -264,6 +265,15 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
             ->setDefinition(
                 ReviewRequestEmailType::class,
                 new Definition(ReviewRequestEmailType::class, ['%setono_sylius_review.model.review_request.class%']),
+            )
+            ->addTag('form.type')
+            ->addTag('app.resolvable_form_type.resolver')
+        ;
+
+        $container
+            ->setDefinition(
+                StoreReplyNotificationEmailType::class,
+                new Definition(StoreReplyNotificationEmailType::class, ['%setono_sylius_review.model.store_review.class%']),
             )
             ->addTag('form.type')
             ->addTag('app.resolvable_form_type.resolver')
