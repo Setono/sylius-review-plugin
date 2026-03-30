@@ -121,16 +121,7 @@ final class SetonoSyliusReviewExtensionTest extends AbstractExtensionTestCase
             ],
         ]);
 
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
-            'setono_sylius_review.checker.auto_approval.minimum_rating.store_review',
-            0,
-            3,
-        );
-
-        $this->assertContainerBuilderHasServiceDefinitionWithArgument(
-            'setono_sylius_review.checker.auto_approval.minimum_rating.product_review',
-            0,
-            5,
-        );
+        $this->assertContainerBuilderHasParameter('setono_sylius_review.auto_approval.store_review.minimum_rating', 3);
+        $this->assertContainerBuilderHasParameter('setono_sylius_review.auto_approval.product_review.minimum_rating', 5);
     }
 }

@@ -4,31 +4,25 @@ declare(strict_types=1);
 
 namespace Setono\SyliusReviewPlugin\DependencyInjection;
 
-use Setono\SyliusReviewPlugin\Checker\AutoApproval\CompositeAutoApprovalChecker;
-use Setono\SyliusReviewPlugin\Checker\AutoApproval\MinimumRatingAutoApprovalChecker;
 use Setono\SyliusReviewPlugin\Checker\AutoApproval\ProductAutoApprovalCheckerInterface;
 use Setono\SyliusReviewPlugin\Checker\AutoApproval\StoreAutoApprovalCheckerInterface;
 use Setono\SyliusReviewPlugin\Checker\ReviewableOrder\ReviewableOrderCheckerInterface;
 use Setono\SyliusReviewPlugin\DisplayName\Provider\DisplayNameCandidateProviderInterface;
 use Setono\SyliusReviewPlugin\EligibilityChecker\ReviewRequestEligibilityCheckerInterface;
-use Setono\SyliusReviewPlugin\EventListener\Doctrine\AutoApprovalListener;
 use Setono\SyliusReviewPlugin\Form\Type\ReviewRequestEmailType;
 use Setono\SyliusReviewPlugin\Form\Type\StoreReplyNotificationEmailType;
 use Setono\SyliusReviewPlugin\Mailer\Emails;
-use Setono\SyliusReviewPlugin\Model\StoreReviewInterface;
 use Setono\SyliusReviewPlugin\Workflow\ProductReviewWorkflow;
 use Setono\SyliusReviewPlugin\Workflow\ReviewRequestWorkflow;
 use Setono\SyliusReviewPlugin\Workflow\StoreReviewWorkflow;
 use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceExtension;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
-use Sylius\Component\Core\Model\ProductReviewInterface;
 use Sylius\Component\Review\Model\ReviewInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\Reference;
 use Webmozart\Assert\Assert;
 
 final class SetonoSyliusReviewExtension extends AbstractResourceExtension implements PrependExtensionInterface
@@ -82,7 +76,15 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
 
         $loader->load('services.xml');
 
-        self::registerAutoApproval($container, $config['auto_approval']);
+        if ($config['auto_approval']['store_review']['enabled']) {
+            $container->setParameter('setono_sylius_review.auto_approval.store_review.minimum_rating', $config['auto_approval']['store_review']['minimum_rating']);
+            $loader->load('services/auto_approval_store_review.xml');
+        }
+
+        if ($config['auto_approval']['product_review']['enabled']) {
+            $container->setParameter('setono_sylius_review.auto_approval.product_review.minimum_rating', $config['auto_approval']['product_review']['minimum_rating']);
+            $loader->load('services/auto_approval_product_review.xml');
+        }
 
         $this->registerResources(
             'setono_sylius_review',
@@ -275,66 +277,6 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
                 ],
             ],
         ]);
-    }
-
-    /**
-     * @param array{store_review: array{enabled: bool, minimum_rating: int}, product_review: array{enabled: bool, minimum_rating: int}} $autoApprovalConfig
-     */
-    private static function registerAutoApproval(ContainerBuilder $container, array $autoApprovalConfig): void
-    {
-        /** @var array{class: class-string<ReviewInterface>, compositeServiceId: string, checkerTag: string, workflowName: string, transition: string, listenerServiceId: string, checkerServiceId: string} $type */
-        foreach ([
-            'store_review' => [
-                'class' => StoreReviewInterface::class,
-                'compositeServiceId' => 'setono_sylius_review.checker.auto_approval.store_review',
-                'checkerTag' => 'setono_sylius_review.store_review_auto_approval_checker',
-                'workflowName' => StoreReviewWorkflow::NAME,
-                'transition' => StoreReviewWorkflow::TRANSITION_ACCEPT,
-                'listenerServiceId' => 'setono_sylius_review.listener.auto_approval.store_review',
-                'checkerServiceId' => 'setono_sylius_review.checker.auto_approval.minimum_rating.store_review',
-            ],
-            'product_review' => [
-                'class' => ProductReviewInterface::class,
-                'compositeServiceId' => 'setono_sylius_review.checker.auto_approval.product_review',
-                'checkerTag' => 'setono_sylius_review.product_review_auto_approval_checker',
-                'workflowName' => ProductReviewWorkflow::NAME,
-                'transition' => ProductReviewWorkflow::TRANSITION_ACCEPT,
-                'listenerServiceId' => 'setono_sylius_review.listener.auto_approval.product_review',
-                'checkerServiceId' => 'setono_sylius_review.checker.auto_approval.minimum_rating.product_review',
-            ],
-        ] as $key => $type) {
-            if (!$autoApprovalConfig[$key]['enabled']) {
-                continue;
-            }
-
-            $container->setDefinition(
-                $type['compositeServiceId'],
-                new Definition(CompositeAutoApprovalChecker::class),
-            );
-
-            $container
-                ->setDefinition(
-                    $type['checkerServiceId'],
-                    new Definition(MinimumRatingAutoApprovalChecker::class, [$autoApprovalConfig[$key]['minimum_rating']]),
-                )
-                ->addTag($type['checkerTag'])
-            ;
-
-            $container
-                ->setDefinition(
-                    $type['listenerServiceId'],
-                    new Definition(AutoApprovalListener::class, [
-                        $type['class'],
-                        new Reference($type['compositeServiceId']),
-                        new Reference('sylius_abstraction.state_machine'),
-                        $type['workflowName'],
-                        $type['transition'],
-                    ]),
-                )
-                ->addTag('doctrine.event_listener', ['event' => 'prePersist'])
-                ->addTag('doctrine.event_listener', ['event' => 'preUpdate'])
-            ;
-        }
     }
 
     private static function registerEmailFormType(ContainerBuilder $container): void
