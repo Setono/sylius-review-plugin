@@ -68,6 +68,7 @@
         "symfony/intl": "^6.4",
         "symfony/property-info": "^6.4",
         "symfony/serializer": "^6.4",
+        "symfony/translation": "^6.4.3",
         "symfony/web-profiler-bundle": "^6.4",
         "symfony/webpack-encore-bundle": "^1.17.2",
         "synolia/sylius-mail-tester-plugin": "^2.4",
