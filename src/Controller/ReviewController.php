@@ -9,9 +9,13 @@ use Setono\Doctrine\ORMTrait;
 use Setono\SyliusReviewPlugin\Checker\ReviewableOrder\ReviewableOrderCheckerInterface;
 use Setono\SyliusReviewPlugin\Form\Type\ReviewType;
 use Setono\SyliusReviewPlugin\Model\ReviewInterface;
+use Setono\SyliusReviewPlugin\Workflow\ProductReviewWorkflow;
+use Setono\SyliusReviewPlugin\Workflow\StoreReviewWorkflow;
+use Sylius\Abstraction\StateMachine\StateMachineInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Model\ProductReviewInterface;
 use Sylius\Component\Order\Repository\OrderRepositoryInterface;
+use Sylius\Component\Review\Model\ReviewInterface as BaseReviewInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,6 +31,7 @@ final class ReviewController extends AbstractController
         private readonly OrderRepositoryInterface $orderRepository,
         ManagerRegistry $managerRegistry,
         private readonly ReviewableOrderCheckerInterface $reviewableOrderChecker,
+        private readonly StateMachineInterface $stateMachine,
     ) {
         $this->managerRegistry = $managerRegistry;
     }
@@ -68,6 +73,7 @@ final class ReviewController extends AbstractController
             $storeReview = $reviewCommand->getStoreReview();
             if (null !== $storeReview) {
                 $storeReview->setDisplayName($displayName);
+                $this->resetReviewStatus($storeReview, StoreReviewWorkflow::NAME, StoreReviewWorkflow::TRANSITION_REQUEST_EDIT);
                 $manager->persist($storeReview);
             }
 
@@ -76,6 +82,7 @@ final class ReviewController extends AbstractController
                     if ($productReview instanceof ReviewInterface) {
                         $productReview->setDisplayName($displayName);
                     }
+                    $this->resetReviewStatus($productReview, ProductReviewWorkflow::NAME, ProductReviewWorkflow::TRANSITION_REQUEST_EDIT);
                     $manager = $this->getManager($productReview);
                     $manager->persist($productReview);
                 }
@@ -93,5 +100,16 @@ final class ReviewController extends AbstractController
             'reviewableCheck' => $reviewableCheck,
             'form' => $form->createView(),
         ]);
+    }
+
+    private function resetReviewStatus(BaseReviewInterface $review, string $graphName, string $transition): void
+    {
+        if (null === $review->getId()) {
+            return;
+        }
+
+        if ($this->stateMachine->can($review, $graphName, $transition)) {
+            $this->stateMachine->apply($review, $graphName, $transition);
+        }
     }
 }

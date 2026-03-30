@@ -18,6 +18,8 @@ final class StoreReviewWorkflow
 
     final public const TRANSITION_REJECT = 'reject';
 
+    final public const TRANSITION_REQUEST_EDIT = 'request_edit';
+
     private function __construct()
     {
     }
@@ -37,7 +39,7 @@ final class StoreReviewWorkflow
     /**
      * @return array<string, array<mixed>>
      */
-    public static function getConfig(): array
+    public static function getSymfonyConfig(): array
     {
         $transitions = [];
         foreach (self::getTransitions() as $transition) {
@@ -63,6 +65,37 @@ final class StoreReviewWorkflow
     }
 
     /**
+     * @return array<string, array<mixed>>
+     */
+    public static function getWinzouConfig(): array
+    {
+        $transitions = [];
+        foreach (self::getTransitions() as $transition) {
+            $tos = $transition->getTos();
+            $transitions[$transition->getName()] = [
+                'from' => $transition->getFroms(),
+                'to' => $tos[0],
+            ];
+        }
+
+        $states = [];
+        foreach (self::getStates() as $state) {
+            $states[$state] = null;
+        }
+
+        return [
+            self::NAME => [
+                'class' => '%setono_sylius_review.model.store_review.class%',
+                'property_path' => self::PROPERTY_NAME,
+                'graph' => self::NAME,
+                'state_machine_class' => '%sylius.state_machine.class%',
+                'states' => $states,
+                'transitions' => $transitions,
+            ],
+        ];
+    }
+
+    /**
      * @return list<Transition>
      */
     public static function getTransitions(): array
@@ -70,6 +103,7 @@ final class StoreReviewWorkflow
         return [
             new Transition(self::TRANSITION_ACCEPT, [ReviewInterface::STATUS_NEW], ReviewInterface::STATUS_ACCEPTED),
             new Transition(self::TRANSITION_REJECT, [ReviewInterface::STATUS_NEW], ReviewInterface::STATUS_REJECTED),
+            new Transition(self::TRANSITION_REQUEST_EDIT, [ReviewInterface::STATUS_ACCEPTED, ReviewInterface::STATUS_REJECTED], ReviewInterface::STATUS_NEW),
         ];
     }
 }

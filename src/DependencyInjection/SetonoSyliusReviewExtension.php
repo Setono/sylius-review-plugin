@@ -12,10 +12,12 @@ use Setono\SyliusReviewPlugin\EligibilityChecker\ReviewRequestEligibilityChecker
 use Setono\SyliusReviewPlugin\Form\Type\ReviewRequestEmailType;
 use Setono\SyliusReviewPlugin\Form\Type\StoreReplyNotificationEmailType;
 use Setono\SyliusReviewPlugin\Mailer\Emails;
+use Setono\SyliusReviewPlugin\Workflow\ProductReviewWorkflow;
 use Setono\SyliusReviewPlugin\Workflow\ReviewRequestWorkflow;
 use Setono\SyliusReviewPlugin\Workflow\StoreReviewWorkflow;
 use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceExtension;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
+use Sylius\Component\Review\Model\ReviewInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -85,10 +87,35 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
     {
         $container->prependExtensionConfig('framework', [
             'workflows' => array_merge(
-                ReviewRequestWorkflow::getConfig(),
-                StoreReviewWorkflow::getConfig(),
+                ReviewRequestWorkflow::getSymfonyConfig(),
+                StoreReviewWorkflow::getSymfonyConfig(),
+                [
+                    ProductReviewWorkflow::NAME => [
+                        'transitions' => [
+                            ProductReviewWorkflow::TRANSITION_REQUEST_EDIT => [
+                                'from' => [ReviewInterface::STATUS_ACCEPTED, ReviewInterface::STATUS_REJECTED],
+                                'to' => ReviewInterface::STATUS_NEW,
+                            ],
+                        ],
+                    ],
+                ],
             ),
         ]);
+
+        $container->prependExtensionConfig('winzou_state_machine', array_merge(
+            ReviewRequestWorkflow::getWinzouConfig(),
+            StoreReviewWorkflow::getWinzouConfig(),
+            [
+                ProductReviewWorkflow::NAME => [
+                    'transitions' => [
+                        ProductReviewWorkflow::TRANSITION_REQUEST_EDIT => [
+                            'from' => [ReviewInterface::STATUS_ACCEPTED, ReviewInterface::STATUS_REJECTED],
+                            'to' => ReviewInterface::STATUS_NEW,
+                        ],
+                    ],
+                ],
+            ],
+        ));
 
         $container->prependExtensionConfig('sylius_mailer', [
             'emails' => [
@@ -98,13 +125,6 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
                 Emails::STORE_REPLY_NOTIFICATION => [
                     'template' => '@SetonoSyliusReviewPlugin/email/store_reply_notification.html.twig',
                 ],
-            ],
-        ]);
-
-        $container->prependExtensionConfig('sylius_state_machine_abstraction', [
-            'graphs_to_adapters_mapping' => [
-                ReviewRequestWorkflow::NAME => 'symfony_workflow',
-                StoreReviewWorkflow::NAME => 'symfony_workflow',
             ],
         ]);
 

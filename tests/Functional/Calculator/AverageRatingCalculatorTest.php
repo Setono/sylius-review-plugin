@@ -60,7 +60,7 @@ final class AverageRatingCalculatorTest extends KernelTestCase
     /** @test */
     public function it_returns_zero_when_product_has_no_accepted_reviews(): void
     {
-        $this->createReview(5, ReviewInterface::STATUS_NEW);
+        $this->createReview(3, ReviewInterface::STATUS_NEW);
         $this->createReview(3, ReviewInterface::STATUS_REJECTED);
 
         $average = $this->calculator->calculate($this->product);

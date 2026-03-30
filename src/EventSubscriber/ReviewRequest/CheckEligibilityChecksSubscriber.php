@@ -6,13 +6,13 @@ namespace Setono\SyliusReviewPlugin\EventSubscriber\ReviewRequest;
 
 use Setono\SyliusReviewPlugin\Event\ReviewRequestProcessingStarted;
 use Setono\SyliusReviewPlugin\Workflow\ReviewRequestWorkflow;
+use Sylius\Abstraction\StateMachine\StateMachineInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Workflow\WorkflowInterface;
 
 final class CheckEligibilityChecksSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly WorkflowInterface $reviewRequestWorkflow,
+        private readonly StateMachineInterface $stateMachine,
         private readonly int $maximumChecks,
     ) {
     }
@@ -30,7 +30,7 @@ final class CheckEligibilityChecksSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $this->reviewRequestWorkflow->apply($event->reviewRequest, ReviewRequestWorkflow::TRANSITION_CANCEL);
+        $this->stateMachine->apply($event->reviewRequest, ReviewRequestWorkflow::NAME, ReviewRequestWorkflow::TRANSITION_CANCEL);
         $event->reviewRequest->setProcessingError('Maximum number of eligibility checks reached');
     }
 }

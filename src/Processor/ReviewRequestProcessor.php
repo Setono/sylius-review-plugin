@@ -15,7 +15,7 @@ use Setono\SyliusReviewPlugin\Mailer\ReviewRequestEmailManagerInterface;
 use Setono\SyliusReviewPlugin\Model\ReviewRequestInterface;
 use Setono\SyliusReviewPlugin\Repository\ReviewRequestRepositoryInterface;
 use Setono\SyliusReviewPlugin\Workflow\ReviewRequestWorkflow;
-use Symfony\Component\Workflow\WorkflowInterface;
+use Sylius\Abstraction\StateMachine\StateMachineInterface;
 
 final class ReviewRequestProcessor implements ReviewRequestProcessorInterface, LoggerAwareInterface
 {
@@ -24,7 +24,7 @@ final class ReviewRequestProcessor implements ReviewRequestProcessorInterface, L
     public function __construct(
         private readonly ReviewRequestRepositoryInterface $reviewRequestRepository,
         private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly WorkflowInterface $reviewRequestWorkflow,
+        private readonly StateMachineInterface $stateMachine,
         private readonly ReviewRequestEligibilityCheckerInterface $reviewRequestEligibilityChecker,
         private readonly ReviewRequestEmailManagerInterface $reviewRequestEmailManager,
     ) {
@@ -46,7 +46,7 @@ final class ReviewRequestProcessor implements ReviewRequestProcessorInterface, L
             try {
                 $this->eventDispatcher->dispatch(new ReviewRequestProcessingStarted($reviewRequest));
 
-                if (!$this->reviewRequestWorkflow->can($reviewRequest, ReviewRequestWorkflow::TRANSITION_COMPLETE)) {
+                if (!$this->stateMachine->can($reviewRequest, ReviewRequestWorkflow::NAME, ReviewRequestWorkflow::TRANSITION_COMPLETE)) {
                     continue;
                 }
 
@@ -65,7 +65,7 @@ final class ReviewRequestProcessor implements ReviewRequestProcessorInterface, L
 
                 $this->reviewRequestEmailManager->sendReviewRequest($reviewRequest);
 
-                $this->reviewRequestWorkflow->apply($reviewRequest, ReviewRequestWorkflow::TRANSITION_COMPLETE);
+                $this->stateMachine->apply($reviewRequest, ReviewRequestWorkflow::NAME, ReviewRequestWorkflow::TRANSITION_COMPLETE);
                 ++$i;
             } catch (\Throwable $e) {
                 $this->logger->error(sprintf(
