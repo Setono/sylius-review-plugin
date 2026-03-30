@@ -6,7 +6,6 @@ namespace Setono\SyliusReviewPlugin;
 
 use Setono\CompositeCompilerPass\CompositeCompilerPass;
 use Setono\SyliusReviewPlugin\Checker\ReviewableOrder\CompositeReviewableOrderChecker;
-use Setono\SyliusReviewPlugin\DependencyInjection\Compiler\CheckProductReviewWorkflowAdapterPass;
 use Setono\SyliusReviewPlugin\DependencyInjection\Compiler\ConfigureAverageRatingCalculatorCachePass;
 use Setono\SyliusReviewPlugin\DependencyInjection\Compiler\RegisterAutoApprovalCheckersPass;
 use Setono\SyliusReviewPlugin\DisplayName\Provider\CompositeDisplayNameCandidateProvider;
@@ -39,7 +38,6 @@ final class SetonoSyliusReviewPlugin extends AbstractResourceBundle
             'setono_sylius_review.display_name_candidate_provider',
         ));
 
-        $container->addCompilerPass(new CheckProductReviewWorkflowAdapterPass());
         $container->addCompilerPass(new ConfigureAverageRatingCalculatorCachePass());
         $container->addCompilerPass(new RegisterAutoApprovalCheckersPass());
 

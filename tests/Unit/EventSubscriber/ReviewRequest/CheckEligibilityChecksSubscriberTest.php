@@ -10,7 +10,7 @@ use Setono\SyliusReviewPlugin\Event\ReviewRequestProcessingStarted;
 use Setono\SyliusReviewPlugin\EventSubscriber\ReviewRequest\CheckEligibilityChecksSubscriber;
 use Setono\SyliusReviewPlugin\Model\ReviewRequestInterface;
 use Setono\SyliusReviewPlugin\Workflow\ReviewRequestWorkflow;
-use Symfony\Component\Workflow\WorkflowInterface;
+use Sylius\Abstraction\StateMachine\StateMachineInterface;
 
 final class CheckEligibilityChecksSubscriberTest extends TestCase
 {
@@ -25,10 +25,10 @@ final class CheckEligibilityChecksSubscriberTest extends TestCase
         $reviewRequest->getEligibilityChecks()->willReturn(6);
         $reviewRequest->setProcessingError('Maximum number of eligibility checks reached')->shouldBeCalledOnce();
 
-        $workflow = $this->prophesize(WorkflowInterface::class);
-        $workflow->apply($reviewRequest->reveal(), ReviewRequestWorkflow::TRANSITION_CANCEL)->shouldBeCalledOnce();
+        $stateMachine = $this->prophesize(StateMachineInterface::class);
+        $stateMachine->apply($reviewRequest->reveal(), ReviewRequestWorkflow::NAME, ReviewRequestWorkflow::TRANSITION_CANCEL)->shouldBeCalledOnce();
 
-        $subscriber = new CheckEligibilityChecksSubscriber($workflow->reveal(), 5);
+        $subscriber = new CheckEligibilityChecksSubscriber($stateMachine->reveal(), 5);
         $subscriber->check(new ReviewRequestProcessingStarted($reviewRequest->reveal()));
     }
 
@@ -41,10 +41,10 @@ final class CheckEligibilityChecksSubscriberTest extends TestCase
         $reviewRequest->getEligibilityChecks()->willReturn(5);
         $reviewRequest->setProcessingError()->shouldNotBeCalled();
 
-        $workflow = $this->prophesize(WorkflowInterface::class);
-        $workflow->apply()->shouldNotBeCalled();
+        $stateMachine = $this->prophesize(StateMachineInterface::class);
+        $stateMachine->apply()->shouldNotBeCalled();
 
-        $subscriber = new CheckEligibilityChecksSubscriber($workflow->reveal(), 5);
+        $subscriber = new CheckEligibilityChecksSubscriber($stateMachine->reveal(), 5);
         $subscriber->check(new ReviewRequestProcessingStarted($reviewRequest->reveal()));
     }
 
@@ -57,10 +57,10 @@ final class CheckEligibilityChecksSubscriberTest extends TestCase
         $reviewRequest->getEligibilityChecks()->willReturn(2);
         $reviewRequest->setProcessingError()->shouldNotBeCalled();
 
-        $workflow = $this->prophesize(WorkflowInterface::class);
-        $workflow->apply()->shouldNotBeCalled();
+        $stateMachine = $this->prophesize(StateMachineInterface::class);
+        $stateMachine->apply()->shouldNotBeCalled();
 
-        $subscriber = new CheckEligibilityChecksSubscriber($workflow->reveal(), 5);
+        $subscriber = new CheckEligibilityChecksSubscriber($stateMachine->reveal(), 5);
         $subscriber->check(new ReviewRequestProcessingStarted($reviewRequest->reveal()));
     }
 

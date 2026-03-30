@@ -10,8 +10,8 @@ use Setono\SyliusReviewPlugin\Checker\AutoApproval\AutoApprovalCheckerInterface;
 use Setono\SyliusReviewPlugin\Model\StoreReviewInterface;
 use Setono\SyliusReviewPlugin\Workflow\ProductReviewWorkflow;
 use Setono\SyliusReviewPlugin\Workflow\StoreReviewWorkflow;
+use Sylius\Abstraction\StateMachine\StateMachineInterface;
 use Sylius\Component\Core\Model\ProductReviewInterface;
-use Symfony\Component\Workflow\WorkflowInterface;
 
 final class ReviewAutoApprovalListener
 {
@@ -22,8 +22,7 @@ final class ReviewAutoApprovalListener
     public function __construct(
         private readonly AutoApprovalCheckerInterface $storeAutoApprovalChecker,
         private readonly AutoApprovalCheckerInterface $productAutoApprovalChecker,
-        private readonly WorkflowInterface $storeReviewWorkflow,
-        private readonly WorkflowInterface $productReviewWorkflow,
+        private readonly StateMachineInterface $stateMachine,
     ) {
     }
 
@@ -39,18 +38,18 @@ final class ReviewAutoApprovalListener
 
     private function handleAutoApproval(object $entity): void
     {
-        if ($entity instanceof StoreReviewInterface
-            && $this->storeReviewWorkflow->can($entity, StoreReviewWorkflow::TRANSITION_ACCEPT)
-            && $this->storeAutoApprovalChecker->shouldAutoApprove($entity)
+        if ($entity instanceof StoreReviewInterface &&
+            $this->stateMachine->can($entity, StoreReviewWorkflow::NAME, StoreReviewWorkflow::TRANSITION_ACCEPT) &&
+            $this->storeAutoApprovalChecker->shouldAutoApprove($entity)
         ) {
-            $this->storeReviewWorkflow->apply($entity, StoreReviewWorkflow::TRANSITION_ACCEPT);
+            $this->stateMachine->apply($entity, StoreReviewWorkflow::NAME, StoreReviewWorkflow::TRANSITION_ACCEPT);
         }
 
-        if ($entity instanceof ProductReviewInterface
-            && $this->productReviewWorkflow->can($entity, ProductReviewWorkflow::TRANSITION_ACCEPT)
-            && $this->productAutoApprovalChecker->shouldAutoApprove($entity)
+        if ($entity instanceof ProductReviewInterface &&
+            $this->stateMachine->can($entity, ProductReviewWorkflow::NAME, ProductReviewWorkflow::TRANSITION_ACCEPT) &&
+            $this->productAutoApprovalChecker->shouldAutoApprove($entity)
         ) {
-            $this->productReviewWorkflow->apply($entity, ProductReviewWorkflow::TRANSITION_ACCEPT);
+            $this->stateMachine->apply($entity, ProductReviewWorkflow::NAME, ProductReviewWorkflow::TRANSITION_ACCEPT);
         }
     }
 }

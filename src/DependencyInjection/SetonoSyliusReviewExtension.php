@@ -15,9 +15,9 @@ use Setono\SyliusReviewPlugin\Mailer\Emails;
 use Setono\SyliusReviewPlugin\Workflow\ProductReviewWorkflow;
 use Setono\SyliusReviewPlugin\Workflow\ReviewRequestWorkflow;
 use Setono\SyliusReviewPlugin\Workflow\StoreReviewWorkflow;
-use Sylius\Component\Review\Model\ReviewInterface;
 use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceExtension;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
+use Sylius\Component\Review\Model\ReviewInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -102,6 +102,20 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
             ),
         ]);
 
+        $container->prependExtensionConfig('winzou_state_machine', array_merge(
+            StoreReviewWorkflow::getWinzouConfig(),
+            [
+                ProductReviewWorkflow::NAME => [
+                    'transitions' => [
+                        ProductReviewWorkflow::TRANSITION_REQUEST_EDIT => [
+                            'from' => [ReviewInterface::STATUS_ACCEPTED, ReviewInterface::STATUS_REJECTED],
+                            'to' => ReviewInterface::STATUS_NEW,
+                        ],
+                    ],
+                ],
+            ],
+        ));
+
         $container->prependExtensionConfig('sylius_mailer', [
             'emails' => [
                 Emails::REVIEW_REQUEST => [
@@ -116,7 +130,6 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
         $container->prependExtensionConfig('sylius_state_machine_abstraction', [
             'graphs_to_adapters_mapping' => [
                 ReviewRequestWorkflow::NAME => 'symfony_workflow',
-                StoreReviewWorkflow::NAME => 'symfony_workflow',
             ],
         ]);
 

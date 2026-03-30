@@ -7,7 +7,6 @@ namespace Setono\SyliusReviewPlugin\Tests\Functional\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Setono\SyliusReviewPlugin\Model\ChannelInterface;
 use Setono\SyliusReviewPlugin\Model\StoreReview;
-use Setono\SyliusReviewPlugin\Model\StoreReviewInterface;
 use Setono\SyliusReviewPlugin\Repository\StoreReviewRepositoryInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Review\Model\ReviewerInterface;
