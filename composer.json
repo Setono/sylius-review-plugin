@@ -57,7 +57,7 @@
         "doctrine/doctrine-bundle": "^2.11",
         "jms/serializer-bundle": "^4.2",
         "lexik/jwt-authentication-bundle": "^2.17",
-        "setono/sylius-plugin-pack": "~1.14.4",
+        "setono/sylius-plugin-pack": "~1.14.5",
         "shipmonk/composer-dependency-analyser": "^1.6",
         "sylius-labs/polyfill-symfony-security": "^1.1.2",
         "sylius/fixtures-bundle": "^1.9",
