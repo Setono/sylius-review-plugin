@@ -26,7 +26,7 @@
         "sylius/order": "^1.0",
         "sylius/resource-bundle": "^1.6",
         "sylius/review": "^1.0",
-        "sylius/state-machine-abstraction": "1.14",
+        "sylius/state-machine-abstraction": "^1.14",
         "sylius/ui-bundle": "^1.0",
         "symfony/cache-contracts": "^2.5",
         "symfony/config": "^6.4",
