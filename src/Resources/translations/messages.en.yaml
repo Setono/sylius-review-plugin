@@ -17,7 +17,7 @@ setono_sylius_review:
         store_review: Store Review
         store_review_description: Tell us about your overall shopping experience
         product_reviews: Product Reviews
-        product_reviews_description: Share your thoughts on the products you purchased
+        product_reviews_description: Rate the products you'd like to review (optional)
         submit_reviews: Submit Reviews
         review_no_longer_editable: This review can no longer be edited
         order_not_fulfilled: This order cannot be reviewed yet. Please wait until your order has been fulfilled.

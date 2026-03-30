@@ -9,17 +9,36 @@
     <script>
         $(document).ready(function () {
             $('.star.rating').each(function () {
-                var $star = $(this);
-                var targetId = $star.data('rating-target');
-                var $target = $('#' + targetId);
+                const $star = $(this);
+                const targetId = $star.data('rating-target');
+                const $target = $('#' + targetId);
+                const commentTargetId = $star.data('comment-target');
+                const $commentWrapper = commentTargetId ? $('#' + commentTargetId) : null;
 
-                $star.rating({
-                    fireOnInit: true,
-                    onRate: function (value) {
-                        $target.find('input[type="radio"]:checked').prop('checked', false);
+                function onRate(value) {
+                    $target.find('input[type="radio"]:checked').prop('checked', false);
+                    if (value > 0) {
                         $target.find('input[type="radio"][value="' + value + '"]').prop('checked', true);
                     }
-                });
+
+                    if ($commentWrapper) {
+                        if (value > 0) {
+                            $commentWrapper.show();
+                        } else {
+                            $commentWrapper.hide();
+                            $commentWrapper.find('textarea').val('');
+                        }
+                    }
+                }
+
+                $star.rating('setting', 'onRate', onRate);
+                $star.rating('setting', 'clearable', true);
+
+                // Show comment field for pre-existing ratings
+                const initialRating = parseInt($star.data('rating'), 10) || 0;
+                if ($commentWrapper && initialRating > 0) {
+                    $commentWrapper.show();
+                }
             });
         });
     </script>

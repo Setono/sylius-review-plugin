@@ -30,6 +30,9 @@ Store reviews require the Channel entity to implement `ReviewableInterface`. The
 
 Follow clean code and SOLID principles. Favor composition over inheritance.
 
+### JavaScript
+- **Use `const`/`let` instead of `var`** — all inline JavaScript in templates must use modern ES6+ declarations (`const` for values that won't be reassigned, `let` for those that will). Never use `var`.
+
 ### Testing Requirements
 - **All new features MUST have tests** — unit tests, functional tests, end-to-end tests, or a combination of all, depending on what applies. No new feature should be merged without corresponding test coverage.
 - Tests are organized into `tests/Unit/` (no kernel/DB) and `tests/Functional/` (requires kernel + DB). Place new tests in the appropriate directory.
