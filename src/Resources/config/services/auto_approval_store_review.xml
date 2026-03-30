@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://symfony.com/schema/dic/services"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="setono_sylius_review.checker.auto_approval.store_review"
+                 class="Setono\SyliusReviewPlugin\Checker\AutoApproval\CompositeAutoApprovalChecker"/>
+
+        <service id="setono_sylius_review.checker.auto_approval.minimum_rating.store_review"
+                 class="Setono\SyliusReviewPlugin\Checker\AutoApproval\MinimumRatingAutoApprovalChecker">
+            <argument>%setono_sylius_review.auto_approval.store_review.minimum_rating%</argument>
+            <tag name="setono_sylius_review.store_review_auto_approval_checker"/>
+        </service>
+
+        <service id="setono_sylius_review.listener.auto_approval.store_review"
+                 class="Setono\SyliusReviewPlugin\EventListener\Doctrine\AutoApprovalListener">
+            <argument>Setono\SyliusReviewPlugin\Model\StoreReviewInterface</argument>
+            <argument type="service" id="setono_sylius_review.checker.auto_approval.store_review"/>
+            <argument type="service" id="sylius_abstraction.state_machine"/>
+            <argument>setono_sylius_review__store_review</argument>
+            <tag name="doctrine.event_listener" event="prePersist"/>
+            <tag name="doctrine.event_listener" event="preUpdate"/>
+        </service>
+    </services>
+</container>

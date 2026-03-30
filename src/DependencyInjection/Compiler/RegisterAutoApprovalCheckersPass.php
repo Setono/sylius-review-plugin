@@ -20,6 +20,13 @@ final class RegisterAutoApprovalCheckersPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
+        $storeCompositeExists = $container->hasDefinition('setono_sylius_review.checker.auto_approval.store_review');
+        $productCompositeExists = $container->hasDefinition('setono_sylius_review.checker.auto_approval.product_review');
+
+        if (!$storeCompositeExists && !$productCompositeExists) {
+            return;
+        }
+
         foreach ($container->getDefinitions() as $definition) {
             if ($definition->isAbstract()) {
                 continue;
@@ -43,11 +50,11 @@ final class RegisterAutoApprovalCheckersPass implements CompilerPassInterface
                 continue;
             }
 
-            if (!$definition->hasTag('setono_sylius_review.store_review_auto_approval_checker')) {
+            if ($storeCompositeExists && !$definition->hasTag('setono_sylius_review.store_review_auto_approval_checker')) {
                 $definition->addTag('setono_sylius_review.store_review_auto_approval_checker');
             }
 
-            if (!$definition->hasTag('setono_sylius_review.product_review_auto_approval_checker')) {
+            if ($productCompositeExists && !$definition->hasTag('setono_sylius_review.product_review_auto_approval_checker')) {
                 $definition->addTag('setono_sylius_review.product_review_auto_approval_checker');
             }
         }

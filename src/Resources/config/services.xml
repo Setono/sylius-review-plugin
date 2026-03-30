@@ -132,15 +132,6 @@
         <service id="Setono\SyliusReviewPlugin\Processor\ReviewRequestProcessorInterface"
                  alias="Setono\SyliusReviewPlugin\Processor\ReviewRequestProcessor"/>
 
-        <!-- Auto-approval Checkers -->
-        <service id="setono_sylius_review.checker.auto_approval.store_review"
-                 class="Setono\SyliusReviewPlugin\Checker\AutoApproval\CompositeAutoApprovalChecker"/>
-
-        <service id="setono_sylius_review.checker.auto_approval.product_review"
-                 class="Setono\SyliusReviewPlugin\Checker\AutoApproval\CompositeAutoApprovalChecker"/>
-
-        <service id="Setono\SyliusReviewPlugin\Checker\AutoApproval\MinimumRatingAutoApprovalChecker"/>
-
         <!-- Display Name Resolver -->
         <service id="Setono\SyliusReviewPlugin\DisplayName\Resolver\DisplayNameResolverInterface"
                  alias="Setono\SyliusReviewPlugin\DisplayName\Resolver\DefaultDisplayNameResolver"/>
@@ -251,14 +242,6 @@
             <argument type="service" id="Setono\SyliusReviewPlugin\Mailer\StoreReplyNotificationEmailManagerInterface"/>
             <tag name="doctrine.event_listener" event="preUpdate"/>
             <tag name="doctrine.event_listener" event="postUpdate"/>
-        </service>
-
-        <service id="Setono\SyliusReviewPlugin\EventListener\Doctrine\ReviewAutoApprovalListener">
-            <argument type="service" id="setono_sylius_review.checker.auto_approval.store_review"/>
-            <argument type="service" id="setono_sylius_review.checker.auto_approval.product_review"/>
-            <argument type="service" id="sylius_abstraction.state_machine"/>
-            <tag name="doctrine.event_listener" event="prePersist"/>
-            <tag name="doctrine.event_listener" event="preUpdate"/>
         </service>
 
     </services>
