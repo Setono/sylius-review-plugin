@@ -14,9 +14,9 @@
     <h4>{{ 'setono_sylius_review.email.store_reply_notification.heading'|trans }}</h4>
 
     {% if isStoreReview %}
-        <p>{{ 'setono_sylius_review.email.store_reply_notification.store_review_intro'|trans({ '%name%': reviewSubjectName }) }}</p>
+        <p>{{ 'setono_sylius_review.email.store_reply_notification.store_review_intro'|trans({ '%store%': channel.name }) }}</p>
     {% else %}
-        <p>{{ 'setono_sylius_review.email.store_reply_notification.product_review_intro'|trans({ '%name%': reviewSubjectName }) }}</p>
+        <p>{{ 'setono_sylius_review.email.store_reply_notification.product_review_intro'|trans({ '%store%': channel.name, '%name%': reviewSubjectName }) }}</p>
     {% endif %}
 
     <h5>{{ 'setono_sylius_review.email.store_reply_notification.your_review'|trans }}</h5>
@@ -29,5 +29,5 @@
     {% endif %}
 
     <h5>{{ 'setono_sylius_review.email.store_reply_notification.store_reply'|trans }}</h5>
-    <blockquote>{{ review.storeReply }}</blockquote>
+    {{ review.storeReply|markdown_to_html }}
 {% endblock %}

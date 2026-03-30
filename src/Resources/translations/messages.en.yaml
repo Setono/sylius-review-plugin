@@ -8,8 +8,8 @@ setono_sylius_review:
             your_review: Your review
             rating: Rating
             store_reply: Store reply
-            store_review_intro: The store has replied to your review of %name%.
-            product_review_intro: The store has replied to your review of %name%.
+            store_review_intro: "%store% has replied to your review."
+            product_review_intro: "%store% has replied to your review of %name%."
     ui:
         review_your_order: Review Your Order
         introduction: Thank you for shopping with us! We would love to hear about your experience. Your feedback helps us improve and helps other customers make informed decisions.

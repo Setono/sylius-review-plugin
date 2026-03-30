@@ -13,6 +13,7 @@
         "doctrine/orm": "^2.20",
         "doctrine/persistence": "^2.0 || ^3.0",
         "knplabs/knp-menu": "^3.8",
+        "league/commonmark": "^2.8",
         "ocramius/doctrine-batch-utils": "^2.4",
         "psr/event-dispatcher": "^1.0",
         "psr/log": "^1.1 || ^2.0 || ^3.0",
@@ -39,6 +40,8 @@
         "symfony/translation-contracts": "^2.5",
         "symfony/validator": "^6.4",
         "symfony/workflow": "^6.4",
+        "twig/extra-bundle": "^3.24",
+        "twig/markdown-extra": "^3.24",
         "twig/twig": "^3.23",
         "webmozart/assert": "^1.11"
     },

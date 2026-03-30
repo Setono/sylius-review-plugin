@@ -44,15 +44,19 @@ The plugin SHALL provide `OrderRepositoryInterface` (extending Sylius's `OrderRe
 - **THEN** it SHALL return null
 
 ### Requirement: Email template for reply notification
-A Twig email template SHALL render the notification with the store/channel name (for store reviews) or product name (for product reviews), the customer's original review (title, rating, comment), and the store's reply text.
+A Twig email template SHALL render the notification with the store/channel name (for store reviews) or product name (for product reviews), the customer's original review (title, rating, comment), and the store's reply text rendered as HTML from markdown.
 
 #### Scenario: Template renders for store review
 - **WHEN** the email is rendered for a store review reply
-- **THEN** it SHALL include the channel name, the review title/rating/comment, and the store reply
+- **THEN** the intro text SHALL include the store/channel name (not hardcoded "The store")
+- **AND** it SHALL include the review title/rating/comment
+- **AND** the store reply SHALL be converted from markdown to HTML using the `markdown_to_html` filter
 
 #### Scenario: Template renders for product review
 - **WHEN** the email is rendered for a product review reply
-- **THEN** it SHALL include the product name, the review title/rating/comment, and the store reply
+- **THEN** the intro text SHALL include the store/channel name and the product name
+- **AND** it SHALL include the review title/rating/comment
+- **AND** the store reply SHALL be converted from markdown to HTML using the `markdown_to_html` filter
 
 ### Requirement: Email subject registered as constant
 The `Emails` class SHALL define a constant `STORE_REPLY_NOTIFICATION` with value `setono_sylius_review__store_reply_notification`.
@@ -62,11 +66,19 @@ The `Emails` class SHALL define a constant `STORE_REPLY_NOTIFICATION` with value
 - **THEN** it SHALL equal `'setono_sylius_review__store_reply_notification'`
 
 ### Requirement: Translations for notification
-Translation keys SHALL exist for the email subject and the "Notify reviewer" form label.
+Translation keys SHALL exist for the email subject, intro texts, and the "Notify reviewer" form label. The intro texts SHALL use `%store%` for the store/channel name and `%name%` for the review subject name.
 
 #### Scenario: Email subject translation
 - **WHEN** the notification email is rendered
 - **THEN** the subject SHALL use translation key `setono_sylius_review.email.store_reply_notification.subject`
+
+#### Scenario: Store review intro translation
+- **WHEN** the notification email is rendered for a store review
+- **THEN** the intro SHALL use `%store%` placeholder for the store name (not hardcoded "The store")
+
+#### Scenario: Product review intro translation
+- **WHEN** the notification email is rendered for a product review
+- **THEN** the intro SHALL use `%store%` for the store name and `%name%` for the product name
 
 #### Scenario: Form label translation
 - **WHEN** the admin form renders the notify checkbox
