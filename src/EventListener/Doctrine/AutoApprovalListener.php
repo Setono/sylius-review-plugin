@@ -7,6 +7,7 @@ namespace Setono\SyliusReviewPlugin\EventListener\Doctrine;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Setono\SyliusReviewPlugin\Checker\AutoApproval\AutoApprovalCheckerInterface;
+use Setono\SyliusReviewPlugin\Workflow\AbstractReviewWorkflow;
 use Sylius\Abstraction\StateMachine\StateMachineInterface;
 use Sylius\Component\Review\Model\ReviewInterface;
 
@@ -21,7 +22,6 @@ final class AutoApprovalListener
         private readonly AutoApprovalCheckerInterface $checker,
         private readonly StateMachineInterface $stateMachine,
         private readonly string $workflowName,
-        private readonly string $transition,
     ) {
     }
 
@@ -41,12 +41,12 @@ final class AutoApprovalListener
             return;
         }
 
-        if (!$this->stateMachine->can($entity, $this->workflowName, $this->transition)) {
+        if (!$this->stateMachine->can($entity, $this->workflowName, AbstractReviewWorkflow::TRANSITION_ACCEPT)) {
             return;
         }
 
         if ($this->checker->shouldAutoApprove($entity)) {
-            $this->stateMachine->apply($entity, $this->workflowName, $this->transition);
+            $this->stateMachine->apply($entity, $this->workflowName, AbstractReviewWorkflow::TRANSITION_ACCEPT);
         }
     }
 }

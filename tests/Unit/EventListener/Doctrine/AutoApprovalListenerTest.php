@@ -36,7 +36,6 @@ final class AutoApprovalListenerTest extends TestCase
             $checker->reveal(),
             $stateMachine->reveal(),
             StoreReviewWorkflow::NAME,
-            StoreReviewWorkflow::TRANSITION_ACCEPT,
         );
         $listener->prePersist($args);
     }
@@ -59,7 +58,6 @@ final class AutoApprovalListenerTest extends TestCase
             $checker->reveal(),
             $stateMachine->reveal(),
             StoreReviewWorkflow::NAME,
-            StoreReviewWorkflow::TRANSITION_ACCEPT,
         );
         $listener->prePersist($args);
     }
@@ -78,7 +76,6 @@ final class AutoApprovalListenerTest extends TestCase
             $checker->reveal(),
             $stateMachine->reveal(),
             StoreReviewWorkflow::NAME,
-            StoreReviewWorkflow::TRANSITION_ACCEPT,
         );
         $listener->prePersist($args);
 
@@ -104,7 +101,6 @@ final class AutoApprovalListenerTest extends TestCase
             $checker->reveal(),
             $stateMachine->reveal(),
             StoreReviewWorkflow::NAME,
-            StoreReviewWorkflow::TRANSITION_ACCEPT,
         );
         $listener->prePersist($args);
     }

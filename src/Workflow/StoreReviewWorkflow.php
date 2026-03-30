@@ -8,21 +8,11 @@ use Setono\SyliusReviewPlugin\Model\StoreReviewInterface;
 use Sylius\Component\Review\Model\ReviewInterface;
 use Symfony\Component\Workflow\Transition;
 
-final class StoreReviewWorkflow
+final class StoreReviewWorkflow extends AbstractReviewWorkflow
 {
     private const PROPERTY_NAME = 'status';
 
     final public const NAME = 'setono_sylius_review__store_review';
-
-    final public const TRANSITION_ACCEPT = 'accept';
-
-    final public const TRANSITION_REJECT = 'reject';
-
-    final public const TRANSITION_REQUEST_EDIT = 'request_edit';
-
-    private function __construct()
-    {
-    }
 
     /**
      * @return list<string>
