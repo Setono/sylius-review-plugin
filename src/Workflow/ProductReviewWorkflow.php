@@ -17,6 +17,8 @@ final class ProductReviewWorkflow
 
     final public const TRANSITION_REJECT = 'reject';
 
+    final public const TRANSITION_REQUEST_EDIT = 'request_edit';
+
     final public const STATE_NEW = ReviewInterface::STATUS_NEW;
 
     final public const STATE_ACCEPTED = ReviewInterface::STATUS_ACCEPTED;

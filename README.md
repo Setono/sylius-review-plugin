@@ -35,6 +35,24 @@ $bundles = [
 Make sure you add it before `SyliusGridBundle`, otherwise you'll get
 `You have requested a non-existent parameter "setono_sylius_review.model.review_request.class".` exception.
 
+### Configure Symfony Workflow for product reviews
+
+This plugin requires the `sylius_product_review` state machine to use the Symfony Workflow adapter.
+Add the following to your Sylius configuration (e.g., `config/packages/sylius_state_machine.yaml`):
+
+```yaml
+sylius_state_machine_abstraction:
+    default_adapter: symfony_workflow
+```
+
+Or, if you only want to change the product review graph:
+
+```yaml
+sylius_state_machine_abstraction:
+    graphs_to_adapters_mapping:
+        sylius_product_review: symfony_workflow
+```
+
 ### Extend the Channel entity (for store reviews)
 
 If you want to use store reviews, you need to extend the Channel entity to implement `ReviewableInterface`. The plugin provides a trait to make this easy.

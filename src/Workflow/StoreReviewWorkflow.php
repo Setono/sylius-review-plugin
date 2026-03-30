@@ -18,6 +18,8 @@ final class StoreReviewWorkflow
 
     final public const TRANSITION_REJECT = 'reject';
 
+    final public const TRANSITION_REQUEST_EDIT = 'request_edit';
+
     private function __construct()
     {
     }
@@ -70,6 +72,7 @@ final class StoreReviewWorkflow
         return [
             new Transition(self::TRANSITION_ACCEPT, [ReviewInterface::STATUS_NEW], ReviewInterface::STATUS_ACCEPTED),
             new Transition(self::TRANSITION_REJECT, [ReviewInterface::STATUS_NEW], ReviewInterface::STATUS_REJECTED),
+            new Transition(self::TRANSITION_REQUEST_EDIT, [ReviewInterface::STATUS_ACCEPTED, ReviewInterface::STATUS_REJECTED], ReviewInterface::STATUS_NEW),
         ];
     }
 }

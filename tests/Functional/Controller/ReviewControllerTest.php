@@ -5,8 +5,13 @@ declare(strict_types=1);
 namespace Setono\SyliusReviewPlugin\Tests\Functional\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Setono\SyliusReviewPlugin\Model\ChannelInterface;
+use Setono\SyliusReviewPlugin\Model\StoreReview;
+use Setono\SyliusReviewPlugin\Model\StoreReviewInterface;
 use Setono\SyliusReviewPlugin\Repository\StoreReviewRepositoryInterface;
 use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Review\Model\ReviewerInterface;
+use Sylius\Component\Review\Model\ReviewInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -152,5 +157,53 @@ final class ReviewControllerTest extends WebTestCase
         self::assertNotNull($storeReview);
         self::assertSame(4, $storeReview->getRating());
         self::assertSame($displayNameValue, $storeReview->getDisplayName());
+    }
+
+    /** @test */
+    public function it_resets_accepted_store_review_status_on_edit(): void
+    {
+        $this->order->setState(OrderInterface::STATE_FULFILLED);
+        $this->entityManager->flush();
+
+        // Create an existing accepted store review
+        $channel = $this->order->getChannel();
+        self::assertInstanceOf(ChannelInterface::class, $channel);
+
+        $customer = $this->order->getCustomer();
+        self::assertInstanceOf(ReviewerInterface::class, $customer);
+
+        $storeReview = new StoreReview();
+        $storeReview->setRating(5);
+        $storeReview->setComment('Original comment');
+        $storeReview->setReviewSubject($channel);
+        $storeReview->setAuthor($customer);
+        $storeReview->setOrder($this->order);
+        $storeReview->setStatus(ReviewInterface::STATUS_ACCEPTED);
+
+        $this->entityManager->persist($storeReview);
+        $this->entityManager->flush();
+
+        // Edit the review via the form
+        $this->client->request('GET', '/en_US/review?token=' . $this->order->getTokenValue());
+        self::assertResponseIsSuccessful();
+
+        $this->client->submitForm('Submit Reviews', [
+            'setono_sylius_review[storeReview][rating]' => 3,
+            'setono_sylius_review[storeReview][comment]' => 'Updated comment',
+        ]);
+
+        self::assertResponseRedirects();
+
+        $this->entityManager->clear();
+
+        /** @var StoreReviewRepositoryInterface $storeReviewRepository */
+        $storeReviewRepository = self::getContainer()->get('setono_sylius_review.repository.store_review');
+        $updatedReview = $storeReviewRepository->findOneByOrder($this->order);
+
+        self::assertNotNull($updatedReview);
+        self::assertSame(3, $updatedReview->getRating());
+        self::assertSame('Updated comment', $updatedReview->getComment());
+        // Status should be reset from 'accepted' to 'new' (or re-auto-approved)
+        self::assertContains($updatedReview->getStatus(), [ReviewInterface::STATUS_NEW, ReviewInterface::STATUS_ACCEPTED]);
     }
 }

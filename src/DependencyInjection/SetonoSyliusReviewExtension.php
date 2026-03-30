@@ -12,8 +12,10 @@ use Setono\SyliusReviewPlugin\EligibilityChecker\ReviewRequestEligibilityChecker
 use Setono\SyliusReviewPlugin\Form\Type\ReviewRequestEmailType;
 use Setono\SyliusReviewPlugin\Form\Type\StoreReplyNotificationEmailType;
 use Setono\SyliusReviewPlugin\Mailer\Emails;
+use Setono\SyliusReviewPlugin\Workflow\ProductReviewWorkflow;
 use Setono\SyliusReviewPlugin\Workflow\ReviewRequestWorkflow;
 use Setono\SyliusReviewPlugin\Workflow\StoreReviewWorkflow;
+use Sylius\Component\Review\Model\ReviewInterface;
 use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceExtension;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Symfony\Component\Config\FileLocator;
@@ -87,6 +89,16 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
             'workflows' => array_merge(
                 ReviewRequestWorkflow::getConfig(),
                 StoreReviewWorkflow::getConfig(),
+                [
+                    ProductReviewWorkflow::NAME => [
+                        'transitions' => [
+                            ProductReviewWorkflow::TRANSITION_REQUEST_EDIT => [
+                                'from' => [ReviewInterface::STATUS_ACCEPTED, ReviewInterface::STATUS_REJECTED],
+                                'to' => ReviewInterface::STATUS_NEW,
+                            ],
+                        ],
+                    ],
+                ],
             ),
         ]);
 
