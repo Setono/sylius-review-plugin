@@ -17,18 +17,6 @@
             </constraint>
         </property>
 
-        <property name="title">
-            <constraint name="NotBlank">
-                <option name="groups">setono_sylius_review</option>
-                <option name="message">setono_sylius_review.store_review.title.not_blank</option>
-            </constraint>
-            <constraint name="Length">
-                <option name="groups">setono_sylius_review</option>
-                <option name="max">255</option>
-                <option name="maxMessage">setono_sylius_review.store_review.title.max_length</option>
-            </constraint>
-        </property>
-
         <property name="comment">
             <constraint name="NotBlank">
                 <option name="groups">setono_sylius_review</option>

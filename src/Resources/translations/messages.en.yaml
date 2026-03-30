@@ -36,11 +36,9 @@ setono_sylius_review:
         display_name: Display name
         store_review:
             rating: Rating
-            title: Title (optional)
-            comment: Comment (optional)
+            comment: Comment
         product_review:
             rating: Rating
-            title: Title
             comment: Comment (optional)
         review:
             store_reply: Store reply

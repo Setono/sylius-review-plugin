@@ -64,7 +64,7 @@ final class StoreReviewControllerTest extends WebTestCase
         $this->client->request('GET', '/admin/store-reviews/');
 
         self::assertResponseIsSuccessful();
-        self::assertSelectorTextContains('body', (string) $storeReview->getTitle());
+        self::assertSelectorTextContains('body', (string) $storeReview->getComment());
     }
 
     /** @test */
@@ -96,7 +96,6 @@ final class StoreReviewControllerTest extends WebTestCase
 
         $this->client->submitForm('sylius_save_changes_button', [
             'setono_sylius_review_admin_store_review[rating]' => 3,
-            'setono_sylius_review_admin_store_review[title]' => 'Updated title',
             'setono_sylius_review_admin_store_review[comment]' => 'Updated comment',
         ]);
 
@@ -108,7 +107,6 @@ final class StoreReviewControllerTest extends WebTestCase
         $updated = $this->entityManager->getRepository(StoreReviewInterface::class)->find($storeReview->getId());
         self::assertNotNull($updated);
         self::assertSame(3, $updated->getRating());
-        self::assertSame('Updated title', $updated->getTitle());
         self::assertSame('Updated comment', $updated->getComment());
     }
 
@@ -122,7 +120,6 @@ final class StoreReviewControllerTest extends WebTestCase
 
         $this->client->submitForm('sylius_save_changes_button', [
             'setono_sylius_review_admin_store_review[rating]' => 5,
-            'setono_sylius_review_admin_store_review[title]' => 'Great store',
             'setono_sylius_review_admin_store_review[comment]' => 'Wonderful experience',
             'setono_sylius_review_admin_store_review[storeReply]' => 'Thank you for your review!',
         ]);
@@ -252,7 +249,7 @@ final class StoreReviewControllerTest extends WebTestCase
 
         $this->client->submitForm('sylius_save_changes_button', [
             'setono_sylius_review_admin_store_review[rating]' => 5,
-            'setono_sylius_review_admin_store_review[title]' => 'Great store',
+            'setono_sylius_review_admin_store_review[comment]' => 'Wonderful experience',
             'setono_sylius_review_admin_store_review[storeReply]' => 'Thank you for your feedback!',
             'setono_sylius_review_admin_store_review[notifyReviewer]' => '1',
         ]);
@@ -290,12 +287,11 @@ final class StoreReviewControllerTest extends WebTestCase
         $this->client->loginUser($adminUser, 'admin');
     }
 
-    private function createStoreReview(string $title = 'Great store', int $rating = 5): StoreReview
+    private function createStoreReview(string $comment = 'Wonderful experience', int $rating = 5): StoreReview
     {
         $storeReview = new StoreReview();
         $storeReview->setRating($rating);
-        $storeReview->setTitle($title);
-        $storeReview->setComment('Wonderful experience');
+        $storeReview->setComment($comment);
         $storeReview->setReviewSubject($this->channel);
         $storeReview->setAuthor($this->customer);
         $storeReview->setOrder($this->order);

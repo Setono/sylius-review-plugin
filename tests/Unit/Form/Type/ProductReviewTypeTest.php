@@ -30,13 +30,13 @@ final class ProductReviewTypeTest extends TypeTestCase
     }
 
     /** @test */
-    public function it_has_rating_title_and_comment_fields(): void
+    public function it_has_rating_and_comment_fields(): void
     {
         $form = $this->factory->create(ProductReviewType::class);
 
         self::assertTrue($form->has('rating'));
-        self::assertTrue($form->has('title'));
         self::assertTrue($form->has('comment'));
+        self::assertFalse($form->has('title'));
     }
 
     /** @test */
@@ -60,13 +60,11 @@ final class ProductReviewTypeTest extends TypeTestCase
         $form = $this->factory->create(ProductReviewType::class, $review);
         $form->submit([
             'rating' => '4',
-            'title' => 'Great product',
             'comment' => 'I really enjoyed using this product.',
         ]);
 
         self::assertTrue($form->isSynchronized());
         self::assertSame(4, $review->getRating());
-        self::assertSame('Great product', $review->getTitle());
         self::assertSame('I really enjoyed using this product.', $review->getComment());
     }
 

@@ -1,9 +1,14 @@
 ### Requirement: StoreReviewType has correct form fields
-`StoreReviewType` SHALL build a form with three fields: `rating` (ChoiceType, expanded, choices 1-5), `title` (TextType), and `comment` (TextareaType). All fields SHALL be optional.
+`StoreReviewType` SHALL build a form with two fields: `rating` (ChoiceType, expanded, choices 1-5) and `comment` (TextareaType, required). The `title` field SHALL NOT be present.
 
 #### Scenario: Form contains expected fields
 - **WHEN** a `StoreReviewType` form is created with a valid `order` option
-- **THEN** the form SHALL have children named `rating`, `title`, and `comment`
+- **THEN** the form SHALL have children named `rating` and `comment`
+- **AND** the form SHALL NOT have a child named `title`
+
+#### Scenario: Comment field is required
+- **WHEN** the `comment` field is inspected
+- **THEN** it SHALL have `required` set to `true`
 
 #### Scenario: Rating field uses expanded choices
 - **WHEN** the `rating` field is inspected
@@ -43,11 +48,12 @@ The form type SHALL return `setono_sylius_review_store_review` as its block pref
 - **THEN** `getBlockPrefix()` SHALL return `'setono_sylius_review_store_review'`
 
 ### Requirement: ProductReviewType has correct form fields
-`ProductReviewType` SHALL build a form with three fields: `rating` (ChoiceType, expanded, choices 1-5), `title` (TextType), and `comment` (TextareaType). All fields SHALL be optional.
+`ProductReviewType` SHALL build a form with two fields: `rating` (ChoiceType, expanded, choices 1-5) and `comment` (TextareaType, optional). The `title` field SHALL NOT be present.
 
 #### Scenario: Form contains expected fields
 - **WHEN** a `ProductReviewType` form is created
-- **THEN** the form SHALL have children named `rating`, `title`, and `comment`
+- **THEN** the form SHALL have children named `rating` and `comment`
+- **AND** the form SHALL NOT have a child named `title`
 
 #### Scenario: Rating field uses expanded choices
 - **WHEN** the `rating` field is inspected
@@ -57,7 +63,7 @@ The form type SHALL return `setono_sylius_review_store_review` as its block pref
 Submitting data through the form SHALL map field values onto the underlying data object.
 
 #### Scenario: Form submission populates entity fields
-- **WHEN** the form is submitted with `rating`, `title`, and `comment` values
+- **WHEN** the form is submitted with `rating` and `comment` values
 - **THEN** the underlying data object SHALL have those values set
 
 ### Requirement: ProductReviewType has correct block prefix

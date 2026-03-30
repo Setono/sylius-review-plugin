@@ -20,9 +20,6 @@
     {% endif %}
 
     <h5>{{ 'setono_sylius_review.email.store_reply_notification.your_review'|trans }}</h5>
-    {% if review.title is not null %}
-        <p><strong>{{ review.title }}</strong></p>
-    {% endif %}
     <p>{{ 'setono_sylius_review.email.store_reply_notification.rating'|trans }}: {{ review.rating }}/5</p>
     {% if review.comment is not null %}
         <p>{{ review.comment }}</p>

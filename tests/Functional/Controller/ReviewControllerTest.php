@@ -99,7 +99,6 @@ final class ReviewControllerTest extends WebTestCase
 
         $this->client->submitForm('Submit Reviews', [
             'setono_sylius_review[storeReview][rating]' => 5,
-            'setono_sylius_review[storeReview][title]' => 'Great store!',
             'setono_sylius_review[storeReview][comment]' => 'I had a wonderful experience.',
         ]);
 
@@ -111,7 +110,6 @@ final class ReviewControllerTest extends WebTestCase
 
         self::assertNotNull($storeReview);
         self::assertSame(5, $storeReview->getRating());
-        self::assertSame('Great store!', $storeReview->getTitle());
         self::assertSame('I had a wonderful experience.', $storeReview->getComment());
 
         $this->client->followRedirect();
@@ -142,7 +140,6 @@ final class ReviewControllerTest extends WebTestCase
         $this->client->submitForm('Submit Reviews', [
             'setono_sylius_review[displayName]' => $displayNameValue,
             'setono_sylius_review[storeReview][rating]' => 4,
-            'setono_sylius_review[storeReview][title]' => 'Good store',
             'setono_sylius_review[storeReview][comment]' => 'Nice experience with display name.',
         ]);
 

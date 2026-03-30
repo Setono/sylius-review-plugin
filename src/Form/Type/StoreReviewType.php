@@ -11,7 +11,6 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Review\Model\ReviewerInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -36,13 +35,8 @@ final class StoreReviewType extends AbstractResourceType
                 'required' => false,
                 'placeholder' => false,
             ])
-            ->add('title', TextType::class, [
-                'label' => 'setono_sylius_review.form.store_review.title',
-                'required' => false,
-            ])
             ->add('comment', TextareaType::class, [
                 'label' => 'setono_sylius_review.form.store_review.comment',
-                'required' => false,
             ])
             ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($options): void {
                 $storeReview = $event->getData();

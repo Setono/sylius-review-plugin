@@ -149,9 +149,9 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
                                 'format' => 'd-m-Y H:i:s',
                             ],
                         ],
-                        'title' => [
+                        'comment' => [
                             'type' => 'string',
-                            'label' => 'sylius.ui.title',
+                            'label' => 'sylius.ui.comment',
                             'sortable' => null,
                         ],
                         'rating' => [
@@ -180,9 +180,9 @@ final class SetonoSyliusReviewExtension extends AbstractResourceExtension implem
                         ],
                     ],
                     'filters' => [
-                        'title' => [
+                        'comment' => [
                             'type' => 'string',
-                            'label' => 'sylius.ui.title',
+                            'label' => 'sylius.ui.comment',
                         ],
                         'status' => [
                             'type' => 'select',
