@@ -44,9 +44,8 @@ final class ReviewType extends AbstractType
         $order = $options['order'];
 
         $customer = $order->getCustomer();
-        $candidates = $customer instanceof ReviewerInterface
-            ? $this->getCandidates($customer)
-            : [];
+        Assert::isInstanceOf($customer, ReviewerInterface::class, 'The order must have a customer.');
+        $candidates = $this->getCandidates($customer);
 
         $builder
             ->add('storeReview', StoreReviewType::class, [
