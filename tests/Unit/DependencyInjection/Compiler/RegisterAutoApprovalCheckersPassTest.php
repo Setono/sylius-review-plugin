@@ -118,6 +118,32 @@ final class RegisterAutoApprovalCheckersPassTest extends AbstractCompilerPassTes
     }
 
     /** @test */
+    public function it_skips_definitions_with_unresolved_parameters_in_class(): void
+    {
+        $this->registerCompositeServices();
+        $this->registerService('parameterized_checker', '%hwi_oauth.resource_owner.facebook.class%');
+
+        $this->compile();
+
+        self::assertFalse(
+            $this->container->getDefinition('parameterized_checker')->hasTag('setono_sylius_review.store_review_auto_approval_checker'),
+        );
+    }
+
+    /** @test */
+    public function it_skips_definitions_with_null_class(): void
+    {
+        $this->registerCompositeServices();
+        $this->setDefinition('null_class_service', new \Symfony\Component\DependencyInjection\Definition());
+
+        $this->compile();
+
+        self::assertFalse(
+            $this->container->getDefinition('null_class_service')->hasTag('setono_sylius_review.store_review_auto_approval_checker'),
+        );
+    }
+
+    /** @test */
     public function it_skips_abstract_definitions(): void
     {
         $this->registerCompositeServices();
