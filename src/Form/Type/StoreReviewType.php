@@ -15,6 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Webmozart\Assert\Assert;
 
 final class StoreReviewType extends AbstractResourceType
 {
@@ -40,10 +41,7 @@ final class StoreReviewType extends AbstractResourceType
             ])
             ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($options): void {
                 $storeReview = $event->getData();
-
-                if (!$storeReview instanceof StoreReviewInterface) {
-                    return;
-                }
+                Assert::isInstanceOf($storeReview, StoreReviewInterface::class);
 
                 /** @var OrderInterface $order */
                 $order = $options['order'];
