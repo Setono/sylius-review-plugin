@@ -13,7 +13,7 @@ trait ChannelTrait
     /**
      * @var Collection<array-key, ReviewInterface>
      *
-     * @ORM\OneToMany(mappedBy="reviewSubject", targetEntity=StoreReviewInterface::class, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(mappedBy="reviewSubject", targetEntity="Setono\SyliusReviewPlugin\Model\StoreReviewInterface", fetch="EXTRA_LAZY")
      */
     #[ORM\OneToMany(mappedBy: 'reviewSubject', targetEntity: StoreReviewInterface::class, fetch: 'EXTRA_LAZY')]
     protected Collection $reviews;
