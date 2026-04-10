@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a Sylius plugin that sends review requests to customers after completing orders. Review requests go through an eligibility check before being sent, and the plugin uses Symfony Workflow for state management.
 
+**This is a Sylius plugin, not a standalone application.** The plugin itself does not ship Symfony Flex recipes, so all installation steps (bundle registration, route imports, entity extensions, etc.) must be explicitly documented in the README.
+
 ### Bundle Ordering
 
 The plugin must be registered **before** `SyliusGridBundle` in `bundles.php`, otherwise you'll get a missing parameter exception for `setono_sylius_review.model.review_request.class`.

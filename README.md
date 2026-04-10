@@ -35,6 +35,15 @@ $bundles = [
 Make sure you add it before `SyliusGridBundle`, otherwise you'll get
 `You have requested a non-existent parameter "setono_sylius_review.model.review_request.class".` exception.
 
+### Import routes
+
+Create `config/routes/setono_sylius_review.yaml`:
+
+```yaml
+setono_sylius_review:
+    resource: "@SetonoSyliusReviewPlugin/Resources/config/routes.yaml"
+```
+
 ### Extend the Channel entity (for store reviews)
 
 If you want to use store reviews, you need to extend the Channel entity to implement `ReviewableInterface`. The plugin provides a trait to make this easy.
@@ -49,13 +58,10 @@ declare(strict_types=1);
 namespace App\Entity\Channel;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Setono\SyliusReviewPlugin\Model\ChannelInterface;
 use Setono\SyliusReviewPlugin\Model\ChannelTrait;
-use Setono\SyliusReviewPlugin\Model\StoreReviewInterface;
 use Sylius\Component\Core\Model\Channel as BaseChannel;
-use Sylius\Component\Review\Model\ReviewInterface;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'sylius_channel')]
@@ -190,42 +196,58 @@ php bin/console doctrine:migrations:migrate
 ```
 
 ### Run commands
-There are two commands in this plugin. One for creating and processing review requests and one for pruning the review request table.
 
 ```bash
 php bin/console setono:sylius-review:process
 php bin/console setono:sylius-review:prune
+php bin/console setono:sylius-review:urls
 ```
 
 The `process` command does two things:
 1. Creates review requests for fulfilled orders that don't have one yet (looking back as far as the `pruning.threshold`)
 2. Processes pending review requests (eligibility check + sending emails)
 
-You decide yourself how often you want to run these commands.
+The `prune` command removes old review requests based on the configured threshold.
+
+The `urls` command outputs review page URLs for fulfilled orders, grouped by channel. Useful for testing:
+
+```bash
+php bin/console setono:sylius-review:urls          # Default: 5 URLs per channel
+php bin/console setono:sylius-review:urls --max=10  # 10 URLs per channel
+```
+
+You decide yourself how often you want to run the `process` and `prune` commands.
 The process command makes sense to run daily, while the prune command can be run weekly or monthly.
 
 ## Configuration
 
 ```yaml
 setono_sylius_review:
+    auto_approval:
+        store_review:
+            # Whether to auto-approve store reviews
+            enabled: true
+            # The minimum rating for auto-approving store reviews
+            minimum_rating: 4
+        product_review:
+            # Whether to auto-approve product reviews
+            enabled: true
+            # The minimum rating for auto-approving product reviews
+            minimum_rating: 4
     eligibility:
         # The initial delay before the first eligibility check. The string must be parseable by strtotime(). See https://www.php.net/strtotime
         initial_delay: '+1 week'
-
         # The maximum number of eligibility checks before the review request is automatically cancelled
         maximum_checks: 5
-    
+    reviewable_order:
+        # The order states that are considered reviewable
+        reviewable_states:
+            - fulfilled
+        # The period during which a review can be edited after submission. Set to null to disable editing. The string must be parseable by strtotime(). See https://www.php.net/strtotime
+        editable_period: '+24 hours'
     pruning:
         # Review requests older than this threshold will be pruned/removed. The string must be parseable by strtotime(). See https://www.php.net/strtotime
         threshold: '-1 month'
-    
-    resources:
-        review_request:
-            options: ~
-            classes:
-                model: Setono\SyliusReviewPlugin\Model\ReviewRequest
-                repository: Setono\SyliusReviewPlugin\Repository\ReviewRequestRepository
-                factory: Sylius\Component\Resource\Factory\Factory
 ```
 
 ## Add eligibility checker
