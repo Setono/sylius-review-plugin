@@ -8,11 +8,13 @@ use Setono\SyliusReviewPlugin\Model\ReviewInterface;
 use Setono\SyliusReviewPlugin\Model\StoreReviewInterface;
 use Setono\SyliusReviewPlugin\Repository\OrderRepositoryInterface;
 use Sylius\Component\Core\Model\CustomerInterface;
+use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Mailer\Sender\SenderInterface;
 use Webmozart\Assert\Assert;
 
 final class StoreReplyNotificationEmailManager implements StoreReplyNotificationEmailManagerInterface
 {
+    /** @param OrderRepositoryInterface<OrderInterface> $orderRepository */
     public function __construct(
         private readonly SenderInterface $emailSender,
         private readonly OrderRepositoryInterface $orderRepository,

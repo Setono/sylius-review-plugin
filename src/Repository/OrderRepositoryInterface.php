@@ -9,7 +9,8 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\Repository\OrderRepositoryInterface as BaseOrderRepositoryInterface;
 
 /**
- * @extends BaseOrderRepositoryInterface<OrderInterface>
+ * @template T of OrderInterface
+ * @extends BaseOrderRepositoryInterface<T>
  */
 interface OrderRepositoryInterface extends BaseOrderRepositoryInterface
 {
