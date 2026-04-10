@@ -22,7 +22,7 @@ final class ReviewDisplayNameExtensionIntegrationTest extends IntegrationTestCas
 
     protected function getRuntimeLoaders(): array
     {
-        $resolver = new class implements DisplayNameResolverInterface {
+        $resolver = new class() implements DisplayNameResolverInterface {
             public function resolve(ReviewInterface $review): string
             {
                 return $review->getAuthor()?->getFirstName() ?? 'Anonymous';
