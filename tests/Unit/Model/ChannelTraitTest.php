@@ -99,7 +99,7 @@ final class ChannelTraitTest extends TestCase
                 $this->reviews = new ArrayCollection();
             }
 
-            public function getName(): ?string
+            public function getName(): string
             {
                 return 'Test Channel';
             }
