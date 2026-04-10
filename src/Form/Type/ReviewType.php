@@ -132,7 +132,7 @@ final class ReviewType extends AbstractType
 
         foreach ($order->getItems() as $item) {
             $product = $item->getProduct();
-            Assert::notNull($product, sprintf('Order item #%s has no product.', (string) $item->getId()));
+            Assert::notNull($product, 'Order item has no product.');
 
             $productId = $product->getId();
             if (null !== $productId && isset($seenProductIds[$productId])) {

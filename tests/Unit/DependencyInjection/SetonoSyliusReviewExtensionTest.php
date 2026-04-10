@@ -131,7 +131,7 @@ final class SetonoSyliusReviewExtensionTest extends AbstractExtensionTestCase
     public function it_registers_email_form_types_when_mail_tester_plugin_is_present(): void
     {
         $this->container->setParameter('kernel.bundles', [
-            'SynoliaSyliusMailTesterPlugin' => 'Synolia\SyliusMailTesterPlugin\SynoliaSyliusMailTesterPlugin',
+            'SynoliaSyliusMailTesterPlugin' => \Synolia\SyliusMailTesterPlugin\SynoliaSyliusMailTesterPlugin::class,
         ]);
 
         $this->load();
