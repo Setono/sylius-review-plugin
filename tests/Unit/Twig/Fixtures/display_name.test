@@ -1,0 +1,15 @@
+--TEST--
+"setono_sylius_review_display_name" function
+--TEMPLATE--
+{{ setono_sylius_review_display_name(review_with_author) }}
+{{ setono_sylius_review_display_name(review_without_author) }}
+--DATA--
+return [
+    'review_with_author' => new \Setono\SyliusReviewPlugin\Tests\Unit\Twig\Fixtures\StubReview(
+        new \Setono\SyliusReviewPlugin\Tests\Unit\Twig\Fixtures\StubReviewer('John'),
+    ),
+    'review_without_author' => new \Setono\SyliusReviewPlugin\Tests\Unit\Twig\Fixtures\StubReview(),
+]
+--EXPECT--
+John
+Anonymous
