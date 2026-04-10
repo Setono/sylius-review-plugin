@@ -15,6 +15,9 @@ use Sylius\Bundle\ResourceBundle\AbstractResourceBundle;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+/**
+ * @codeCoverageIgnore Implicitly tested by the functional test suite (kernel boot).
+ */
 final class SetonoSyliusReviewPlugin extends AbstractResourceBundle
 {
     use SyliusPluginTrait;

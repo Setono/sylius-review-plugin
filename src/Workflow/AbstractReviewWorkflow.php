@@ -12,6 +12,7 @@ abstract class AbstractReviewWorkflow
 
     final public const TRANSITION_REQUEST_EDIT = 'request_edit';
 
+    /** @codeCoverageIgnore */
     private function __construct()
     {
     }

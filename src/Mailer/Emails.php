@@ -10,6 +10,7 @@ final class Emails
 
     public const STORE_REPLY_NOTIFICATION = 'setono_sylius_review__store_reply_notification';
 
+    /** @codeCoverageIgnore */
     private function __construct()
     {
     }

@@ -17,6 +17,7 @@ final class ReviewRequestWorkflow
 
     final public const TRANSITION_CANCEL = 'cancel';
 
+    /** @codeCoverageIgnore */
     private function __construct()
     {
     }
