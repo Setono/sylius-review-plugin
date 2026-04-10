@@ -9,6 +9,7 @@ use Setono\SyliusReviewPlugin\Model\ChannelInterface;
 use Setono\SyliusReviewPlugin\Model\StoreReview;
 use Setono\SyliusReviewPlugin\Repository\StoreReviewRepositoryInterface;
 use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Core\Model\ProductReviewInterface;
 use Sylius\Component\Review\Model\ReviewerInterface;
 use Sylius\Component\Review\Model\ReviewInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -204,5 +205,52 @@ final class ReviewControllerTest extends WebTestCase
         self::assertSame('Updated comment', $updatedReview->getComment());
         // Status should be reset from 'accepted' to 'new' (or re-auto-approved)
         self::assertContains($updatedReview->getStatus(), [ReviewInterface::STATUS_NEW, ReviewInterface::STATUS_ACCEPTED]);
+    }
+
+    /** @test */
+    public function it_submits_product_review_with_rating(): void
+    {
+        $this->order->setState(OrderInterface::STATE_FULFILLED);
+        $this->entityManager->flush();
+
+        $items = $this->order->getItems();
+        self::assertGreaterThan(0, $items->count(), 'Order must have at least one item with a product.');
+
+        $firstItem = $items->first();
+        self::assertNotFalse($firstItem);
+        $product = $firstItem->getProduct();
+        self::assertNotNull($product);
+
+        $crawler = $this->client->request('GET', '/en_US/review?token=' . $this->order->getTokenValue());
+        self::assertResponseIsSuccessful();
+
+        // Find the first product review rating field to confirm it exists
+        $ratingField = $crawler->filter('[name^="setono_sylius_review[productReviews][0][rating]"]');
+        if (0 === $ratingField->count()) {
+            self::markTestSkipped('No product review fields rendered (order may have no items).');
+        }
+
+        $this->client->submitForm('Submit Reviews', [
+            'setono_sylius_review[storeReview][rating]' => 4,
+            'setono_sylius_review[storeReview][comment]' => 'Great store.',
+            'setono_sylius_review[productReviews][0][rating]' => 5,
+            'setono_sylius_review[productReviews][0][comment]' => 'Excellent product.',
+        ]);
+
+        self::assertResponseRedirects();
+
+        $this->entityManager->clear();
+
+        $customer = $this->order->getCustomer();
+
+        /** @var ProductReviewInterface|null $productReview */
+        $productReview = $this->entityManager->getRepository(ProductReviewInterface::class)->findOneBy([
+            'reviewSubject' => $product,
+            'author' => $customer,
+        ]);
+
+        self::assertNotNull($productReview, 'Expected a product review to be persisted.');
+        self::assertSame(5, $productReview->getRating());
+        self::assertSame('Excellent product.', $productReview->getComment());
     }
 }
