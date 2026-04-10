@@ -9,6 +9,8 @@ use Setono\SyliusReviewPlugin\Checker\AutoApproval\CompositeAutoApprovalChecker;
 use Setono\SyliusReviewPlugin\Checker\AutoApproval\MinimumRatingAutoApprovalChecker;
 use Setono\SyliusReviewPlugin\DependencyInjection\SetonoSyliusReviewExtension;
 use Setono\SyliusReviewPlugin\EventListener\Doctrine\AutoApprovalListener;
+use Setono\SyliusReviewPlugin\Form\Type\ReviewRequestEmailType;
+use Setono\SyliusReviewPlugin\Form\Type\StoreReplyNotificationEmailType;
 
 /**
  * See examples of tests and configuration options here: https://github.com/SymfonyTest/SymfonyDependencyInjectionTest
@@ -123,5 +125,43 @@ final class SetonoSyliusReviewExtensionTest extends AbstractExtensionTestCase
 
         $this->assertContainerBuilderHasParameter('setono_sylius_review.auto_approval.store_review.minimum_rating', 3);
         $this->assertContainerBuilderHasParameter('setono_sylius_review.auto_approval.product_review.minimum_rating', 5);
+    }
+
+    /** @test */
+    public function it_registers_email_form_types_when_mail_tester_plugin_is_present(): void
+    {
+        $this->container->setParameter('kernel.bundles', [
+            'SynoliaSyliusMailTesterPlugin' => 'Synolia\SyliusMailTesterPlugin\SynoliaSyliusMailTesterPlugin',
+        ]);
+
+        $this->load();
+
+        $this->assertContainerBuilderHasService(ReviewRequestEmailType::class);
+        $this->assertContainerBuilderHasServiceDefinitionWithTag(ReviewRequestEmailType::class, 'form.type');
+        $this->assertContainerBuilderHasServiceDefinitionWithTag(ReviewRequestEmailType::class, 'app.resolvable_form_type.resolver');
+
+        $this->assertContainerBuilderHasService(StoreReplyNotificationEmailType::class);
+        $this->assertContainerBuilderHasServiceDefinitionWithTag(StoreReplyNotificationEmailType::class, 'form.type');
+        $this->assertContainerBuilderHasServiceDefinitionWithTag(StoreReplyNotificationEmailType::class, 'app.resolvable_form_type.resolver');
+    }
+
+    /** @test */
+    public function it_does_not_register_email_form_types_when_mail_tester_plugin_is_absent(): void
+    {
+        $this->container->setParameter('kernel.bundles', []);
+
+        $this->load();
+
+        $this->assertContainerBuilderNotHasService(ReviewRequestEmailType::class);
+        $this->assertContainerBuilderNotHasService(StoreReplyNotificationEmailType::class);
+    }
+
+    /** @test */
+    public function it_does_not_register_email_form_types_when_kernel_bundles_is_not_set(): void
+    {
+        $this->load();
+
+        $this->assertContainerBuilderNotHasService(ReviewRequestEmailType::class);
+        $this->assertContainerBuilderNotHasService(StoreReplyNotificationEmailType::class);
     }
 }
