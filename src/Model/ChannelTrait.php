@@ -10,10 +10,15 @@ use Sylius\Component\Review\Model\ReviewInterface;
 
 trait ChannelTrait
 {
-    /** @var Collection<array-key, ReviewInterface> */
+    /**
+     * @var Collection<array-key, ReviewInterface>
+     *
+     * @ORM\OneToMany(mappedBy="reviewSubject", targetEntity=StoreReviewInterface::class, fetch="EXTRA_LAZY")
+     */
     #[ORM\OneToMany(mappedBy: 'reviewSubject', targetEntity: StoreReviewInterface::class, fetch: 'EXTRA_LAZY')]
     protected Collection $reviews;
 
+    /** @ORM\Column(type="float", nullable=true) */
     #[ORM\Column(type: 'float', nullable: true)]
     protected ?float $averageRating = null;
 

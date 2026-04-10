@@ -8,15 +8,19 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait ReviewTrait
 {
+    /** @ORM\Column(type="string", nullable=true) */
     #[ORM\Column(type: 'string', nullable: true)]
     protected ?string $displayName = null;
 
+    /** @ORM\Column(type="text", nullable=true) */
     #[ORM\Column(type: 'text', nullable: true)]
     protected ?string $storeReply = null;
 
+    /** @ORM\Column(type="datetime", nullable=true) */
     #[ORM\Column(type: 'datetime', nullable: true)]
     protected ?\DateTimeInterface $storeRepliedAt = null;
 
+    /** @ORM\Column(type="boolean", options={"default": true}) */
     #[ORM\Column(type: 'boolean', options: ['default' => true])]
     protected bool $notifyReviewer = true;
 
