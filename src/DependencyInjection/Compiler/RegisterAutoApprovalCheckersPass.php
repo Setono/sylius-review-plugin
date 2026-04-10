@@ -32,12 +32,12 @@ final class RegisterAutoApprovalCheckersPass implements CompilerPassInterface
                 continue;
             }
 
-            $class = $definition->getClass();
-            if (null === $class || str_contains($class, '%')) {
+            try {
+                $reflectionClass = $container->getReflectionClass($definition->getClass(), false);
+            } catch (\Throwable) {
                 continue;
             }
 
-            $reflectionClass = $container->getReflectionClass($class, false);
             if (null === $reflectionClass) {
                 continue;
             }
