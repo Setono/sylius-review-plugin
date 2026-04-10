@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Webmozart\Assert\Assert;
 
 #[AsCommand(
     name: 'setono:sylius-review:urls',
@@ -58,6 +59,8 @@ final class ReviewUrlsCommand extends Command
             $io->section($channelName);
 
             $hostname = $channel->getHostname();
+            Assert::notNull($hostname, sprintf('Channel "%s" has no hostname configured.', $channelName));
+
             $locale = $channel->getDefaultLocale()?->getCode() ?? 'en_US';
 
             $manager = $this->getManager($this->orderClass);
@@ -84,17 +87,11 @@ final class ReviewUrlsCommand extends Command
 
             foreach ($orders as $order) {
                 $token = $order->getTokenValue();
-                if (null === $token) {
-                    continue;
-                }
+                Assert::notNull($token);
 
                 $path = $this->urlGenerator->generate('setono_sylius_review__review', ['token' => $token, '_locale' => $locale]);
 
-                if (null !== $hostname) {
-                    $io->text(sprintf('https://%s%s', $hostname, $path));
-                } else {
-                    $io->text($path);
-                }
+                $io->text(sprintf('https://%s%s', $hostname, $path));
             }
         }
 

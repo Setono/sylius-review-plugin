@@ -138,6 +138,25 @@ final class ReviewRequestProcessorTest extends KernelTestCase
         return $reviewRequest;
     }
 
+    /** @test */
+    public function it_catches_exceptions_and_sets_processing_error(): void
+    {
+        $order = $this->findOrder();
+        $order->setState(OrderInterface::STATE_FULFILLED);
+        $order->setCheckoutCompletedAt(new \DateTimeImmutable());
+        $order->setCustomer(null);
+
+        $reviewRequest = $this->createReviewRequest($order);
+        $id = $reviewRequest->getId();
+
+        $this->processor->process();
+
+        $reviewRequest = $this->findReviewRequest($id);
+
+        self::assertSame(ReviewRequestInterface::STATE_PENDING, $reviewRequest->getState());
+        self::assertNotNull($reviewRequest->getProcessingError());
+    }
+
     private function createReviewRequest(OrderInterface $order): ReviewRequest
     {
         $reviewRequest = new ReviewRequest();
