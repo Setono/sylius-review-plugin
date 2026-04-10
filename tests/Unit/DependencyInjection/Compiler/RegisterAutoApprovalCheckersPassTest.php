@@ -105,6 +105,19 @@ final class RegisterAutoApprovalCheckersPassTest extends AbstractCompilerPassTes
     }
 
     /** @test */
+    public function it_skips_definitions_with_unresolvable_class(): void
+    {
+        $this->registerCompositeServices();
+        $this->registerService('unresolvable_checker', 'App\\NonExistent\\ClassName');
+
+        $this->compile();
+
+        self::assertFalse(
+            $this->container->getDefinition('unresolvable_checker')->hasTag('setono_sylius_review.store_review_auto_approval_checker'),
+        );
+    }
+
+    /** @test */
     public function it_skips_abstract_definitions(): void
     {
         $this->registerCompositeServices();
